@@ -1,0 +1,9 @@
+build
+dist
+pkg
+node_modules
+.idea
+npm-debug.log
+vendor
+projectFilesBackup
+libpeerconnection.log
