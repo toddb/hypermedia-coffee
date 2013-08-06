@@ -1,21 +1,21 @@
 Hypermedia coffee - sample app
 ==============================
 
-This is a sample single-page application through a semantic link (hypermedia/REST) design and test-first. The code structure was originally based on boilerplate code from [Pith](https://github.com/sym3tri/pith). It has since morphed so yuckness is all my responsibility. While it looks ordered there is still not a good enough separation of naming/thinking around client and server code. Also within the server code, the routes, resources and representations still get IMHO confused over their roles. Finally, then in the tests you'll see a poor naming around those issues mentioned. Confusion abounds because object-style REST still dominant in the underlying libraries which subtly inflect your design and you need to workaround - routes is just one example.
+This is a sample single-page application through a semantic link (hypermedia/REST) design and test-first. The code structure was originally based on boilerplate code from [Pith](https://github.com/sym3tri/pith). It has since morphed so the yucky-ness is all my responsibility. While it looks ordered there is still not a good enough separation of naming/thinking around client and server code. Also within the server code, the routes, resources and representations still get IMHO confused over their roles. Finally, then in the tests you'll see a poor naming around those issues mentioned. Confusion abounds because object-style REST still dominant in the underlying libraries which subtly inflect your design and you need to workaround - routes is just one example.
 
 This app is the smallest possible app I could think of that is representative of a complex enough domain. While the central business domain object is merely an order, it has a state machine to manage its workflow/life cyle. It has an external payment service as part of a state transition. The application itself has authentication and authorisation working through such cross-cutting concerns. Finally, and here's the weirdest part, I have played with the idea of a viewstate for the order. Think of the viewstate as ALL the interactions that a customer makes with a resource while on the client-side GUI. I played with this idea because I want A/B testing build in - I want to know what happens on the client so I modelled this in as a resource. Remember resources are conceptual or real, now or the future. It changed my design - I'm less sure whether its for the better or for the worse.
 
 If you are interested in the ideas. The coffee domain comes from [Jim Weber's material](http://www.infoq.com/articles/webber-rest-workflow). I've included the customer state machine in `docs` folder.
-[Hypermedia design)[http://amundsen.com/hypermedia/] is well explained by Mike Amundsen but his implementation isn't deep enough for a real system (nor did he try to make it).
+[Hypermedia design](http://amundsen.com/hypermedia/) is well explained by Mike Amundsen but his implementation isn't deep enough for a real system (nor did he try to make it).
 The specifics of [single-page apps](http://singlepageappbook.com/index.html) are starting to be well covered by Mikito Takada. He particularly addresses
-the (issues of)[http://singlepageappbook.com/goal.html]:
+the [issues of](http://singlepageappbook.com/goal.html):
 
   # *Architecture*: what (conceptual) parts does our app consist of? How do the different parts communicate with each other? How do they depend on each other?
   # *Asset packaging*: how is our app structured into files and files into logical modules? How are these modules built and loaded into the browser? How can the modules be loaded for unit testing?
   # *Run-time state*: when loaded into the browser, what parts of the app are in memory? How do we perform transitions between states and gain visibility into the current state for troubleshooting?
 
 Myself, I am concerned with test-first, hypermedia design. If you look in the tests what you should see is a separation of the server and client.
-I have been trying out ideas of how to test the client code without a server. So you'll see the use of faking and expectations to manage the HTTP boundary. With the introduction of (angularjs)[http://angularjs.com], I threw out a lot of testing code I had written that wrapped jasmine. I might now throw out a lot of it again and use the (blueprint dsl by apiary)[http://apiary.io/blueprint] - but they now have deprecated it and I don't understand why. Thus the missing piece in the sample is the human-readable documentation. At best it is the tests. But that's not going to fly because you still need to know the semantic links available in the application. One additional complexity I noticed was that to get testing running locally I needed to implement a CORS middleware. That was a pain but I suspect in a production system you are going to need it anyway as you open up your API.  The other issue I found was that my route testing strategy isn't right. I haven't fixed it yet.
+I have been trying out ideas of how to test the client code without a server. So you'll see the use of faking and expectations to manage the HTTP boundary. With the introduction of [angularjs](http://angularjs.com), I threw out a lot of testing code I had written that wrapped jasmine. I might now throw out a lot of it again and use the [blueprint dsl by apiary](http://apiary.io/blueprint) - but they now have deprecated it and I don't understand why. Thus the missing piece in the sample is the human-readable documentation. At best it is the tests. But that's not going to fly because you still need to know the semantic links available in the application. One additional complexity I noticed was that to get testing running locally I needed to implement a CORS middleware. That was a pain but I suspect in a production system you are going to need it anyway as you open up your API.  The other issue I found was that my route testing strategy isn't right. I haven't fixed it yet.
 
 I am also concerned about pyramid testings. So, not only will you see attempts to keep client code all unit tested. There are integration tests for the server that polices the HTTP interface's design. You will also see system tests through the browser to check that
 everything still holds together.
@@ -45,7 +45,7 @@ Pith is comprised of the following components:
 - [mongo](http://www.mongodb.org/)
 - gcc - for some node modeuls - I used (commandline tools for XCode)[http://developer.apple.com/downloads] - then on 10.8.4 still had problems (`xcode-select: Error: No Xcode is selected. Use xcode-select -switch <path-to-xcode>`). Solution: `sudo xcode-select -switch /usr/bin`
 
-# Ensure that your mongo db is running. At this stage, it is assume to be a local installation on localhost:27017
+Ensure that your mongo db is running. At this stage, it is assume to be a local installation on localhost:27017
 
   $ mongod
   all output going to: /usr/local/var/log/mongodb/mongo.log
@@ -90,7 +90,9 @@ Also you can run karma in watch mode:
 # Watch Commands
 - `grunt watch` All inclusive watch to update generated files when the sources change. Recompiles less files, lints JS files, and recompiles templates.
 
-# Angular problems and why hack unstable is needed
+# Angular problems
+
+Why we need `unstable` (>=1.1.4) and a patch
 
 See `public/js/app-angular.js`:
 
