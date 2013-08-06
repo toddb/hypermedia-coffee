@@ -76,9 +76,16 @@ In command line and headless (requires PhantomJS and your server started `npm st
 - `grunt `integration` Run the integration tests headless from the commandline (requires `mongod` running)
 - `grunt `acceptance` Run the acceptance headless and with browsers from the commandline
 
+Also you can run karma in watch mode:
+- grunt `karma:unit-watch` - Runs all the test continuously on changes to files.
+- grunt `karma:acceptance-watch` - Runs all the test continuously on changes to files.
+
 # Other Commands
 - `grunt` Default runs all build tasks in development mode. Compiles less files, lints JS files and compile all client-side JavaScript.
 - `grunt prod` Kick off a production-ready build. Like the default but with more optimized/minified/etc output.
+- `grunt server` Kick off a devlopment-ready build that does prod checks and spins up server, and opens browser.
+- `grunt open:dev` Open up the browser at localhost:8888.
+
 
 # Watch Commands
 - `grunt watch` All inclusive watch to update generated files when the sources change. Recompiles less files, lints JS files, and recompiles templates.
