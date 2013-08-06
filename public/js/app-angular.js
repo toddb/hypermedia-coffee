@@ -3,7 +3,7 @@
  * The main application entry point.
  */
 define([
-  'angularjs-unstable',
+  'angularjs',
   'controllers/orderCtrl',
   'controllers/authenticatorCtrl',
   'controllers/payCtrl',
