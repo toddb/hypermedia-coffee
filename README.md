@@ -57,7 +57,7 @@ Pith is comprised of the following components:
 - `sudo npm install -g jamjs karma -d`
 - `npm install -d` Installs all server-side dependencies (node_modules).
 - `jam install` Downloads and installs all client-side dependencies (public\vendor) - (note: this says it fails but doesn't).
-- `jam rebuild` Creates the `require.config.js` dependency file [Note: currently dirty hack for unstable version of angularjs - see `exec:jam-rebuild` running `hack.sh`]
+- `jam rebuild` Creates the `require.config.js` dependency file [Note: currently patched unstable version of angularjs - see `exec:jam-rebuild`]
 - `grunt` Do the initial build so css and template files are compiled.
 - `npm start` Starts the web server (alternatively `grunt server`)
 
@@ -108,7 +108,7 @@ See `public/js/app-angular.js`:
 
 Also,
 
-it needs to be patched:
+it needs to be patched - a request and discussion has occurred (https://github.com/angular/angular.js/issues/1388):
 
 to add `replace(/%2F/g, '/').`
 
