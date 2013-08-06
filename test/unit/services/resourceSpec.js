@@ -28,9 +28,9 @@ define(['mocks', 'services/resource'], function () {
             it('SUCCESS - calls xhr', function () {
                 var spy = jasmine.createSpy('PUT');
 
-                service.put({type: 'large'}, { links: [
+                service.put({ links: [
                     { rel: 'self', href: "/order/1", type: "application/json"}
-                ]}).
+                ]}, 'self', 'application/json', {type: 'large'}).
                     then(function success(config) {
                         spy(config.status);
                     });
@@ -59,9 +59,9 @@ define(['mocks', 'services/resource'], function () {
             it('SUCCESS - calls xhr, returns 204 and GET Location', function () {
                 var spy = jasmine.createSpy('POST');
 
-                service.post({type: 'med'}, { links: [
+                service.post({ links: [
                     { rel: 'self', href: "/order/", type: "application/json"}
-                ]})
+                ]}, 'self', 'application/json', {type: 'med'})
                     .then(function (item) {
                         spy(item.data);
                     });

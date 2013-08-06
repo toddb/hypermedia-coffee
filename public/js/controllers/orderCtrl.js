@@ -4,70 +4,72 @@ define(['controllers/module', 'underscore'], function (module, _) {
 
     function OrdersCtrl($scope, $log, location, link) {
 
-      function error(msg) {
-        $log.error(msg);
-      }
-
-      function add(item) {
-        if ($scope.collection && angular.isUndefined($scope.collection.item)) {
-          $scope.collection.item = [];
+        function error(msg) {
+            $log.error(msg);
         }
-        $scope.collection.item.unshift(item);
-      }
 
-      function remove(item) {
-        $scope.collection.item = _.reject($scope.collection.item, function (o) {
-          return o.$$hashKey == this.$$hashKey
-        }, item)
-      };
+        function add(item) {
+            if ($scope.collection && angular.isUndefined($scope.collection.item)) {
+                $scope.collection.item = [];
+            }
+            $scope.collection.item.unshift(item);
+        }
 
-      $scope.init = function () {
-        $scope.collection = [];
-        link.get('HEAD', {collection: [
-          { item: { viewstate: {} }}
-        ]}).
-          then(function success(response) {
-            $scope.collection = response.data;
-          }, error);
-      };
+        function remove(item) {
+            $scope.collection.item = _.reject($scope.collection.item, function (o) {
+                return o.$$hashKey == this.$$hashKey
+            }, item)
+        };
 
-      $scope.edit = $scope.cancel = $scope.toggle = function (viewstate, attrs) {
-        link.put(_.pick(viewstate, attrs), viewstate, 'self');
-        location.set(viewstate, 'self');
-      };
+        $scope.init = function () {
+            $scope.collection = [];
+            link.get('HEAD', {collection: [
+                { item: { viewstate: {} }}
+            ]}).
+                then(function success(response) {
+                    $scope.collection = response.data;
+                }, error);
+        };
 
-      $scope.delete = function (item) {
-        link.del(item, 'self').
-          then(function success() {
-            remove(item);
-          }, error);
-      };
+        $scope.edit = $scope.cancel = $scope.toggle = function (viewstate, attrs) {
+            link.put(viewstate, 'self', 'application/json', _.pick(viewstate, attrs || ['viewing', 'updating', 'removeable', 'updateable']));
+            location.set(viewstate, 'self');
+        };
 
-      $scope.create = function (item, attrs) {
-        link.post(_.pick(item, attrs), this.collection, 'self').
-          then(function success(response) {
-            var item = response.data;
-            link.get(item, 'viewstate').
-              then(function success(response) {
-                item.viewstate = response.data;
-                add(item);
-              }, error)
-          }, error);
-      };
+        $scope.delete = function (item) {
+            link.del(item, 'self', 'application/json').
+                then(function success() {
+                    remove(item);
+                }, error);
+        };
 
-      $scope.update = function (item, attrs) {
-        link.put(_.pick(item, attrs), item, 'self').
-          then(function success() {
-            $scope.cancel.call($scope, item.viewstate);
-          }, error
-        );
-      };
+        $scope.create = function (item, attrs) {
+            link.post(this.collection, 'self', 'application/json', _.pick(item, attrs)).
+                then(function success(response) {
+                    var item = response.data;
+                    link.get(item, 'viewstate').
+                        then(function success(response) {
+                            item.viewstate = response.data;
+                            add(item);
+                        }, error)
+                }, error);
+        };
 
-      $scope.getFragment = function (item) {
-        return location.get(item, 'self');
-      };
+        $scope.update = function (item, attrs) {
+            link.put(item, 'self', 'application/json', _.pick(item, attrs)).
+                then(function success() {
+                    item.viewstate.viewing = true; // TODO: Ahem, inappropriate intimacy
+                    item.viewstate.updating = false;
+                    $scope.cancel.call($scope, item.viewstate);
+                }, error
+            );
+        };
 
-      $scope.init();
+        $scope.getFragment = function (item) {
+            return location.get(item, 'self');
+        };
+
+        $scope.init();
 
     }
 
@@ -81,51 +83,51 @@ define(['controllers/module', 'underscore'], function (module, _) {
     var item = 'item.viewstate'; // KLUDGE: I didn't want to explicit write a binding in the view - see below
 
     function obj(attr) {
-      return item + "." + attr;
+        return item + "." + attr;
     }
 
     angular.forEach(['removeable', 'updating', 'viewing'], function (state) {
-      module.directive(state, function ($compile) {
-        return {
-          restrict: 'AC',
-          compile: function (elem, attrs) {
-            attrs.$set('ngShow', obj(state));
-            elem.removeAttr(state);
-            return function (scope, elem) {
-              $compile(elem)(scope);
+        module.directive(state, function ($compile) {
+            return {
+                restrict: 'AC',
+                compile: function (elem, attrs) {
+                    attrs.$set('ngShow', obj(state));
+                    elem.removeAttr(state);
+                    return function (scope, elem) {
+                        $compile(elem)(scope);
+                    }
+                }
             }
-          }
-        }
-      })
+        })
     });
 
     angular.forEach({editable: 'viewing', 'cancelable': 'updating'}, function (state, key) {
-      module.directive(key, function ($compile) {
-        return {
-          restrict: 'AC',
+        module.directive(key, function ($compile) {
+            return {
+                restrict: 'AC',
 //          scope: { model: '='}, // here is where the explicit binding would be
 //          link: function (scope, element, attrs) {  // alternately setup optional binding on model
 //            // find attr 'model' and set as necessary on scope
 //          },
-          controller: ['$scope', function ($scope) {
-            $scope.toggleView = function (item) {
-              item.viewing = !item.viewing;
-              item.updating = !item.updating;
-              $scope.toggle(item, ['viewing', 'updating', 'removeable', 'updateable']);
-            }
-          }],
-          compile: function (elem, attrs) {
-            attrs.$set('ngShow', obj('updateable') + ' && ' + obj(state));
-            attrs.$set('ngClick', 'toggleView(' + item + ')');
-            elem.removeAttr(key);
-            return function (scope, elem) {
-              $compile(elem)(scope);
-            }
-          }
-        };
-      })
+                controller: ['$scope', function ($scope) {
+                    $scope.toggleView = function (item) {
+                        item.viewing = !item.viewing;
+                        item.updating = !item.updating;
+                        $scope.toggle(item, ['viewing', 'updating', 'removeable', 'updateable']);
+                    }
+                }],
+                compile: function (elem, attrs) {
+                    attrs.$set('ngShow', obj('updateable') + ' && ' + obj(state));
+                    attrs.$set('ngClick', 'toggleView(' + item + ')');
+                    elem.removeAttr(key);
+                    return function (scope, elem) {
+                        $compile(elem)(scope);
+                    }
+                }
+            };
+        })
     });
 
     return module.
-      controller('OrderCtrl', ['$scope', '$log', 'fragment', 'Resource', OrdersCtrl]);
-  });
+        controller('OrderCtrl', ['$scope', '$log', 'fragment', 'Resource', OrdersCtrl]);
+});

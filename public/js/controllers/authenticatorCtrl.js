@@ -29,7 +29,7 @@ define(['services/httpAuthInterceptor'], function () {
       d.open().
         then(function (item) {
           if (angular.isDefined(item)) {
-            link.post(item, $scope.collection).
+            link.post($scope.collection, 'self', 'application/json', item).
               then(function success(response) {
                 $scope.items = [response.data];
                 authService.loginConfirmed();

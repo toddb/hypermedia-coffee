@@ -40,20 +40,23 @@ define(['services/module', 'underscore'], function (module, _) {
       filter: link.filter,
       matches: link.matches,
       getUrl: link.getUrl,
-      put: function (data, links, relationshipType, mediaType) {
-        return link.put(links, relationshipType || 'self', mediaType, data);
+      put: function (links, relationshipType, mediaType, data) {
+          // TODO: relationshipType & mediaType could be normalised if needed (self, application/json)
+        return link.put(links, relationshipType, mediaType, data);
       },
-      post: function (data, links, relationshipType, mediaType) {
-        return link.post(links, relationshipType || 'self', mediaType, data).then(
+      post: function (links, relationshipType, mediaType, data) {
+          // TODO: relationshipType & mediaType could be normalised if needed (self, application/json)
+          return link.post(links, relationshipType, mediaType, data).then(
           function success(response) {
             if (!response.headers('Location')) {
-              return $q.reject('No Location was provided from resource: ' + link.href);
+              return $q.reject('No Location was provided from resource');
             }
-            return $http.get(response.headers('Location'), {headers: {Accept: link.type}})
+            return $http.get(response.headers('Location'), {headers: {Accept: mediaType}})
           }, error);
       },
       del: function (links, relationshipType, mediaType) {
-        return link.del(links, relationshipType || 'self', mediaType);
+          // TODO: relationshipType  could be normalised if needed (self)
+        return link.del(links, relationshipType || 'self', mediaType || '*');
       },
       get: function (links, relationshipType, mediaType) {
 
