@@ -83,7 +83,7 @@ Also you can run karma in watch mode:
 # Other Commands
 - `grunt` Default runs all build tasks in development mode. Compiles less files, lints JS files and compile all client-side JavaScript.
 - `grunt prod` Kick off a production-ready build. Like the default but with more optimized/minified/etc output.
-- `grunt server` Kick off a devlopment-ready build that does prod checks and spins up server, and opens browser.
+- `grunt server` Kick off a development-ready build that does prod checks and spins up server, and opens browser.
 - `grunt open:dev` Open up the browser at localhost:8888.
 
 
