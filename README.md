@@ -90,6 +90,47 @@ Also you can run karma in watch mode:
 # Watch Commands
 - `grunt watch` All inclusive watch to update generated files when the sources change. Recompiles less files, lints JS files, and recompiles templates.
 
+# Angular problems and why hack unstable is needed
+
+See `public/js/app-angular.js`:
+
+    /*
+     * To make this work with angular 1.0.6, patch angularjs
+     *
+     * Works in 1.1.4 - unstable
+     *
+     *     config.withCredentials = config.withCredentials || $config.withCredentials;
+     *
+     *  8862    function $http(config) {
+     *            config.method = uppercase(config.method);
+     *            config.withCredentials = config.withCredentials || $config.withCredentials;
+     */
+
+Also,
+
+it needs to be patched:
+
+to add `replace(/%2F/g, '/').`
+
+    /**
+     * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
+     * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set (pchar) allowed in path
+     * segments:
+     *    segment       = *pchar
+     *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+     *    pct-encoded   = "%" HEXDIG HEXDIG
+     *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+     *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+     *                     / "*" / "+" / "," / ";" / "="
+     */
+    function encodeUriSegment(val) {
+      return encodeUriQuery(val, true).
+                 replace(/%26/gi, '&').
+                 replace(/%3D/gi, '=').
+                 replace(/%2F/g, '/').
+                 replace(/%2B/gi, '+');
+    }
+
 # LICENSE:
 
 (BSD License)
