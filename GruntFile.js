@@ -166,14 +166,6 @@ module.exports = function (grunt) {
             e2e: {
                 configFile: 'configs/test-e2e.conf.js'
             }
-        },
-        copy: {
-            main: {
-                files: [
-                    // TODO: only required until angularjs stable is 1.1.x
-                    {expand: true, flatten: true, src: ['public/vendor/angularjs-unstable/angular.js'], dest: 'public/vendor/angularjs/', filter: 'isFile'}, // includes files in path
-                ]
-            }
         }
     });
 
@@ -186,14 +178,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-karma');
 
     // Does a basic build.
     grunt.registerTask('default', ['compile']);
 
     grunt.registerTask('less', 'recess:dev');
-    grunt.registerTask('compile', ['copy', 'requirejs', 'less']); // TODO: copy is workaround
+    grunt.registerTask('compile', ['requirejs', 'less']);
 
     // Does a full production-ready build and compresses and minifies everything.
     grunt.registerTask('prod', ['compile', 'recess:prod', 'exec:prod']);

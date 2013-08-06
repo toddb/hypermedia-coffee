@@ -57,6 +57,7 @@ Pith is comprised of the following components:
 - `sudo npm install -g jamjs karma -d`
 - `npm install -d` Installs all server-side dependencies (node_modules).
 - `jam install` Downloads and installs all client-side dependencies (public\vendor) - (note: this says it fails but doesn't).
+- DIRTY HACK: `chmod +x hack.sh && ./hack.sh` - this is to get the correct version of angularjs in with requirejs
 - `jam rebuild` Creates the `require.config.js` dependency file
 - `grunt` Do the initial build so css and template files are compiled.
 - `npm start` Starts the web server (alternatively `grunt server`)
