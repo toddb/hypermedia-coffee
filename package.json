@@ -46,7 +46,8 @@
     "requirejs": "2.1.5",
     "uglify-js": "2.2.1",
     "jshint": "0.9.0",
-    "gzip-js": "0.3.2"
+    "gzip-js": "0.3.2",
+    "grunt-open": "~0.2.1"
   },
   "optionalDependencies": {
     "grunt": "0.4.x",

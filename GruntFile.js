@@ -138,7 +138,7 @@ module.exports = function (grunt) {
             }
         },
         uglify: {},
-        exec: {
+        exec: {       // TODO: swap out for grunt-contrib-connect
             dev: {
                 command: 'export NODE_ENV=development && npm start',
                 stdout: true
@@ -148,23 +148,42 @@ module.exports = function (grunt) {
                 stdout: true
             },
             test: {
-                command: 'export NODE_ENV=test && npm start',
+                command: 'export NODE_ENV=test && export PORT=8333 && npm start',
+                stdout: true
+            },
+            'jam-rebuild': {
+                command: 'chmod +x hack.sh && ./hack.sh',
                 stdout: true
             }
         },
         karma: {
             options: {
-                runnerPort: 9999,
-                singleRun: false,
-                autoWatch: false,
                 browsers: ['Chrome']
             },
-
             unit: {
                 configFile: 'configs/test-unit.conf.js'
             },
             e2e: {
                 configFile: 'configs/test-e2e.conf.js'
+            },
+            'unit-watch': {
+                singleRun: false,
+                autoWatch: true,
+                configFile: 'configs/test-unit.conf.js'
+            },
+            // make sure exec:test is running
+            'e2e-watch': {
+                singleRun: false,
+                autoWatch: true,
+                configFile: 'configs/test-e2e.conf.js',
+                proxies: {
+                    '/': 'http://localhost:8333/'
+                }
+            }
+        },
+        open: {
+            dev: {
+                path: 'http://localhost:8888'
             }
         }
     });
@@ -179,20 +198,21 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-open');
 
     // Does a basic build.
     grunt.registerTask('default', ['compile']);
 
     grunt.registerTask('less', 'recess:dev');
-    grunt.registerTask('compile', ['requirejs', 'less']);
+    grunt.registerTask('compile', ['exec:jam-rebuild', 'requirejs', 'less']);
 
     // Does a full production-ready build and compresses and minifies everything.
     grunt.registerTask('prod', ['compile', 'recess:prod', 'exec:prod']);
-    grunt.registerTask('server', [ 'compile', 'exec:dev']);
+    grunt.registerTask('server', [ 'compile', 'open:dev', 'exec:dev']);
 
     grunt.registerTask('test', ['unit', 'integration', 'acceptance']);
     grunt.registerTask('integration', ['simplemocha:integration']);
 
-    grunt.registerTask('acceptance', ['simplemocha:acceptance', 'karma:e2e']);  // TODO: spin up test on unique port
+    grunt.registerTask('acceptance', ['simplemocha:acceptance', /* 'exec:test', */'karma:e2e']);  // TODO: spin up test
     grunt.registerTask('unit', ['simplemocha:unit', 'karma:unit']);
 };
