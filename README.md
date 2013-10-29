@@ -1,6 +1,12 @@
 Hypermedia coffee - sample app
 ==============================
 
+[![Build Status](https://travis-ci.org/toddb/hypermedia-coffee.png?branch=master)](https://travis-ci.org/toddb/hypermedia-coffee)
+[![Dependency Status](https://david-dm.org/toddb/hypermedia-coffee.png)](https://david-dm.org/toddb/hypermedia-coffee)
+[![devDependency Status](https://david-dm.org/toddb/hypermedia-coffee/dev-status.png)](https://david-dm.org/toddb/hypermedia-coffee#info=devDependencies)
+[![Coverage Status](https://coveralls.io/repos/toddb/hypermedia-coffee/badge.png?branch=coverage)](https://coveralls.io/r/toddb/hypermedia-coffee?branch=coverage)
+
+
 This is a sample single-page application through a semantic link (hypermedia/REST) design and test-first. The code structure was originally based on boilerplate code from [Pith](https://github.com/sym3tri/pith). It has since morphed so the yucky-ness is all my responsibility. While it looks ordered there is still not a good enough separation of naming/thinking around client and server code. Also within the server code, the routes, resources and representations still get IMHO confused over their roles. Finally, then in the tests you'll see a poor naming around those issues mentioned. Confusion abounds because object-style REST still dominant in the underlying libraries which subtly inflect your design and you need to workaround - routes is just one example.
 
 This app is the smallest possible app I could think of that is representative of a complex enough domain. While the central business domain object is merely an order, it has a state machine to manage its workflow/life cyle. It has an external payment service as part of a state transition. The application itself has authentication and authorisation working through such cross-cutting concerns. Finally, and here's the weirdest part, I have played with the idea of a viewstate for the order. Think of the viewstate as ALL the interactions that a customer makes with a resource while on the client-side GUI. I played with this idea because I want A/B testing build in - I want to know what happens on the client so I modelled this in as a resource. Remember resources are conceptual or real, now or the future. It changed my design - I'm less sure whether its for the better or for the worse.
@@ -53,7 +59,7 @@ Ensure that your mongo db is running. At this stage, it is assume to be a local 
 # Quick Setup
 - fork this repo
 - `git clone <your-new-github-url>`
-- `sudo npm install -g grunt-cli grunt-init` *(if not already installed)*
+- `sudo npm install -g grunt-cli` *(if not already installed)*
 - `sudo npm install -g jamjs karma -d`
 - `npm install -d` Installs all server-side dependencies (node_modules).
 - `jam install` Downloads and installs all client-side dependencies (public\vendor) - (note: this says it fails but doesn't).
