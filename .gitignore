@@ -7,3 +7,4 @@ npm-debug.log
 vendor
 projectFilesBackup
 libpeerconnection.log
+.DS_Store

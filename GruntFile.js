@@ -161,7 +161,8 @@ module.exports = function (grunt) {
                 browsers: ['Chrome']
             },
             unit: {
-                configFile: 'configs/test-unit.conf.js'
+                configFile: 'configs/test-unit.conf.js',
+                singleRun: true
             },
             e2e: {
                 configFile: 'configs/test-e2e.conf.js'
@@ -204,15 +205,15 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['compile']);
 
     grunt.registerTask('less', 'recess:dev');
-    grunt.registerTask('compile', ['exec:jam-rebuild', 'requirejs', 'less']);
+    grunt.registerTask('compile', ['exec:jam-rebuild', 'requirejs']);
 
     // Does a full production-ready build and compresses and minifies everything.
     grunt.registerTask('prod', ['compile', 'recess:prod', 'exec:prod']);
     grunt.registerTask('server', [ 'compile', 'open:dev', 'exec:dev']);
 
-    grunt.registerTask('test', ['unit', 'integration', 'acceptance']);
+    grunt.registerTask('test', ['acceptance', 'unit', 'integration']);
     grunt.registerTask('integration', ['simplemocha:integration']);
 
-    grunt.registerTask('acceptance', ['simplemocha:acceptance', /* 'exec:test', */'karma:e2e']);  // TODO: spin up test
+    grunt.registerTask('acceptance', ['simplemocha:acceptance', /* 'exec:test', 'karma:e2e'*/]);  // TODO: spin up test
     grunt.registerTask('unit', ['simplemocha:unit', 'karma:unit']);
 };
