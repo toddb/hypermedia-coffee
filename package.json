@@ -47,7 +47,9 @@
     "uglify-js": "2.2.1",
     "jshint": "0.9.0",
     "gzip-js": "0.3.2",
-    "grunt-open": "~0.2.1"
+    "grunt-open": "~0.2.1",
+    "protractor": "~0.12.0",
+    "grunt-protractor-runner": "~0.1.6"
   },
   "optionalDependencies": {
     "grunt": "0.4.x",
