@@ -60,7 +60,7 @@ Ensure that your mongo db is running. At this stage, it is assume to be a local 
 - fork this repo
 - `git clone <your-new-github-url>`
 - `sudo npm install -g grunt-cli` *(if not already installed)*
-- `sudo npm install -g jamjs karma -d`
+- `sudo npm install -g jamjs -d`
 - `npm install -d` Installs all server-side dependencies (node_modules)
 - `./node_modules/protractor/bin/install_selenium_standalone` - installs selenium webdriver for `grunt acceptance`
 - `jam install` Downloads and installs all client-side dependencies (public\vendor) - (note: this says it fails but doesn't).
