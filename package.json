@@ -60,7 +60,7 @@
   },
   "scripts": {
     "start": "node app/server.js",
-    "test": "npm install -g grunt-cli && grunt unit"
+    "test": "npm install -g grunt-cli && grunt unit --force"
   },
   "jam": {
     "baseUrl": "public/js",
