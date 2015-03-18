@@ -1,0 +1,2 @@
+Hypermedia coffee - sample api
+==============================

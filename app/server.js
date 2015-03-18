@@ -6,7 +6,7 @@ var express = require('express')
 
 var port = process.env.PORT || 8888
   , middleware = require('./middleware')
-  , config = require('./config')(app, express, mongoose, middleware, port)
+  , config = require('./config')(app, express, mongoose, middleware, port, (process.env.NODE_ENV || 'development'))
   , routes = require('./routes')(app, middleware.auth)
   , server = app.listen(port, function () {
     console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
