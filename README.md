@@ -16,9 +16,9 @@ If you are interested in the ideas. The coffee domain comes from [Jim Weber's ma
 The specifics of [single-page apps](http://singlepageappbook.com/index.html) are starting to be well covered by Mikito Takada. He particularly addresses
 the [issues of](http://singlepageappbook.com/goal.html):
 
-  # *Architecture*: what (conceptual) parts does our app consist of? How do the different parts communicate with each other? How do they depend on each other?
-  # *Asset packaging*: how is our app structured into files and files into logical modules? How are these modules built and loaded into the browser? How can the modules be loaded for unit testing?
-  # *Run-time state*: when loaded into the browser, what parts of the app are in memory? How do we perform transitions between states and gain visibility into the current state for troubleshooting?
+1. *Architecture*: what (conceptual) parts does our app consist of? How do the different parts communicate with each other? How do they depend on each other?
+2. *Asset packaging*: how is our app structured into files and files into logical modules? How are these modules built and loaded into the browser? How can the modules be loaded for unit testing?
+3. *Run-time state*: when loaded into the browser, what parts of the app are in memory? How do we perform transitions between states and gain visibility into the current state for troubleshooting?
 
 Myself, I am concerned with test-first, hypermedia design. If you look in the tests what you should see is a separation of the server and client.
 I have been trying out ideas of how to test the client code without a server. So you'll see the use of faking and expectations to manage the HTTP boundary. With the introduction of [angularjs](http://angularjs.com), I threw out a lot of testing code I had written that wrapped jasmine. I might now throw out a lot of it again and use the [blueprint dsl by apiary](http://apiary.io/blueprint) - but they now have deprecated it and I don't understand why. Thus the missing piece in the sample is the human-readable documentation. At best it is the tests. But that's not going to fly because you still need to know the semantic links available in the application. One additional complexity I noticed was that to get testing running locally I needed to implement a CORS middleware. That was a pain but I suspect in a production system you are going to need it anyway as you open up your API.  The other issue I found was that my route testing strategy isn't right. I haven't fixed it yet.
@@ -53,8 +53,8 @@ Pith is comprised of the following components:
 
 Ensure that your mongo db is running. At this stage, it is assume to be a local installation on localhost:27017
 
-  $ mongod
-  all output going to: /usr/local/var/log/mongodb/mongo.log
+    $ mongod
+    all output going to: /usr/local/var/log/mongodb/mongo.log
 
 # Quick Setup
 - fork this repo
@@ -144,7 +144,7 @@ to add `replace(/%2F/g, '/').`
 
 (BSD License)
 
-Copyright (c) 2012, toddb@goneopen.com
+Copyright (c) 2015, toddb@goneopen.com
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
