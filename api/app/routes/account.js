@@ -1,6 +1,6 @@
 'use strict';
 
-var Resource = require('../resource').Account;
+var Resource = require('../resource/index').Account;
 
 exports.delete = function (req, res) {
   Resource.delete(req.params.uid, function (err) {

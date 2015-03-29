@@ -6,5 +6,5 @@ module.exports = function (port) {
   process.env.PORT = port || Math.floor(Math.random() * 61439 + 7000);
   process.env.NODE_ENV = 'test';
 
-  return require('../../server');
+  return require('../../app/server');
 };

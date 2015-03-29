@@ -1,4 +1,4 @@
-var Resource = require('../representation').json;
+var Resource = require('../representation/index').json;
 
 exports.collection = function (req, res) {
   var resource = new Resource(res.locals.self);

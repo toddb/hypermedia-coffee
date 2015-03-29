@@ -3,7 +3,7 @@
 
 var should = require('should')
     , mongoose = require('mongoose')
-    , Resource = require('../../../resource').ViewState
+    , Resource = require('../../../app/resource').ViewState
     , view = {view: '516c65f533b114cf9e000002'}
     , id, r;
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var Resource = require('../resource').Pay;
+var Resource = require('../resource/index').Pay;
 
 exports.delete = function (req, res) {
   Resource.delete(req.params.pid, function (err) {

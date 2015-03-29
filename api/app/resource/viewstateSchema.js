@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId
   , resourceSchema = require('./resourcePlugin')
-  , Resource = require('../representation').json;
+  , Resource = require('../representation/index').json;
 
 
 var schema = new Schema({

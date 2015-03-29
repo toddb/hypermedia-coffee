@@ -1,6 +1,6 @@
 'use strict';
-var Resource = require('../resource').Order
-  , ViewState = require('../resource').ViewState;
+var Resource = require('../resource/index').Order
+  , ViewState = require('../resource/index').ViewState;
 
 exports.list = function (req, res) {
   Resource.get(res.locals.self, function (err, doc) {

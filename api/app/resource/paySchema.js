@@ -15,7 +15,7 @@ schema.plugin(resourceSchema);
 schema.pre('save', function (next) {
   if (this.isNew) {
 
-    var Order = require('./').Order;
+    var Order = require('./index').Order;
     Order.findById(this.order, function (err, doc) {
       if (err) next(err);
       if (!doc) next(new Error("Order "+ this.order + " not found"))

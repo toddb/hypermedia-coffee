@@ -1,6 +1,6 @@
 'use strict';
 
-var Resource = require('../representation').json;
+var Resource = require('../representation/index').json;
 
 module.exports =  function (collections) {
     return function (req, res) {

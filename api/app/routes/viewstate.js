@@ -1,6 +1,6 @@
 'use strict';
 
-var Resource = require('../resource').ViewState
+var Resource = require('../resource/index').ViewState
   , _ = require('underscore');
 
 exports.list = function (req, res) {
