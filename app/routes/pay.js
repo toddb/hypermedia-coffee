@@ -4,15 +4,15 @@ var Resource = require('../resource').Pay;
 
 exports.delete = function (req, res) {
   Resource.delete(req.params.pid, function (err) {
-    if (err) return res.send(500, err);
-    res.send(204);
+    if (err) return res.status(501).send(err);
+    res.sendStatus(204);
   });
 };
 
 exports.item = function (parent) {
   return function (req, res) {
     Resource.get(req.params.pid, res.locals.schema + parent, function (err, doc) {
-      if (err) return res.send(500, err);
+      if (err) return res.status(501).send(err);
       res.type('application/json');
       res.set({ Allow: 'GET,DELETE,PUT'});
       doc.addLink('collection', res.locals.schema + parent);
@@ -25,7 +25,7 @@ exports.item = function (parent) {
 
 exports.list = function (req, res) {
   Resource.get(res.locals.request_url, function (err, doc) {
-    if (err) return res.send(500, err);
+    if (err) return res.status(501).send(err);
     res.type('application/json');
 //    doc.addLink('create-form', 'text/html', res.locals.self + 'post.html');
     res.set({ Allow: 'GET,POST'});
@@ -35,15 +35,15 @@ exports.list = function (req, res) {
 
 exports.create = function (req, res) {
   Resource.post(req.body, function (err, id) {
-    if (err) return res.send(500, err);
+    if (err) return res.status(501).send(err);
     res.set({Location: res.locals.request_url + id});
-    res.send(201, {});
+    res.status(201).send({});
   });
 };
 
 exports.update = function (req, res) {
   Resource.put(req.params.pid, req.body, function (err, doc) {
-    if (err) return res.send(501, err);
-    res.send(204);
+    if (err) return res.status(501).send(err);
+    res.sendStatus(204);
   });
 };

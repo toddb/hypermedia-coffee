@@ -9,8 +9,7 @@
     "type": "git",
     "url": "https://github.com/toddb/hypermedia-coffee"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "less": "2.4.0",
     "chai": "2.1.1",
@@ -22,7 +21,9 @@
     "uglify-js": "2.4.16",
     "jshint": "2.6.3",
     "gzip-js": "0.3.2",
-    "protractor": "1.8.0"
+    "protractor": "1.8.0",
+    "grunt": "0.4.5",
+    "grunt-cli": "^0.1.13"
   },
   "optionalDependencies": {
     "gulp": "0.4.x",

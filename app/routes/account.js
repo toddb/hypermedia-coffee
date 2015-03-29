@@ -20,7 +20,7 @@ exports.item = function (req, res) {
 exports.list = function (req, res) {
   // TODO: something that resembles an implementation
   Resource.get(res.locals.request_url, function (err, doc) {
-    if (err) return res.send(500, err);
+    if (err) res.status(501).send(err);
     res.type('application/json');
     res.set({ Allow: 'GET,POST'});
     res.send(doc);
@@ -30,7 +30,7 @@ exports.list = function (req, res) {
 // this will be used to create an account (rather than for authentication)
 exports.create = function (req, res) {
   Resource.post(req.body, function (err, id) {
-    if (err) return res.send(500, err);
+    if (err) res.status(501).send(err);
     res.set({Location: res.locals.request_url + id});
     res.send(201, {});
   });

@@ -13,7 +13,6 @@ exports.collection = function (req, res) {
 
 exports.item = function (collection) {
   return function (req, res, next) {
-    console.log("am I here?");
     if (req.isAuthenticated() && req.sessionID != req.params.sid) {
       console.log("Pontential session hijacking", req.sessionID, req.params.sid);
     }

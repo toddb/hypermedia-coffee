@@ -4,7 +4,7 @@ var Resource = require('../resource').Order
 
 exports.list = function (req, res) {
   Resource.get(res.locals.self, function (err, doc) {
-    if (err) return res.send(500, err);
+    if (err) return res.status(501).send(err);
     res.type('application/json');
     res.set({ Allow: 'GET,POST'});
 //    res.etag();
@@ -15,11 +15,11 @@ exports.list = function (req, res) {
 
 exports.create = function (req, res) {
   Resource.post(req.body, function (err, id) {
-    if (err) return res.send(500, err);
+    if (err) return res.status(501).send(err);
     ViewState.post({view: id}, function (err, vid) {
       res.set({Location: res.locals.self + id});
       res.set({'Content-type': 'application/json'});
-      res.send(201, {});
+      res.status(201).send({});
     })
   });
 };
@@ -30,7 +30,7 @@ exports.create = function (req, res) {
 exports.item = function (parent, child) {
   return function (req, res) {
     Resource.get(req.params.oid, res.locals.schema + parent + req.params.oid, function (err, doc, model) {
-      if (err) return res.send(500, err);
+      if (err) return res.status(501).send(err);
       res.type('application/json');
       res.set({ Allow: 'GET,DELETE,PUT'});
 
@@ -53,14 +53,14 @@ exports.item = function (parent, child) {
 exports.update = function (req, res) {
   Resource.put(req.params.oid, req.body, function (err, doc) {
     console.log(err)
-    if (err) return res.send(501, err);
+    if (err) return res.status(501).send(err);
     res.send(204);
   });
 };
 
 exports.del = function (req, res) {
   Resource.delete(req.params.oid, function (err) {
-    if (err) return res.send(501, err);
+    if (err) return res.status(501).send(err);
     res.send(204);
   });
 };

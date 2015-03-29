@@ -33,5 +33,13 @@
   },
   "scripts": {
     "start": "node server.js"
+  },
+  "devDependencies": {
+    "gulp-mocha": "^2.0.0",
+    "gulp": "^3.8.11",
+    "yargs": "^3.6.0",
+    "should": "^5.2.0",
+    "gulp-debug": "^2.0.1",
+    "supertest": "^0.15.0"
   }
 }
