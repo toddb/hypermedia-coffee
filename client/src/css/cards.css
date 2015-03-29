@@ -1,0 +1,67 @@
+.spinner {
+    background:#fff url(../img/spinner.gif) center 30px no-repeat;
+}
+.item {
+    border:1px solid rgba(0, 0, 0, .15);
+    border-radius:10px;
+    margin:0 10px 10px 0;
+    position:relative;
+}
+
+.item .item-index {
+    background:rgba(0, 0, 0, .9);
+    color:#fff;
+    position:absolute;
+    height:100%;
+    text-align:center;
+    width:100%;
+    z-index:99;
+}
+
+.item .item-index p:first-child {
+    margin-top:10px;
+}
+
+.item .item-header {
+    height:10px;
+    background-color: #DDDDDD;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.item .item-wrapper {
+    min-height:60px;
+}
+
+.item .item-footer {
+    min-height:30px;
+    padding: 10px 10px 0px 10px;
+    background-color: #EEEEEE;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.item .item-footer p {
+    margin: 0px;
+    padding-bottom: 10px;
+}
+
+.item .item-description {
+    padding:15px;
+}
+
+.item .item-action {
+    margin-top: 20px;
+    padding:15px;
+    min-height:120px;
+}
+
+.item .item-description blockquote p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+
+.text-smaller {
+    font-size: 70%;
+}

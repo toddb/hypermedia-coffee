@@ -1,9 +1,9 @@
 var User = require('../resource').Account
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+    , passport = require('passport')
+    , LocalStrategy = require('passport-local').Strategy;
 
 function initialize() {
-   // Initialize Passport!  Also use passport.session() middleware, to support
+  // Initialize Passport!  Also use passport.session() middleware, to support
   // persistent login sessions (recommended).
   //  app.use(passport.initialize());
   //  app.use(passport.session());
@@ -18,7 +18,7 @@ function initialize() {
   passport.serializeUser(function (user, done) {
     var createAccessToken = function () {
       var token = user.generateRandomToken();
-      User.findOne({ accessToken: token }, function (err, existingUser) {
+      User.findOne({accessToken: token}, function (err, existingUser) {
         if (err) {
           return done(err);
         }
@@ -40,7 +40,7 @@ function initialize() {
   });
 
   passport.deserializeUser(function (token, done) {
-    User.findOne({accessToken: token }, function (err, user) {
+    User.findOne({accessToken: token}, function (err, user) {
       done(err, user);
     });
   });
@@ -51,19 +51,19 @@ function initialize() {
 //   with a user object.  In the real world, this would query a database;
 //   however, in this example we are using a baked-in set of users.
   passport.use(new LocalStrategy(function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
+    User.findOne({username: username}, function (err, user) {
       if (err) {
         return done(err);
       }
       if (!user) {
-        return done(null, false, { message: 'Unknown user ' + username });
+        return done(null, false, {message: 'Unknown user ' + username});
       }
       user.comparePassword(password, function (err, isMatch) {
         if (err) return done(err);
         if (isMatch) {
           return done(null, user);
         } else {
-          return done(null, false, { message: 'Invalid password' });
+          return done(null, false, {message: 'Invalid password'});
         }
       });
     });
@@ -82,31 +82,33 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.send(401);
+  res.sendStatus(401);
 };
 
 
 function logIn(req, res, next) {
   passport.authenticate('local', function (err, user, info) {
     if (err) {
+      console.log("Error in login");
       return next(err)
     }
     if (!user) {
-      return res.send(401)
+      console.log("User not found", info);
+      return res.sendStatus(401)
     }
     req.logIn(user, function (err) {
       if (err) {
         return next(err);
       }
       res.set({Location: res.locals.request_url + user._id});
-      res.send(201, {});
+      res.status(201).send({});
     });
   })(req, res, next);
 }
 
 function logOut(req, res) {
   req.logout();
-  res.send(204);
+  res.sendStatus(204);
 }
 
 // Remember Me middleware
@@ -123,4 +125,14 @@ module.exports.passport = initialize();
 module.exports.login = logIn;
 module.exports.logout = logOut;
 module.exports.rememberMe = rememberMe;
-module.exports.ensureAuthenticated = ensureAuthenticated;
+
+// TODO: inject setting for toggling authentication on/off
+module.exports.ensureAuthenticated = function (requiresAuthentication) {
+  if (!requiresAuthentication) {
+    return function (req, res, next) {
+      return next()
+    }
+  } else {
+    return ensureAuthenticated
+  }
+}(true);

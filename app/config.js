@@ -12,12 +12,10 @@ module.exports = function (app, express, mongoose, middleware, port, env) {
 
   var MongoStore = require('connect-mongo')(session);
 
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'hbs');
   app.disable('x-powered-by')
-  app.use(serveStatic(path.join(__dirname, '..', 'public', 'templates', 'partials')));
-  app.use(bodyparser.json());
-  app.use(compression());
+  app.use(bodyparser.json({strict: false}));
+  app.use(bodyparser.urlencoded({extended: true}));
+   app.use(compression());
   app.use(cookieParser());
   app.use(session({
     secret: 'shouldbeinc0nf1g',
@@ -32,23 +30,20 @@ module.exports = function (app, express, mongoose, middleware, port, env) {
   app.use(middleware.auth.passport.session());
   app.use(middleware.etag());
   app.use(middleware.allowCrossDomain());
-//    app.use(middleware.allowCrossDomain({ origin: "http://localhost:9876"})); // TODO: in config
-  app.use(serveStatic(path.join(__dirname, '..', 'public')));
+
+  app.use('/login', serveStatic('public'));
 
   if ('test' == env) {
     app.use(logger('combined'));
     app.use(errorHandler({ dumpExceptions: true, showStack: true }));
-    app.locals.data_main = "js/main";
   }
 
   if ('development' == env) {
     app.use(logger('dev'));
     app.use(errorHandler({ dumpExceptions: true, showStack: true }));
-    app.locals.data_main = "js/main";
   }
   if ('production' == env) {
     app.use(errorHandler('tiny'));
-    app.locals.data_main = "dist/main.built";
   }
 
   return this;

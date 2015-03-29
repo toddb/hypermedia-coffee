@@ -30,7 +30,7 @@ module.exports = function allowCrossDomain(options) {
 
   options = options || {};
 
-  var origin = options.origin || '*'
+  var origin = options.origin || 'http://localhost:63344'// this needs to be handed in via app.get('allow-origin')
     , methods = options.methods || 'GET,PUT,POST,DELETE,OPTIONS'
     , headers = options.headers || 'Origin, Accept, X-Requested-With,Content-Type'
     , exposed_headers = options.exposed_headers || 'Allow,Location'
@@ -43,7 +43,7 @@ module.exports = function allowCrossDomain(options) {
     if ('OPTIONS' == req.method) {
       res.header('Access-Control-Allow-Methods', methods);
       res.header('Access-Control-Allow-Headers', headers);
-      res.send(204)
+      res.sendStatus(204)
     } else {
       next();
     }

@@ -5,6 +5,7 @@ module.exports = function (app) {
       res.render('home', {
         title: 'Coffee Order',
         link_rel: '<link rel="collection" type="application/json" href="' + res.locals.schema + collections[1] + '">',
+        api_rel: '<link rel="api" type="application/json" href="' + res.locals.schema + collections[1] + '">',
         auth_rel: '<link rel="authenticator" type="application/json" href="' + res.locals.schema + collections[0] + '">',
         data_main: app.locals.data_main });
     };

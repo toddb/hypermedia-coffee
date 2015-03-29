@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <title>Coffee Sample</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="site.css">
+    <!-- endbuild -->
+</head>
+
+<body>
+<div class="row">
+    <div class="col-sm-6 col-md-4 col-md-4-offset">
+        <div class="account-wall">
+            <h1 class="text-center login-title">Sign in to continue</h1>
+            <img class="profile-img"
+                 src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120"
+                 alt="">
+
+            <form class="form-signin" method='POST' action="/session/">
+                <input type="text" class="form-control" placeholder="Email" name="username" required autofocus>
+                <input type="password" class="form-control" placeholder="Password" name="password" required>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+                <a href="#" class="pull-right need-help">Need help? </a><span class="clearfix"></span>
+                <blockquote>
+                    <p>Hint</p>
+                    <small>bob:secret</small>
+                </blockquote>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

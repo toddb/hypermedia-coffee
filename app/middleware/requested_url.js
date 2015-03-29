@@ -16,7 +16,7 @@ module.exports = function requestedUrl(port) {
   }
 
   return function url(req, res, next) {
-    res.locals.schema = schema(req.protocol, req.host, port);
+    res.locals.schema = schema(req.protocol, req.hostname, port);
     res.locals.request_url = res.locals.self = res.locals.schema + req.path;
     next();
   };

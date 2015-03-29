@@ -38,15 +38,21 @@ module.exports = function (app, auth) {
 
   var viewstate = require('./viewstate')
     , order = require('./order')
+    , api = require('./api')
     , restrictions = require('./restrictions')
     , account = require('./account')
     , session = require('./session')
     , pay = require('./pay')
-    , home = require('./home')(app);
+    //, home = require('./home')(app)
+    ;
 
   app.map({
     '/': {
-      get: home(['/session/', '/order/'])
+      get: api(['/session/', '/order/']) ,
+      options: restrictions.collection
+    },
+    '/api': {
+      get: api(['/session/', '/api/order/'])
     },
     '/session/': {
       get: session.collection,

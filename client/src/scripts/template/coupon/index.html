@@ -1,0 +1,45 @@
+
+<div class="page-header">
+    <h1>Coffee
+        <small>Orders</small>
+    </h1>
+</div>
+
+
+<div ng-hide="coupons | isEmpty">
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h2 class="text-center">There are currently no orders.</h2>
+        </div>
+    </div>
+</div>
+
+
+<div ng-show="coupons | isEmpty" class="container">
+    <div class="row>">
+        <div data-ng-repeat="coupon in coupons" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <a ng-click="gotoCoupon(coupon)">
+                <div class="item">
+                    <div class="item-header"></div>
+                    <div class="item-description">
+                        <h3>{{ coupon.type }}</h3>
+                        <p class="text-muted visible-lg-*" ng-show="coupon.state">{{ coupon.state }}</p>
+                    </div>
+                    <div class="item-description">
+                            <h3>{{ coupon.value.units }}{{ coupon.value.amount }}</h3>
+                            <h5 ng-show="coupon.extras">{{coupon.extras}}</h5>
+                            <blockquote class=" text-muted text-smaller blockquote-reverse">
+                                <p><span class="glyphicon glyphicon-time"></span>&nbsp;Ready by: {{ coupon.repeat.to | timeago }}</p>
+                            </blockquote>
+                    </div>
+                    <div class="item-footer text-muted text-smaller">
+                        <p >
+                            <span class="glyphicon glyphicon-time"></span>&nbsp;<b>Ordered at {{coupon.repeat.from | timeago }}</b>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</div>

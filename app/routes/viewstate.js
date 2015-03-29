@@ -6,7 +6,7 @@ var Resource = require('../resource').ViewState
 exports.list = function (req, res) {
   Resource.get(res.locals.self, function (err, doc) {
     if (err) return res.send(500, err);
-    res.type('applcation/json');
+    res.type('application/json');
     res.set({ Allow: 'GET,POST'});
     res.send(doc);
   });
@@ -15,7 +15,7 @@ exports.list = function (req, res) {
 exports.itemByOrderId = function (req, res) {
   Resource.getByViewId(req.params.oid, res.locals.self, function (err, doc, model) {
     if (err) return res.send(500, err);
-    res.type('applcation/json');
+    res.type('application/json');
     res.set({ Allow: 'GET'});
     res.set({ 'Cache-Control': 'private'});
     res.etag(model.id, model.modified);
@@ -45,7 +45,7 @@ exports.item = function (parentCollection, selfCollection) {
       res.locals.schema + parentCollection + req.params.oid + selfCollection + req.params.vid,
       function (err, doc, model) {
         if (err) return res.send(500, err);
-        res.type('applcation/json');
+        res.type('application/json');
         res.set({ Allow: 'GET,PUT'});
         doc.addLink('collection', res.locals.schema + parentCollection + req.params.oid + selfCollection);
         res.set({ 'Cache-Control': 'private'});

@@ -51,7 +51,6 @@ exports.item = function (parent, child) {
 };
 
 exports.update = function (req, res) {
-  console.log(req.params.oid, req.body);
   Resource.put(req.params.oid, req.body, function (err, doc) {
     console.log(err)
     if (err) return res.send(501, err);

@@ -1,0 +1,10 @@
+
+<div>{{order.type}} {{order.state}}</div>
+<div>Total orders: <a ng-href="{{ordersHref()}}">{{orders.items.length}}</a></div>
+<div class="jumbotron">
+    <h1>Can I take your coffee order?</h1>
+    <p class="lead">Enter away!</p>
+    <div ng-include="'./scripts/template/order/post.html'"/>
+</div>
+
+

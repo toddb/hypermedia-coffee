@@ -2,10 +2,12 @@ build
 dist
 pkg
 node_modules
+node_lib
+bower_components
 .idea
 npm-debug.log
 vendor
-projectFilesBackup
+projectFilesBackup*
 libpeerconnection.log
 .DS_Store
 selenium
