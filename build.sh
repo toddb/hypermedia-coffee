@@ -2,9 +2,14 @@
 
 cd api
 npm install
-node_modules/.bin/gulp micro integration
+node_modules/.bin/gulp micro
+node_modules/.bin/gulp integration
+# need to acceptance tests
+# node_modules/.bin/gulp acceptance
 
 cd ../client
 npm install
 node_modules/.bin/bower update
-node_modules/.bin/gulp test-travis default
+# need tests
+# node_modules/.bin/gulp test-travis
+node_modules/.bin/gulp default
