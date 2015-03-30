@@ -4,7 +4,7 @@
   "dependencies": {
     "angularAMD": "0.1.1",
     "angular-ui-router": "0.2.10",
-    "datejs": "1.0.0-rc1",
+    "datejs": "1.0.0-rc3",
     "requirejs": "2.1.14",
     "jquery": "1.11.1",
     "underscore": "1.6.0",

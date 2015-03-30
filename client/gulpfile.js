@@ -28,7 +28,8 @@ var version = args['version'] || '0.0.0.0';
 var api = args['api'] || 'http://localhost:8888'; // https://your-api.example
 
 // Build
-gulp.task('default', ['build', 'requirejsBuild', 'assets']);
+gulp.task('default', ['build', 'test']);
+gulp.task('build', ['build-html', 'build-requirejs']);
 
 gulp.task('dev', ['default', 'watch']);
 
@@ -36,7 +37,7 @@ gulp.task('dev', ['default', 'watch']);
 gulp.task('watch', function () {
   lr.listen();
   gulp
-      .watch('src/**/*', ['build', 'assets'])
+      .watch('src/**/*', ['build'])
       .on('change', lr.changed);
 });
 /**
@@ -50,20 +51,8 @@ gulp.task('clean', function (cb) {
 });
 
 
-gulp.task('build', ['clean'], function () {
-  var nonVendor = 'scripts/**/*.js';
-  var opts = {empty: true, quotes: true};
-  var htmlPath = {
-    htmlSrc: './scripts/**/*.html',
-    htmlDest: './dist'
-  };
+gulp.task('build-html', ['clean'], function () {
   return gulp.src('src/index.html')
-      .pipe(gif(nonVendor, ngmin()))
-      .pipe(gif('*.js', uglify({
-        mangle: false,
-        preserveComments: saveLicense
-      })))
-
       .pipe(htmlReplace({
         api: {
           src: [[api, api]],
@@ -74,8 +63,7 @@ gulp.task('build', ['clean'], function () {
           tpl: '<script data-main="%s" src="scripts/bootstrap.js"></script>'
         }
       }))
-
-      .pipe(minifyHTML(opts))
+      .pipe(minifyHTML({empty: true, quotes: true}))
       .pipe(gulp.dest('dist'));
 });
 
@@ -83,7 +71,7 @@ gulp.task('build', ['clean'], function () {
  * @see https://gist.github.com/rafaelrinaldi/11008190
  * @see https://github.com/jrburke/r.js/blob/master/build/example.build.js
  */
-gulp.task('requirejsBuild', ['clean'], function (cb) {
+gulp.task('build-requirejs', ['clean'], function (cb) {
   rjs.optimize({
     appDir: 'src',
     baseUrl: 'scripts',
@@ -91,8 +79,8 @@ gulp.task('requirejsBuild', ['clean'], function (cb) {
 
     logLevel: 1,
 
-    // optimize: 'uglify2',
-    optimize: 'none',
+    optimize: 'uglify2',
+    //optimize: 'none',
     mainConfigFile: 'src/scripts/main.js',
 
     modules: [
@@ -121,19 +109,12 @@ gulp.task('requirejsBuild', ['clean'], function (cb) {
       warnings: true,
       mangle: false
     }
-  }, function (buildResponse) {
+  }, function () {
+    // TODO: it would be nice to clean up files
     cb();
   }, function (err) {
     console.log(err);
   });
-});
-
-
-gulp.task('assets', ['clean'], function (cb) {
-  return gulp.src([
-    'src/README.md'
-  ], {base: 'src'})
-      .pipe(gulp.dest('dist'));
 });
 
 var karmaCommonConf = __dirname + '/karma.conf.js';
@@ -164,7 +145,7 @@ gulp.task('tdd', function (done) {
   }, done);
 });
 
-gulp.task('client', ['default'], function () {
+gulp.task('client', ['build', 'test'], function () {
   gulp.src('dist')
       .pipe(webserver({
         livereload: true,
