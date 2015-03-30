@@ -147,6 +147,14 @@ gulp.task('test', function (done) {
   }, done);
 });
 
+gulp.task('test-travis', function (done) {
+  karma.start({
+    configFile: karmaCommonConf,
+    browsers: ['PhantomJS', 'Firefox'],
+    singleRun: true
+  }, done);
+});
+
 /**
  * Watch for file changes and re-run tests on each change
  */

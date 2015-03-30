@@ -32,7 +32,14 @@ require.config({
     'jquery': {exports: 'jquery'},
     'underscore': {exports: '_'},
     'angular': {'exports': 'angular'},
-    'mocks': {deps: ['angular'], 'exports': 'angular.mock'},
+    'mocks': {
+      deps: ['angular'],
+      'exports': 'angular.mock'
+    },
+    'angular-ui-utils': {
+      deps: ['angular'],
+      'exports': 'angular-ui-utils'
+    },
     'chai': {exports: 'chai'}
   },
   priority: [
