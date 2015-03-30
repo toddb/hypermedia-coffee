@@ -9,6 +9,7 @@ var args = yargs.argv;
 var version = args['version'] || '0.0.0.0';
 var api = args['client'] || 'http://localhost:64433'; // https://your-api.example
 
+gulp.task('default', ['micro', 'integration', 'acceptance']);
 
 gulp.task('micro', function () {
   return gulp.src('test/micro/**/*.js', {read: false})
