@@ -61,7 +61,7 @@ exports.update = function (req, res) {
 exports.del = function (req, res) {
   Resource.delete(req.params.oid, function (err) {
     if (err) return res.status(501).send(err);
-    res.send(204);
+    res.sendStatus(204);
   });
 };
 

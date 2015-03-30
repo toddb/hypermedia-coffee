@@ -47,7 +47,12 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           function makeStateUri(stateRelation, apiRepresentation, apiLinkRelation) {
             var apiUri = uriMapper.makeRelative(link.getUrl(apiRepresentation, apiLinkRelation));
-            return $state.href($state.current.data.rel[stateRelation], {apiUri: apiUri});
+
+            $log.debug($state.current.data.rel[stateRelation],  apiUri)
+            var href = $state.href($state.current.data.rel[stateRelation], {apiUri: apiUri});
+            // see https://github.com/angular/angular.js/issues/1388
+            href = href.replace('%252F', '/');
+            return href;
           }
 
           $scope.create = function (item, attrs) {
