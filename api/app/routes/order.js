@@ -1,6 +1,5 @@
 'use strict';
-var Resource = require('../resource/index').Order
-  , ViewState = require('../resource/index').ViewState;
+var Resource = require('../resource/index').Order;
 
 exports.list = function (req, res) {
   Resource.get(res.locals.self, function (err, doc) {
@@ -16,11 +15,9 @@ exports.list = function (req, res) {
 exports.create = function (req, res) {
   Resource.post(req.body, function (err, id) {
     if (err) return res.status(501).send(err);
-    ViewState.post({view: id}, function (err, vid) {
-      res.set({Location: res.locals.self + id});
-      res.set({'Content-type': 'application/json'});
-      res.status(201).send({});
-    })
+    res.set({Location: res.locals.self + id});
+    res.set({'Content-type': 'application/json'});
+    res.status(201).send({});
   });
 };
 

@@ -9,7 +9,6 @@ function model(name) {
 module.exports = {
   Account: model('account'),
   Order: model('order'),
-  ViewState: model('viewstate'),
   Pay: model('pay'),
   ResourcePlugin: require('./resourcePlugin')
 };

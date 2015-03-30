@@ -36,19 +36,17 @@ module.exports = function (app, auth) {
     }
   };
 
-  var viewstate = require('./viewstate')
-    , order = require('./order')
-    , api = require('./api')
-    , restrictions = require('./restrictions')
-    , account = require('./account')
-    , session = require('./session')
-    , pay = require('./pay')
-    //, home = require('./home')(app)
-    ;
+  var order = require('./order')
+      , api = require('./api')
+      , restrictions = require('./restrictions')
+      , account = require('./account')
+      , session = require('./session')
+      , pay = require('./pay')
+      ;
 
   app.map({
     '/': {
-      get: api(['/session/', '/order/']) ,
+      get: api(['/session/', '/order/']),
       options: restrictions.collection
     },
     '/api': {
@@ -74,7 +72,8 @@ module.exports = function (app, auth) {
         delete: account.delete,
         post: account.create,
         options: restrictions.removeonly
-      }},
+      }
+    },
     '/order/': {
       get: order.list,
       post: order.create,
@@ -82,22 +81,10 @@ module.exports = function (app, auth) {
       ':oid': {
         get: order.item('/order/', '/view/'),
         put: order.update,
-        del: order.del,
+        delete: order.del,
         options: restrictions.item,
         '/pay/': {
           post: order.pay(pay.create)
-        },
-        '/view/': {
-          'current': {
-            get: [restrictions.noCache, restrictions.selfWithout(/current$/), viewstate.itemByOrderId]
-          },
-          get: viewstate.list,
-          options: restrictions.collection,
-          ':vid': {
-            put: viewstate.update,
-            get: viewstate.item('/order/', '/view/'),
-            options: restrictions.readonly
-          }
         }
       }
     },
@@ -107,7 +94,7 @@ module.exports = function (app, auth) {
       ':pid': {
         get: pay.item('/pay/'),
         put: pay.update,
-        del: pay.delete
+        delete: pay.delete
       }
     }
   }, true);

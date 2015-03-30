@@ -40,5 +40,5 @@ gulp.task('acceptance', function () {
 });
 
 gulp.task('watch-tests', function () {
-  gulp.watch(['middleware/**', 'representation/**', 'resource/**', 'routes/**', 'test/**'], ['micro', 'integration', 'acceptance']);
+  gulp.watch(['app/**'], ['micro', 'integration', 'acceptance']);
 });
