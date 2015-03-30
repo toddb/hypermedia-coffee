@@ -2,8 +2,6 @@ Hypermedia coffee - sample app - client and api
 ===============================================
 
 [![Build Status](https://travis-ci.org/toddb/hypermedia-coffee.png?branch=master)](https://travis-ci.org/toddb/hypermedia-coffee)
-[![Dependency Status](https://david-dm.org/toddb/hypermedia-coffee.png)](https://david-dm.org/toddb/hypermedia-coffee)
-[![devDependency Status](https://david-dm.org/toddb/hypermedia-coffee/dev-status.png)](https://david-dm.org/toddb/hypermedia-coffee#info=devDependencies)
 [![Coverage Status](https://coveralls.io/repos/toddb/hypermedia-coffee/badge.png?branch=coverage)](https://coveralls.io/r/toddb/hypermedia-coffee?branch=coverage)
 
 

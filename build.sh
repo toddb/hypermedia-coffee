@@ -12,4 +12,4 @@ npm install
 node_modules/.bin/bower update
 # need tests
 # node_modules/.bin/gulp test-travis
-node_modules/.bin/gulp default
+node_modules/.bin/gulp build
