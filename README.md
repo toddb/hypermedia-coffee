@@ -31,23 +31,18 @@ Disclaimer: this code is only tested on OS X.
 # Components
 Pith is comprised of the following components:   
 - Dependency Management System ([RequireJS](http://requirejs.org))
-- Server-side package management ([npm](https://npmjs.org/))
-- Client-side package management ([jamjs](http://jamjs.org/))
-- Unit Testing ([Testacular](http://karma-runner.github.com/0.8/index.html) / [Mocha](http://visionmedia.github.com/mocha) / [Chai](http://chaijs.com/)) / [Sinon](http://sinonjs.org/)
-- System Testing ( [angularjs scenario](http://angularjs.org/) / [Zombie](http://zombie.labnotes.org/)
-- Templating System - client ([angularjs](http://angularjs.org/)) - server ([hbs](https://github.com/donpark/hbs))
+- Server-side and Development package management ([npm](https://npmjs.org/))
+- Client-side package management ([bower](http://jamjs.org/))
+- Micro & Integration Testing ([Testacular](http://karma-runner.github.com/0.8/index.html) / [Mocha](http://visionmedia.github.com/mocha) / [Chai](http://chaijs.com/)) / [Sinon](http://sinonjs.org/)
+- Acceptance Testing ( [supertest](https://github.com/visionmedia/supertest)
 - DOM Manipulation ([jQuery](http://jquery.com))
 - Utility functions ([Underscore](http://underscorejs.org) / [Underscore:String](http://epeli.github.com/underscore.string))
-- CSS Preprocessor ([Less](http://lesscss.org))
 - CSS defaults and cool widgets ([Twitter Bootstrap](http://twitter.github.com/bootstrap/))
-- Build system ([grunt](https://github.com/cowboy/grunt))
-- Lightweight backend webserver ([NodeJS](nodejs.org) / [Express](http://expressjs.com))
+- Build system ([gulp](http://gulpjs.com/))
+- Lightweight backend web server ([NodeJS](nodejs.org) / [Express](http://expressjs.com))
 
 # Dependencies
-- [nodejs](http://nodejs.org)
-- [jam](http://jamjs.org/)
-- [grunt](http://gruntjs.com)
-- [testacular/karma](http://karma-runner.github.com/0.8/index.html)
+- [nodejs](http://nodejs.org) - even then you can use a local version through `go
 - [mongo](http://www.mongodb.org/)
 - gcc - for some node modeuls - I used (commandline tools for XCode)[http://developer.apple.com/downloads] - then on 10.8.4 still had problems (`xcode-select: Error: No Xcode is selected. Use xcode-select -switch <path-to-xcode>`). Solution: `sudo xcode-select -switch /usr/bin`
 
@@ -96,49 +91,6 @@ Also you can run karma in watch mode:
 
 # Watch Commands
 - `grunt watch` All inclusive watch to update generated files when the sources change. Recompiles less files, lints JS files, and recompiles templates.
-
-# Angular problems
-
-Why we need `unstable` (>=1.1.4) and a patch
-
-See `public/js/app-angular.js`:
-
-    /*
-     * To make this work with angular 1.0.6, patch angularjs
-     *
-     * Works in 1.1.4 - unstable
-     *
-     *     config.withCredentials = config.withCredentials || $config.withCredentials;
-     *
-     *  8862    function $http(config) {
-     *            config.method = uppercase(config.method);
-     *            config.withCredentials = config.withCredentials || $config.withCredentials;
-     */
-
-Also,
-
-it needs to be patched - a request and discussion has occurred (https://github.com/angular/angular.js/issues/1388):
-
-to add `replace(/%2F/g, '/').`
-
-    /**
-     * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
-     * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set (pchar) allowed in path
-     * segments:
-     *    segment       = *pchar
-     *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-     *    pct-encoded   = "%" HEXDIG HEXDIG
-     *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
-     *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
-     *                     / "*" / "+" / "," / ";" / "="
-     */
-    function encodeUriSegment(val) {
-      return encodeUriQuery(val, true).
-                 replace(/%26/gi, '&').
-                 replace(/%3D/gi, '=').
-                 replace(/%2F/g, '/').
-                 replace(/%2B/gi, '+');
-    }
 
 # LICENSE:
 

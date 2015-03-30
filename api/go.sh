@@ -2,7 +2,7 @@
 
 # If you have a local clickstack version of nodejs at node_lib (see setup.sh)
 # see https://github.com/CloudBees-community/nodejs-clickstack
-export PATH=$PATH:$WORKSPACE/node_lib/bin
+export PATH=$PATH:../node_lib/bin
 
 # String together the build steps. (See README.md for details)
 # Note: First time you must use npm install
@@ -13,7 +13,6 @@ else
  npm update
 fi
 
-export PATH=$PATH:$WORKSPACE/node_modules/.bin
+export PATH=$PATH:./node_modules/.bin
 
-bower update
-gulp
+npm start

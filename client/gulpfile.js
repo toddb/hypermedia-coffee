@@ -25,7 +25,7 @@ var gulp = require('gulp'),
 
 var args = yargs.argv;
 var version = args['version'] || '0.0.0.0';
-var api = args['api'] || 'http://localhost:8080'; // https://your-api.example
+var api = args['api'] || 'http://localhost:8888'; // https://your-api.example
 
 // Build
 gulp.task('default', ['build', 'requirejsBuild', 'assets']);
@@ -34,49 +34,49 @@ gulp.task('dev', ['default', 'watch']);
 
 
 gulp.task('watch', function () {
-    lr.listen();
-    gulp
-        .watch('src/**/*', ['build', 'assets'])
-        .on('change', lr.changed);
+  lr.listen();
+  gulp
+      .watch('src/**/*', ['build', 'assets'])
+      .on('change', lr.changed);
 });
 /**
  *  Clean the generated files
  */
 gulp.task('clean', function (cb) {
-    rimraf('dist', function () {
-        mkdirp('dist');
-        cb();
-    });
+  rimraf('dist', function () {
+    mkdirp('dist');
+    cb();
+  });
 });
 
 
 gulp.task('build', ['clean'], function () {
-    var nonVendor = 'scripts/**/*.js';
-    var opts = {empty: true, quotes: true};
-    var htmlPath = {
-        htmlSrc: './scripts/**/*.html',
-        htmlDest: './dist'
-    };
-    return gulp.src('src/index.html')
-        .pipe(gif(nonVendor, ngmin()))
-        .pipe(gif('*.js', uglify({
-            mangle: false,
-            preserveComments: saveLicense
-        })))
+  var nonVendor = 'scripts/**/*.js';
+  var opts = {empty: true, quotes: true};
+  var htmlPath = {
+    htmlSrc: './scripts/**/*.html',
+    htmlDest: './dist'
+  };
+  return gulp.src('src/index.html')
+      .pipe(gif(nonVendor, ngmin()))
+      .pipe(gif('*.js', uglify({
+        mangle: false,
+        preserveComments: saveLicense
+      })))
 
-        .pipe(htmlReplace({
-            api: {
-                src: api,
-                tpl: '<link rel="api" href="%s"/>'
-            },
-            app: {
-                src: 'scripts/app.js?v=' + version,
-                tpl: '<script data-main="%s" src="scripts/bootstrap.js"></script>'
-            }
-        }))
+      .pipe(htmlReplace({
+        api: {
+          src: [[api, api]],
+          tpl: '<link rel="api" href="%s"/><link rel="authenticator" href="%s/session/"/>'
+        },
+        app: {
+          src: 'scripts/app.js?v=' + version,
+          tpl: '<script data-main="%s" src="scripts/bootstrap.js"></script>'
+        }
+      }))
 
-        .pipe(minifyHTML(opts))
-        .pipe(gulp.dest('dist'));
+      .pipe(minifyHTML(opts))
+      .pipe(gulp.dest('dist'));
 });
 
 /**
@@ -84,56 +84,56 @@ gulp.task('build', ['clean'], function () {
  * @see https://github.com/jrburke/r.js/blob/master/build/example.build.js
  */
 gulp.task('requirejsBuild', ['clean'], function (cb) {
-    rjs.optimize({
-        appDir: 'src',
-        baseUrl: 'scripts',
-        dir: './dist',
+  rjs.optimize({
+    appDir: 'src',
+    baseUrl: 'scripts',
+    dir: './dist',
 
-        logLevel: 1,
+    logLevel: 1,
 
-        // optimize: 'uglify2',
-        optimize: 'none',
-        mainConfigFile: 'src/scripts/main.js',
+    // optimize: 'uglify2',
+    optimize: 'none',
+    mainConfigFile: 'src/scripts/main.js',
 
-        modules: [
-            {
-                name: 'bootstrap',
-                include: ['requirejs'],
-                exclude: ['app'], //, 'angular'],
-                create: true
-            },
-            {
-                name: 'app',
-                include: ['boot'],
-                excludeShallow: ['requirejs']
-            }
-        ],
-        uglify2: {
-            output: {
-                beautify: true
-            },
-            compress: {
-                sequences: false,
-                global_defs: {
-                    DEBUG: false
-                }
-            },
-            warnings: true,
-            mangle: false
+    modules: [
+      {
+        name: 'bootstrap',
+        include: ['requirejs'],
+        exclude: ['app'], //, 'angular'],
+        create: true
+      },
+      {
+        name: 'app',
+        include: ['boot'],
+        excludeShallow: ['requirejs']
+      }
+    ],
+    uglify2: {
+      output: {
+        beautify: true
+      },
+      compress: {
+        sequences: false,
+        global_defs: {
+          DEBUG: false
         }
-    }, function (buildResponse) {
-        cb();
-    }, function (err) {
-        console.log(err);
-    });
+      },
+      warnings: true,
+      mangle: false
+    }
+  }, function (buildResponse) {
+    cb();
+  }, function (err) {
+    console.log(err);
+  });
 });
 
 
 gulp.task('assets', ['clean'], function (cb) {
-    return gulp.src([
-        'src/README.md'
-    ], {base: 'src'})
-        .pipe(gulp.dest('dist'));
+  return gulp.src([
+    'src/README.md'
+  ], {base: 'src'})
+      .pipe(gulp.dest('dist'));
 });
 
 var karmaCommonConf = __dirname + '/karma.conf.js';
@@ -154,4 +154,14 @@ gulp.task('tdd', function (done) {
   karma.start({
     configFile: karmaCommonConf
   }, done);
+});
+
+gulp.task('client', ['default'], function () {
+  gulp.src('dist')
+      .pipe(webserver({
+        livereload: true,
+        directoryListing: false,
+        open: true,
+        port: 63344
+      }));
 });
