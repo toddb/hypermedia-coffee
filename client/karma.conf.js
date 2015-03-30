@@ -18,6 +18,7 @@ module.exports = function (config) {
       {pattern: 'bower_components/angular-mocks/angular-mocks.js', included: true},
       {pattern: 'bower_components/jquery/dist/jquery.js', included: true},
       {pattern: 'bower_components/underscore/underscore.js', included: true},
+      {pattern: 'node_modules/chai/chai.js', included: true},
       {pattern: 'src/**/*.js', included: false},
       {pattern: 'test/**/*Spec.js', included: false},
       {pattern: 'test/spec_helper.js', included: false}

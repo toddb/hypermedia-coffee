@@ -1,4 +1,4 @@
-define(['angular', 'mocks', 'src/scripts/provider/uriMapper'], function (angular) {
+define(['mocks', 'src/scripts/provider/uriMapper'], function (angular) {
 
     describe('TestUriMapperProvider must be configured', function () {
 

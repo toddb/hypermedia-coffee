@@ -16,7 +16,7 @@ require.config({
   baseUrl: '/base',
 
   paths: {
-    'templates': '../src/scripts/template',
+    'templates': 'src/scripts/template',
 
     'jquery': 'bower_components/jquery/dist/jquery',
     'underscore': 'bower_components/underscore/underscore',
@@ -32,7 +32,6 @@ require.config({
     'jquery': {exports: 'jquery'},
     'underscore': {exports: '_'},
     'angular': {'exports': 'angular'},
-    //'angular-ui-utils': {deps: ['angular']},
     'mocks': {deps: ['angular'], 'exports': 'angular.mock'},
     'chai': {exports: 'chai'}
   },

@@ -1,4 +1,4 @@
-define(['angular', 'mocks', 'src/scripts/filter/timeago-filter'], function (angular) {
+define(['mocks', 'src/scripts/filter/timeago-filter'], function () {
 
     describe('Timeago filter', function () {
 
