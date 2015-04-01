@@ -4,7 +4,7 @@ exports.collection = function (req, res) {
   var resource = new Resource(res.locals.self);
   if (req.isAuthenticated()) {
     resource.collectionLinks(res.locals.self, [
-      { _id: req.sessionID}
+      {_id: req.sessionID}
     ]);
     resource.addLink('create-form', 'text/html', res.locals.self + 'post.html');
   }
@@ -16,10 +16,45 @@ exports.item = function (collection) {
     if (req.isAuthenticated() && req.sessionID != req.params.sid) {
       console.log("Pontential session hijacking", req.sessionID, req.params.sid);
     }
-    var doc = new Resource(res.locals.self, { username: req.user.username});
+    var doc = new Resource(res.locals.self, {username: req.user.username});
     doc.addLink('collection', res.locals.schema + collection);
     doc.addLink('delete-form', 'text/html', res.locals.schema + collection + 'delete.html');
     res.type('application/json');
     res.send(doc);
   };
+};
+
+exports.logIn = function (req, res, next) {
+  passport.authenticate('local', function (err, user, info) {
+    if (err) {
+      console.log("Error in login");
+      return next(err)
+    }
+    if (!user) {
+      console.log("User not found", info);
+      return res.sendStatus(401)
+    }
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.set({Location: res.locals.request_url + user._id});
+      res.status(201).send({});
+    });
+  })(req, res, next);
+}
+
+exports.logOut = function (req, res) {
+  req.logout();
+  res.sendStatus(204);
+}
+
+// Remember Me middleware
+exports.rememberMe = function (req, res, next) {
+  if (req.body.rememberme) {
+    req.session.cookie.maxAge = 9000; //2592000000 30*24*60*60*1000 Remember 'me' for 30 days
+  } else {
+    req.session.cookie.expires = false;
+  }
+  next();
 };

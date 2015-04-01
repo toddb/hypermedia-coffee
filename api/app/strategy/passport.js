@@ -1,12 +1,10 @@
-var User = require('../resource').Account
-    , passport = require('passport')
-    , LocalStrategy = require('passport-local').Strategy;
+exports = module.exports = function (app, passport) {
 
-function initialize() {
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
-  //  app.use(passport.initialize());
-  //  app.use(passport.session());
+
+  var User = require('../resource').Account,
+      passport = require('passport'),
+      LocalStrategy = require('passport-local').Strategy;
+
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -69,70 +67,36 @@ function initialize() {
     });
   }));
 
-  return passport;
-}
-
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.sendStatus(401);
+  function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.sendStatus(401);
+  };
+
+
+
+
 };
 
-
-function logIn(req, res, next) {
-  passport.authenticate('local', function (err, user, info) {
-    if (err) {
-      console.log("Error in login");
-      return next(err)
-    }
-    if (!user) {
-      console.log("User not found", info);
-      return res.sendStatus(401)
-    }
-    req.logIn(user, function (err) {
-      if (err) {
-        return next(err);
-      }
-      res.set({Location: res.locals.request_url + user._id});
-      res.status(201).send({});
-    });
-  })(req, res, next);
-}
-
-function logOut(req, res) {
-  req.logout();
-  res.sendStatus(204);
-}
-
-// Remember Me middleware
-function rememberMe(req, res, next) {
-  if (req.body.rememberme) {
-    req.session.cookie.maxAge = 9000; //2592000000 30*24*60*60*1000 Remember 'me' for 30 days
-  } else {
-    req.session.cookie.expires = false;
-  }
-  next();
-};
-
-module.exports.passport = initialize();
-module.exports.login = logIn;
-module.exports.logout = logOut;
-module.exports.rememberMe = rememberMe;
-
-// TODO: inject setting for toggling authentication on/off
-module.exports.ensureAuthenticated = function (requiresAuthentication) {
-  if (!requiresAuthentication) {
-    return function (req, res, next) {
-      return next()
-    }
-  } else {
-    return ensureAuthenticated
-  }
-}(true);
+//module.exports.passport = initialize();
+//module.exports.login = logIn;
+//module.exports.logout = logOut;
+//module.exports.rememberMe = rememberMe;
+//
+//// TODO: inject setting for toggling authentication on/off
+//module.exports.ensureAuthenticated = function (requiresAuthentication) {
+//  if (!requiresAuthentication) {
+//    return function (req, res, next) {
+//      return next()
+//    }
+//  } else {
+//    return ensureAuthenticated
+//  }
+//}(true);

@@ -24,19 +24,17 @@
  * @param options
  * @return {Function}
  */
-module.exports = function allowCrossDomain(options) {
+exports = module.exports = function allowCrossDomain(app) {
 
   'use strict';
 
-  options = options || {};
+  var origin = app.get('allow-origin') || '*',
+      methods = 'GET,PUT,POST,DELETE,OPTIONS',
+      headers = 'Origin, Accept, X-Requested-With,Content-Type',
+      exposed_headers = 'Allow,Location',
+      credentials = true;
 
-  var origin = options.origin || 'http://localhost:63344'// this needs to be handed in via app.get('allow-origin')
-    , methods = options.methods || 'GET,PUT,POST,DELETE,OPTIONS'
-    , headers = options.headers || 'Origin, Accept, X-Requested-With,Content-Type'
-    , exposed_headers = options.exposed_headers || 'Allow,Location'
-    , credentials = options.credentials || true;
-
-  return function (req, res, next) {
+  app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Expose-Headers', exposed_headers);
     if (credentials) res.header('Access-Control-Allow-Credentials', credentials);
@@ -47,5 +45,5 @@ module.exports = function allowCrossDomain(options) {
     } else {
       next();
     }
-  };
+  });
 };

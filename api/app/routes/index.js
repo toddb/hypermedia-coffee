@@ -1,48 +1,12 @@
-module.exports = function (app, auth) {
+module.exports = function (app) {
   'use strict';
 
-  var verbose = false;
-  app.mapWithAuthentication = function (a, route) {
-    app.map(a, route, true);
-  };
-  app.map = function (a, route, authenticated) {
-    authenticated = authenticated || (typeof route == 'boolean') ? route : false;
-    route = (typeof route == 'boolean') ? '' : route || '';
-    for (var key in a) {
-      switch (a[key].constructor) {
-        // { '/path': { ... }}
-        case Object:
-          app.map(a[key], route + key, authenticated);
-          break;
-        // get: function(){ ... }
-        case Function:
-          if (verbose) console.log('%s %s', key, route);
-          var cb = [route];
-          if (authenticated) cb.push(auth.ensureAuthenticated);
-          cb.push(a[key]);
-          app[key].apply(app, cb);
-          break;
-        // get: [function(){ ... }, function { ... }]
-        case Array:
-          if (verbose) console.log('%s %s', key, route);
-          var cb = [route];
-          if (authenticated) cb.push(auth.ensureAuthenticated);
-          for (var i = 0; i < a[key].length; i++) {
-            cb.push(a[key][i]);
-          }
-          app[key].apply(app, cb);
-          break;
-      }
-    }
-  };
-
-  var order = require('./order')
-      , api = require('./api')
-      , restrictions = require('./restrictions')
-      , account = require('./account')
-      , session = require('./session')
-      , pay = require('./pay')
-      ;
+  var order = require('./order'),
+      api = require('./api'),
+      restrictions = require('./restrictions'),
+      account = require('./account'),
+      session = require('./session'),
+      pay = require('./pay');
 
   app.map({
     '/': {
@@ -54,7 +18,7 @@ module.exports = function (app, auth) {
     },
     '/session/': {
       get: session.collection,
-      post: [auth.login, auth.rememberMe],
+      post: [session.logIn, session.rememberMe],
       options: restrictions.collection
     }
   });
@@ -62,7 +26,7 @@ module.exports = function (app, auth) {
   app.map({
     '/session/': {
       ':sid': {
-        delete: auth.logout,
+        delete: session.logOut,
         get: session.item('/session/')
       }
     },
@@ -97,6 +61,6 @@ module.exports = function (app, auth) {
         delete: pay.delete
       }
     }
-  }, true);
+  });
 
 };

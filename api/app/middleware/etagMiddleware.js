@@ -1,8 +1,8 @@
-module.exports = function (salt) {
+exports = module.exports = function (app, salt) {
 
   salt = salt || Math.floor(Math.random() * 61439);
 
-  return function (req, res, next) {
+  app.use(function eTag(req, res, next) {
 
     /*
      Basic idea here is that we aren't going to compute an md5 etag hash based on the content.
@@ -25,5 +25,5 @@ module.exports = function (salt) {
 
     }
     next();
-  };
+  });
 };
