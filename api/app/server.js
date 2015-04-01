@@ -80,4 +80,3 @@ app.listen(app.get('port'), function () {
 
 // for use with supertest - see http://stackoverflow.com/questions/11927196/supertest-custom-express-server-in-node
 module.exports = app;
-//return server;

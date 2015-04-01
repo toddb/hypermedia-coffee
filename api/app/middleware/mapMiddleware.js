@@ -2,26 +2,39 @@ module = module.exports = function (app) {
 
   var verbose = app.get('verbose') || false;
 
-  app.map = function (a, route) {
+  var isAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
+      return next()
+    }
+    return res.sendStatus(401);
+  };
 
+  app.mapWithAuthentication = function (route) {
+    app.map(route, true);
+  };
+
+  app.map = function (a, route, authenticated) {
+    authenticated = authenticated || (typeof route == 'boolean') ? route : false;
     route = (typeof route == 'boolean') ? '' : route || '';
     for (var key in a) {
       switch (a[key].constructor) {
         // { '/path': { ... }}
         case Object:
-          app.map(a[key], route + key);
+          app.map(a[key], route + key, authenticated);
           break;
         // get: function(){ ... }
         case Function:
-          if (verbose) console.log('%s %s', key, route);
+          if (verbose) console.log('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
           var cb = [route];
+          if (authenticated) cb.push(isAuthenticated);
           cb.push(a[key]);
           app[key].apply(app, cb);
           break;
         // get: [function(){ ... }, function { ... }]
         case Array:
-          if (verbose) console.log('%s %s', key, route);
+          if (verbose) console.log('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
           var cb = [route];
+          if (authenticated) cb.push(isAuthenticated);
           for (var i = 0; i < a[key].length; i++) {
             cb.push(a[key][i]);
           }

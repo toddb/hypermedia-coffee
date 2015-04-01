@@ -1,9 +1,12 @@
-exports = module.exports = function(app) {
+exports = module.exports = function (app) {
 
-	app.all('/api/*', function(req, res, next) {
-		if (req.isAuthenticated()) return next();
+  var isAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    return res.sendStatus(401);
+  };
 
-		return res.send(401, 'You shall not pass!');
-	});
+  app.all('/api/*', isAuthenticated);
 
 }

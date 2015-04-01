@@ -23,7 +23,7 @@ module.exports = function (app) {
     }
   });
 
-  app.map({
+  app.mapWithAuthentication({
     '/session/': {
       ':sid': {
         delete: session.logOut,

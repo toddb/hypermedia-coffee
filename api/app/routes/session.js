@@ -25,6 +25,10 @@ exports.item = function (collection) {
 };
 
 exports.logIn = function (req, res, next) {
+  var passport = req._passport.instance;
+
+  req.logout();
+
   passport.authenticate('local', function (err, user, info) {
     if (err) {
       console.log("Error in login");
@@ -49,7 +53,6 @@ exports.logOut = function (req, res) {
   res.sendStatus(204);
 }
 
-// Remember Me middleware
 exports.rememberMe = function (req, res, next) {
   if (req.body.rememberme) {
     req.session.cookie.maxAge = 9000; //2592000000 30*24*60*60*1000 Remember 'me' for 30 days

@@ -4,6 +4,8 @@
 var mongoose = require('mongoose')
     , should = require('should');
 
+// TODO: refactor to use https://github.com/elliotf/mocha-mongoose
+
 //var env = "test_" + Math.floor(Math.random() * 61439 + 4096);
 var env_db = "test";
 
