@@ -3,7 +3,7 @@ var should = require('should'),
     mongoose = require('mongoose')
 app = require('./app')();
 
-var agent = request.agent(app);
+var agent;
 var auth, orderId, payId;
 
 function get(url) {
@@ -34,22 +34,25 @@ module.exports = {
   'Route: Payments': {
     before: function (done) {
 
+      agent = request.agent(app);
+
       function startOnceConnection() {
         agent.
             post('/session/').
             send({username: 'bob', password: 'secret'}).
             end(function (err, res) {
+              res.status.should.eql(201);
               auth = res.header['set-cookie'][0].split(';')[0];
               res.header.should.have.property('location');
               res.header.should.have.property('access-control-allow-origin');
               res.header.should.have.property('access-control-expose-headers');
               res.header.should.have.property('access-control-allow-credentials');
-              res.status.should.eql(201);
               done(err)
             });
       }
 
       mongoose.connection.on('open', startOnceConnection);
+      mongoose.connection.on('error', console.log)
     },
     beforeEach: function (done) {
       post('/order/').
@@ -57,7 +60,7 @@ module.exports = {
           end(function (err, res) {
             orderId = res.header['location'].match(/order\/(.*)$/)[1];
             res.status.should.eql(201);
-            done(err)
+            done()
           });
     },
     'collection': {
@@ -68,7 +71,7 @@ module.exports = {
               res.header['location'].should.match(/\/pay\/.*$/);
               payId = res.header['location'].match(/pay\/(.*)$/)[1];
               res.status.should.eql(201);
-              done(err)
+              done()
             });
       },
       'GET': function (done) {
@@ -89,7 +92,12 @@ module.exports = {
             expect(204, done);
       },
       'DELETE - returns deleted doc': function (done) {
-        del('/pay/' + payId, done);
+        var req = del('/pay/' + payId)
+            .end(function(){});
+        req._server.on('close', function(){
+          console.log('server closing');
+          done()
+        })
       }
     }
   }

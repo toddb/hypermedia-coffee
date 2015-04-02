@@ -2,12 +2,12 @@
 'use strict';
 
 var should = require('should')
-  , _ = require('underscore')
-  , mongoose = require('mongoose')
-  , customerState = require('../../../app/resource/customerStatePlugin')
-  , schema = new mongoose.Schema()
-  , acct = {type: 'small'}
-  , id, order;
+    , _ = require('underscore')
+    , mongoose = require('mongoose')
+    , customerState = require('../../app/resource/customerStatePlugin')
+    , schema = new mongoose.Schema()
+    , acct = {type: 'small'}
+    , id, order;
 
 schema.plugin(customerState);
 

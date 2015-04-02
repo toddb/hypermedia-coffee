@@ -3,7 +3,6 @@ exports = module.exports = function (app, salt) {
   salt = salt || Math.floor(Math.random() * 61439);
 
   app.use(function eTag(req, res, next) {
-
     /*
      Basic idea here is that we aren't going to compute an md5 etag hash based on the content.
      Rather when there is a state change we will re-etag with the time

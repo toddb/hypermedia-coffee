@@ -1,17 +1,17 @@
 'use strict';
 
 var mongoose = require('mongoose')
-  , bcrypt = require('bcrypt')
-  , SALT_WORK_FACTOR = 10
-  , schema = new mongoose.Schema();
+    , bcrypt = require('bcrypt')
+    , SALT_WORK_FACTOR = 10
+    , schema = new mongoose.Schema();
 
 schema.plugin(require('./resourcePlugin'));
 
 schema.add({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, unique: true },
-  password: { type: String},
-  accessToken: { type: String } // Used for Remember Me
+  username: {type: String, required: true, unique: true},
+  email: {type: String, unique: true},
+  password: {type: String},
+  accessToken: {type: String} // Used for Remember Me
 });
 
 schema.pre('save', function (next) {
@@ -40,8 +40,8 @@ schema.methods.comparePassword = function (candidatePassword, cb) {
 // Remember Me (token) implementation helper method
 schema.methods.generateRandomToken = function () {
   var user = this,
-    chars = "_!abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-    token = new Date().getTime() + '_';
+      chars = "_!abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+      token = new Date().getTime() + '_';
   for (var x = 0; x < 16; x++) {
     var i = Math.floor(Math.random() * 62);
     token += chars.charAt(i);

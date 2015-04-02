@@ -3,7 +3,7 @@
 
 var should = require('should')
     , mongoose = require('mongoose')
-    , Resource = require('../../../app/representation').json;
+    , Resource = require('../../app/representation/index').json;
 
 module.exports = {
   'Representation - json': {

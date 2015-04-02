@@ -2,8 +2,8 @@
 'use strict';
 
 var should = require('should')
-    , Resource = require('../../../app/resource').Pay
-    , Order = require('../../../app/resource').Order
+    , Resource = require('../../app/resource/index').Pay
+    , Order = require('../../app/resource/index').Order
     , id
     , orderId;
 
