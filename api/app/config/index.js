@@ -33,8 +33,10 @@ var initialise = function(){
   var environmentConfig = require(path.join(process.cwd(), 'config/env/', process.env.NODE_ENV)) || {};
   var config = _.extend(defaultConfig, environmentConfig);
 
-  console.log(config)
-
+  if (config.info){
+    console.log(config);
+    console.log();
+  }
   return config;
 }
 
