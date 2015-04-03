@@ -36,7 +36,7 @@ gulp.task('micro', function () {
 });
 
 gulp.task('integration', function (done) {
-  var mongoose = require('./config/mongoose');
+  var mongoose = require('./app/config/mongoose');
   var error;
 
   mongoose.connect(function () {

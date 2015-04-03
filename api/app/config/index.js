@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  db: 'mongodb://localhost/test',
-  port: process.env.PORT || 3000,
+  db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/test',
+  port: process.env.PORT || 8888,
   app: {
     title: 'Coffee Sample api',
     description: 'Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js',

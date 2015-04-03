@@ -1,11 +1,13 @@
 'use strict';
 
 var express = require('express'),
-    mongoose = require('mongoose'),
+    config = require('./config/'),
+    mongoose = require('./config/mongoose'),
     passport = require('passport'),
     session = require('express-session'),
     mongoStore = require('connect-mongo')(session),
     path = require('path'),
+    chalk = require('chalk'),
     compression = require('compression'),
     bodyparser = require('body-parser'),
     cookieParser = require('cookie-parser'),
@@ -16,10 +18,6 @@ var express = require('express'),
 var app = express();
 
 app.set('allow-origin', 'http://localhost:63344');
-app.set('port', process.env.PORT || 8888);
-
-app.set('mongodb_uri', process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/' + app.settings.env);
-app.db = mongoose.connect(app.get('mongodb_uri'));
 
 app.disable('x-powered-by')
 app.use(bodyparser.json({strict: false}));
@@ -30,7 +28,7 @@ app.use(session({
   secret: 'shouldbeinc0nf1g',
   saveUninitialized: true,
   resave: true,
-  store: new mongoStore({url: app.get('mongodb_uri')})
+  store: new mongoStore({url: config.db})
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -50,33 +48,33 @@ if ('production' == app.settings.env) {
   app.use(errorHandler('tiny'));
 }
 
-var middleware = require('./middleware/index')(app),
+var middleware = require('./middleware/')(app),
     strategies = require('./strategy/passport')(app, passport),
     routes = require('./routes')(app);
 
-app.listen(app.get('port'), function () {
-  console.log('Express server listening on port %d in %s mode', this.address().port, app.settings.env);
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function callback() {
-    console.log("Using mongodb://%s:%s/%s", db.host, db.port, db.name);
 
-    // Fake account for now
-    var Account = require('./resource').Account;
-    Account.create({username: 'bob', email: 'bob@here.com', password: 'secret'}, function (err, doc) {
-      if (err) {
-        if (err.code == 11000) {
-          console.log('Account: bob exists.');
-        } else {
-          console.log(err);
-        }
+mongoose.connect(function () {
+  app.listen(config.port);
+  console.log('Express server listening on port %d in %s mode', config.port, app.settings.env);
+});
+
+mongoose.connection.once('open', function callback() {
+
+  // Fake account for now
+  var Account = require('./resource').Account;
+  Account.create({username: 'bob', email: 'bob@here.com', password: 'secret'}, function (err, doc) {
+    if (err) {
+      if (err.code == 11000) {
+        console.log('Account: bob exists.');
       } else {
-        console.log('Account: ' + doc.username + " saved.");
+        console.log(err);
       }
-    });
+    } else {
+      console.log('Account: ' + doc.username + " saved.");
+    }
+  });
 
   })
-});
 
 // for use with supertest - see http://stackoverflow.com/questions/11927196/supertest-custom-express-server-in-node
 module.exports = app;
