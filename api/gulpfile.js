@@ -54,7 +54,7 @@ gulp.task('acceptance', ['env:test'], function (done) {
   mongoose.connect(function () {
     gulp.src('test/acceptance/**/*.js')
         .pipe(plugins.debug())
-        .pipe(plugins.mocha(mocha_opts))
+        .pipe(plugins.mocha())
         .on('error', function (err) {
           error = err;
         })

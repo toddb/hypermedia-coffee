@@ -1,5 +1,4 @@
 var _ = require('lodash'),
-    url = require('url'),
     $log = {
       debug: console.log,
       warn: console.log,
@@ -170,17 +169,6 @@ function getUrl(links, relationshipType, mediaType) {
   }
 }
 
-/**
- *
- * @param {Array.<Link>|Object} links
- * @param {String|RegExp} relationshipType
- * @param {?String=} mediaType
- * @return {String} The pathname from the uri of the relationship
- */
-function getUrlPathname(links, relationshipType, mediaType){
-  return url.parse(getUrl(links, relationshipType, mediaType)).pathname;
-}
-
 function getTitle(links, relationshipType, mediaType) {
   var candidateLinks = filter(links, relationshipType, mediaType);
   if (!_.isEmpty(candidateLinks)) {
@@ -195,7 +183,6 @@ module.exports = exports = {
 
   // Get the first 'href' that matches the filter criteria.
   getUrl: getUrl,
-  getUrlPathName: getUrlPathname,
   getTitle: getTitle,
 
   // Filter the list of links based on a relationship type and media type.

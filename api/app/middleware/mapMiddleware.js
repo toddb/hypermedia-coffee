@@ -9,6 +9,12 @@ module = module.exports = function (app) {
     return res.sendStatus(401);
   };
 
+  function logRoute(key, route, authenticated) {
+    if (verbose) {
+      console.log('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
+    }
+  }
+
   app.mapWithAuthentication = function (route) {
     app.map(route, true);
   };
@@ -24,7 +30,7 @@ module = module.exports = function (app) {
           break;
         // get: function(){ ... }
         case Function:
-          if (verbose) console.log('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
+          logRoute(key, route, authenticated);
           var cb = [route];
           if (authenticated) cb.push(isAuthenticated);
           cb.push(a[key]);
@@ -32,7 +38,7 @@ module = module.exports = function (app) {
           break;
         // get: [function(){ ... }, function { ... }]
         case Array:
-          if (verbose) console.log('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
+          logRoute(key, route, authenticated);
           var cb = [route];
           if (authenticated) cb.push(isAuthenticated);
           for (var i = 0; i < a[key].length; i++) {

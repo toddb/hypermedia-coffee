@@ -46,7 +46,10 @@ module.exports = function (app) {
           delete: order.del,
           options: restrictions.item,
           '/pay/': {
-            post: order.pay(pay.create)
+            post: order.pay(pay.create),
+            ':pid': {
+              get: pay.item('/pay/'),
+            }
           }
         }
       }
