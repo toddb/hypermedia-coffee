@@ -33,7 +33,7 @@ gulp.task('integration', ['env:test'], function (done) {
   var error;
 
   mongoose.connect(function () {
-    gulp.src('test/integration/**/*.js' )
+    gulp.src('test/integration/**/*.js')
         .pipe(plugins.debug())
         .pipe(plugins.mocha(mocha_opts))
         .on('error', function (err) {
@@ -52,7 +52,7 @@ gulp.task('acceptance', ['env:test'], function (done) {
   var error;
 
   mongoose.connect(function () {
-    gulp.src('test/acceptance/**/*.js' )
+    gulp.src('test/acceptance/**/*.js')
         .pipe(plugins.debug())
         .pipe(plugins.mocha(mocha_opts))
         .on('error', function (err) {
@@ -61,6 +61,7 @@ gulp.task('acceptance', ['env:test'], function (done) {
         .on('end', function () {
           mongoose.disconnect(function () {
             done(error);
+            process.exit(0);
           });
         });
   });

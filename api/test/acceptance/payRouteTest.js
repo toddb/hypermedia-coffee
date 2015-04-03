@@ -4,30 +4,8 @@ var should = require('should'),
     mongoose = require('mongoose'),
     config = require(path.resolve('./app/config/')),
     express = require(path.resolve('./app/config/express'));
-
+var isPresent = /^$|\S+/;
 var app, agent, headers, orderId, payId;
-
-function get(url) {
-  return agent.
-      get(url).
-      set(headers);
-}
-function post(url) {
-  return agent.
-      post(url).
-      set(headers);
-}
-function put(url) {
-  return agent.
-      put(url).
-      set(headers);
-}
-function del(url, done) {
-  return agent.
-      del(url).
-      set(headers).
-      expect(204, done);
-}
 
 module.exports = {
   'Route: Payments': {
@@ -53,15 +31,14 @@ module.exports = {
         }
 
         agent.
-            post('/session/').
-            send({username: config.testuser.name, password: config.testuser.password}).
-            expect(201).
-            end(function (err, res) {
-              res.header.should.have.property('location');
-              res.header.should.have.property('access-control-allow-origin');
-              res.header.should.have.property('access-control-expose-headers');
-              res.header.should.have.property('access-control-allow-credentials');
-
+            post('/session/')
+            .send({username: config.testuser.name, password: config.testuser.password})
+            .expect(201)
+            .expect('location', isPresent)
+            .expect('access-control-allow-origin', isPresent)
+            .expect('access-control-expose-headers', isPresent)
+            .expect('access-control-allow-credentials', isPresent)
+            .end(function (err, res) {
               headers = {
                 Cookie: res.header['set-cookie'][0].split(';')[0],
                 Accept: 'application/json'
@@ -74,50 +51,52 @@ module.exports = {
 
     },
     beforeEach: function (done) {
-      post('/order/').
-          send({type: 'medium'}).
-          end(function (err, res) {
+      agent.post('/order/')
+          .set(headers)
+          .send({type: 'medium'})
+          .expect(201)
+          .expect('location', /\/order\/.*$/)
+          .end(function (err, res) {
             orderId = res.header['location'].match(/order\/(.*)$/)[1];
-            res.status.should.eql(201);
             done()
           });
     },
     'collection': {
       'POST': function (done) {
-        post('/pay/').
-            send({order: orderId}).
-            end(function (err, res) {
-              res.header['location'].should.match(/\/pay\/.*$/);
+        agent.post('/pay/')
+            .set(headers)
+            .send({order: orderId})
+            .expect(201)
+            .expect('location', /\/pay\/.*$/)
+            .end(function (err, res) {
               payId = res.header['location'].match(/pay\/(.*)$/)[1];
-              res.status.should.eql(201);
               done()
             });
       },
       'GET': function (done) {
-        get('/pay/').
-            expect('Allow', "GET,POST").
-            expect(200, done);
+        agent.get('/pay/')
+            .send(headers)
+            .expect('Allow', "GET,POST")
+            .expect(200, done);
       }
     },
     'item': {
       'GET - with id returns item resource': function (done) {
-        get('/pay/' + payId).
-            expect('Allow', "GET,DELETE,PUT").
-            expect(200, done);
+        agent.get('/pay/' + payId)
+            .send(headers)
+            .expect('Allow', "GET,DELETE,PUT")
+            .expect(200, done);
       },
       'PUT - full update with returning doc': function (done) {
-        put('/pay/' + payId).
-            send({order: orderId, token: 'asdfsdfdsfd'}).
-            expect(204, done);
+        agent.put('/pay/' + payId)
+            .set(headers)
+            .send({order: orderId, token: 'asdfsdfdsfd'})
+            .expect(204, done);
       },
       'DELETE - returns deleted doc': function (done) {
-        var req = del('/pay/' + payId)
-            .end(function () {
-            });
-        req._server.on('close', function () {
-          console.log('server closing');
-          done()
-        })
+        agent.delete('/pay/' + payId)
+            .set(headers)
+            .expect(204, done);
       }
     }
   }
