@@ -34,7 +34,8 @@ exports = module.exports = function allowCrossDomain(app) {
       credentials = true;
 
   app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);   // TODO: get around wildcard limitations in browser
+    //console.log(req.headers)
+    res.header('Access-Control-Allow-Origin', req.headers.origin || req.headers.host);   // TODO: get around wildcard limitations in browser
     res.header('Access-Control-Expose-Headers', exposed_headers);
     if (credentials) res.header('Access-Control-Allow-Credentials', credentials);
     if ('OPTIONS' == req.method) {

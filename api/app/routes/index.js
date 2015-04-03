@@ -10,11 +10,15 @@ module.exports = function (app) {
 
   app.map({
     '/': {
-      get: api(['/session/', '/order/']),
+      get: api(['/api/session/', '/api/order/']),
       options: restrictions.collection
     },
     '/api': {
-      get: api(['/session/', '/api/order/'])
+      get: api(['/api/session/', '/api/order/']),
+      '/session/': {
+        post: [session.logIn, session.rememberMe],
+        options: restrictions.collection
+      }
     },
     '/session/': {
       get: session.collection,
@@ -22,6 +26,32 @@ module.exports = function (app) {
       options: restrictions.collection
     }
   });
+
+  app.mapWithAuthentication({
+    '/api/': {
+      'session/': {
+        get: session.collection,
+        ':sid': {
+          delete: session.logOut,
+          get: session.item('/session/')
+        }
+      },
+      'order/': {
+        get: order.list,
+        post: order.create,
+        options: restrictions.collection,
+        ':oid': {
+          get: order.item('/order/', '/view/'),
+          put: order.update,
+          delete: order.del,
+          options: restrictions.item,
+          '/pay/': {
+            post: order.pay(pay.create)
+          }
+        }
+      }
+    }
+  })
 
   app.mapWithAuthentication({
     '/session/': {

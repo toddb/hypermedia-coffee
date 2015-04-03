@@ -15,6 +15,7 @@ module.exports.init = function (db) {
   var app = express();
 
   app.set('port', config.port);
+  app.set('verbose', config.info);
 
   app.disable('x-powered-by')
   app.use(bodyparser.json({strict: false}));

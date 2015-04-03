@@ -1,9 +1,9 @@
 /*jslint node: true */
 'use strict';
 
-var should = require('should')
-    , mongoose = require('mongoose')
-    , Resource = require('../../app/representation/index').json;
+var should = require('should'),
+    mongoose = require('mongoose'),
+    Resource = require('../../app/representation/index').json;
 
 module.exports = {
   'Representation - json': {
