@@ -18,6 +18,7 @@ var express = require('express'),
 var app = express();
 
 app.set('allow-origin', 'http://localhost:63344');
+app.set('port', config.port);
 
 app.disable('x-powered-by')
 app.use(bodyparser.json({strict: false}));

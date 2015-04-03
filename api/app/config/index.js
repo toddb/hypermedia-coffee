@@ -1,13 +1,41 @@
 'use strict';
 
-module.exports = {
-  db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/test',
-  port: process.env.PORT || 8888,
-  app: {
-    title: 'Coffee Sample api',
-    description: 'Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js',
-    keywords: 'mongodb, express, angularjs, node.js, mongoose, passport'
-  },
+var _ = require('lodash'),
+    chalk = require('chalk'),
+    glob = require('glob'),
+    path = require('path');
 
-  sessionSecret: 'sect87key'
+/**
+ * Validate NODE_ENV existance
+ */
+var validate = function() {
+  var environmentFiles = glob.sync('./config/env/' + process.env.NODE_ENV + '.js');
+  console.log();
+  if (!environmentFiles.length) {
+    if (process.env.NODE_ENV) {
+      console.error(chalk.red('No configuration file found for "' + process.env.NODE_ENV + '" environment using development instead'));
+    } else {
+      console.error(chalk.red('NODE_ENV is not defined! Using default development environment'));
+    }
+    process.env.NODE_ENV = 'development';
+  } else {
+    console.log(chalk.bold('Application loaded using the "' + process.env.NODE_ENV + '" environment configuration'));
+  }
+  // Reset console color
+  console.log(chalk.white(''));
 };
+
+var initialise = function(){
+
+  validate();
+
+  var defaultConfig = require(path.join(process.cwd(), 'config/env/default'));
+  var environmentConfig = require(path.join(process.cwd(), 'config/env/', process.env.NODE_ENV)) || {};
+  var config = _.extend(defaultConfig, environmentConfig);
+
+  console.log(config)
+
+  return config;
+}
+
+module.exports = initialise()
