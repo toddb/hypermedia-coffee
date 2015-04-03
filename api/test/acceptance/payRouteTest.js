@@ -36,23 +36,42 @@ module.exports = {
       app = express.init(mongoose);
       agent = request.agent(app);
 
-      agent.
-          post('/session/').
-          send({username: config.testuser.name, password: config.testuser.password}).
-          expect(201).
-          end(function (err, res) {
-            res.header.should.have.property('location');
-            res.header.should.have.property('access-control-allow-origin');
-            res.header.should.have.property('access-control-expose-headers');
-            res.header.should.have.property('access-control-allow-credentials');
+      var Account = require(path.resolve('./app/resource')).Account;
+      Account.create({
+        username: config.testuser.name,
+        email: config.testuser.email,
+        password: config.testuser.password
+      }, function (err, doc) {
+        if (err) {
+          if (err.code == 11000) {
+            console.log('Account: ' + config.testuser.name + ' exists.\n');
+          } else {
+            console.log(err);
+          }
+        } else {
+          console.log('Account: ' + doc.username + " saved.\n");
+        }
 
-            headers = {
-              Cookie: res.header['set-cookie'][0].split(';')[0],
-              Accept: 'application/json'
-            }
+        agent.
+            post('/session/').
+            send({username: config.testuser.name, password: config.testuser.password}).
+            expect(201).
+            end(function (err, res) {
+              res.header.should.have.property('location');
+              res.header.should.have.property('access-control-allow-origin');
+              res.header.should.have.property('access-control-expose-headers');
+              res.header.should.have.property('access-control-allow-credentials');
 
-            done(err)
-          });
+              headers = {
+                Cookie: res.header['set-cookie'][0].split(';')[0],
+                Accept: 'application/json'
+              }
+
+              done(err)
+            });
+      });
+
+
     },
     beforeEach: function (done) {
       post('/order/').

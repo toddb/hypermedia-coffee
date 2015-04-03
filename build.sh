@@ -4,8 +4,7 @@ cd api
 npm install
 node_modules/.bin/gulp micro
 node_modules/.bin/gulp integration
-# need to acceptance tests
-# node_modules/.bin/gulp acceptance
+node_modules/.bin/gulp acceptance
 
 cd ../client
 npm install
