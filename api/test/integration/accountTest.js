@@ -1,10 +1,11 @@
 /*jslint node: true */
 'use strict';
 
-var should = require('should')
-    , Resource = require('../../app/resource/index').Account
-    , acct = {username: 'someone', email: 'bob@nowhere.com', password: 'secret'}
-    , id;
+var should = require('should'),
+    Resource = require('../../app/resource/index').Account,
+    config = require(path.resolve('./app/config/')),
+    acct = {username: 'someone', email: 'bob@nowhere.com', password: 'secret'},
+    id;
 
 module.exports = {
 

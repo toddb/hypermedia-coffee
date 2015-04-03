@@ -84,19 +84,3 @@ exports = module.exports = function (app, passport) {
 
 
 };
-
-//module.exports.passport = initialize();
-//module.exports.login = logIn;
-//module.exports.logout = logOut;
-//module.exports.rememberMe = rememberMe;
-//
-//// TODO: inject setting for toggling authentication on/off
-//module.exports.ensureAuthenticated = function (requiresAuthentication) {
-//  if (!requiresAuthentication) {
-//    return function (req, res, next) {
-//      return next()
-//    }
-//  } else {
-//    return ensureAuthenticated
-//  }
-//}(true);

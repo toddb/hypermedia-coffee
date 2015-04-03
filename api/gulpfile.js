@@ -54,6 +54,26 @@ gulp.task('integration', function (done) {
   });
 });
 
+gulp.task('acc', ['env:test'], function (done) {
+  var mongoose = require('./app/config/mongoose');
+  var error;
+
+  mongoose.connect(function () {
+    gulp.src('test/acceptance/**/*.js' )
+        .pipe(plugins.debug())
+        .pipe(plugins.mocha(mocha_opts))
+        .on('error', function (err) {
+          error = err;
+        })
+        .on('end', function () {
+          mongoose.disconnect(function () {
+            done(error);
+          });
+        });
+  });
+});
+
+
 gulp.task('acceptance', function () {
   return gulp.src(['test/acceptance/**/*.js'], {read: false})
       .pipe(plugins.debug())

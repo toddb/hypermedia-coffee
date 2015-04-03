@@ -1,4 +1,4 @@
-var
+var config = require('./index'),
     express = require('express'),
     passport = require('passport'),
     session = require('express-session'),
@@ -10,7 +10,7 @@ var
     serveStatic = require('serve-static'),
     errorHandler = require('errorhandler');
 
-module.exports.init = function (db, config) {
+module.exports.init = function (db) {
 
   var app = express();
 

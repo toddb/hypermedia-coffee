@@ -8,12 +8,8 @@ var app;
 
 mongoose.connect(function (db) {
 
-  app = express.init(db, config)
+  app = express.init(db)
   app.listen(config.port);
   console.log('Coffee API listening on port %d in %s mode', config.port, app.settings.env);
 
 });
-
-
-// for use with supertest - see http://stackoverflow.com/questions/11927196/supertest-custom-express-server-in-node
-module.exports = app;

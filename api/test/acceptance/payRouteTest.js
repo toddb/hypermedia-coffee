@@ -1,32 +1,31 @@
 var should = require('should'),
+    path = require('path'),
     request = require('supertest'),
-    mongoose = require('mongoose')
-app = require('./app')();
+    mongoose = require('mongoose'),
+    config = require(path.resolve('./app/config/')),
+    express = require(path.resolve('./app/config/express'));
 
-var agent;
-var auth, orderId, payId;
+var app, agent, headers, orderId, payId;
 
 function get(url) {
   return agent.
       get(url).
-      set('Cookie', auth);
+      set(headers);
 }
 function post(url) {
   return agent.
       post(url).
-      set('Accept', "application/json").
-      set('Cookie', auth);
+      set(headers);
 }
 function put(url) {
   return agent.
       put(url).
-      set('Accept', "application/json").
-      set('Cookie', auth);
+      set(headers);
 }
 function del(url, done) {
   return agent.
       del(url).
-      set('Cookie', auth).
+      set(headers).
       expect(204, done);
 }
 
@@ -34,25 +33,26 @@ module.exports = {
   'Route: Payments': {
     before: function (done) {
 
+      app = express.init(mongoose);
       agent = request.agent(app);
 
-      function startOnceConnection() {
-        agent.
-            post('/session/').
-            send({username: 'bob', password: 'secret'}).
-            end(function (err, res) {
-              res.status.should.eql(201);
-              auth = res.header['set-cookie'][0].split(';')[0];
-              res.header.should.have.property('location');
-              res.header.should.have.property('access-control-allow-origin');
-              res.header.should.have.property('access-control-expose-headers');
-              res.header.should.have.property('access-control-allow-credentials');
-              done(err)
-            });
-      }
+      agent.
+          post('/session/').
+          send({username: config.testuser.name, password: config.testuser.password}).
+          expect(201).
+          end(function (err, res) {
+            res.header.should.have.property('location');
+            res.header.should.have.property('access-control-allow-origin');
+            res.header.should.have.property('access-control-expose-headers');
+            res.header.should.have.property('access-control-allow-credentials');
 
-      mongoose.connection.on('open', startOnceConnection);
-      mongoose.connection.on('error', console.log)
+            headers = {
+              Cookie: res.header['set-cookie'][0].split(';')[0],
+              Accept: 'application/json'
+            }
+
+            done(err)
+          });
     },
     beforeEach: function (done) {
       post('/order/').
@@ -93,8 +93,9 @@ module.exports = {
       },
       'DELETE - returns deleted doc': function (done) {
         var req = del('/pay/' + payId)
-            .end(function(){});
-        req._server.on('close', function(){
+            .end(function () {
+            });
+        req._server.on('close', function () {
           console.log('server closing');
           done()
         })
