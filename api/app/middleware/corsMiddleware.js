@@ -28,14 +28,13 @@ exports = module.exports = function allowCrossDomain(app) {
 
   'use strict';
 
-  var origin = app.get('allow-origin') || '*',
-      methods = 'GET,PUT,POST,DELETE,OPTIONS',
+  var methods = 'GET,PUT,POST,DELETE,OPTIONS',
       headers = 'Origin, Accept, X-Requested-With,Content-Type',
       exposed_headers = 'Allow,Location',
       credentials = true;
 
   app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Origin', req.headers.origin);   // TODO: get around wildcard limitations in browser
     res.header('Access-Control-Expose-Headers', exposed_headers);
     if (credentials) res.header('Access-Control-Allow-Credentials', credentials);
     if ('OPTIONS' == req.method) {
