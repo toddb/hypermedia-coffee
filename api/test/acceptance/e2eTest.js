@@ -23,7 +23,26 @@ describe('Authenticated session', function () {
     app = express.init(mongoose);
     agent = request.agent(app);
 
-    done();
+    // TODO: use API to create
+    var Account = require(path.resolve('./app/resource')).Account;
+    Account.create({
+      username: config.testuser.name,
+      email: config.testuser.email,
+      password: config.testuser.password
+    }, function (err, doc) {
+      if (err) {
+        if (err.code == 11000) {
+          console.log('Account: ' + config.testuser.name + ' exists.\n');
+        } else {
+          console.log(err);
+        }
+      } else {
+        console.log('Account: ' + doc.username + " saved.\n");
+      }
+      done();
+    });
+
+
   });
 
   before(function authenticate(done) {
