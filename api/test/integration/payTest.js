@@ -31,7 +31,7 @@ module.exports = {
       'GET': function (done) {
         Resource.get('/pay/', function (err, doc) {
           var o = doc.toJSON();
-          o.links.length.should.equal(4);
+          o.links.length.should.equal(1);
           done();
         });
       }

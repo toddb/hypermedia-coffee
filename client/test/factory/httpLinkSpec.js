@@ -7,7 +7,7 @@ define(['chai', 'mocks', 'src/scripts/factory/httpLink'],
         var should = chai.should()
             , link;
 
-        describe('services/httpLink', function () {
+        describe('factory/httpLink', function () {
 
             beforeEach(module('httpLink'));
 
@@ -165,7 +165,7 @@ define(['chai', 'mocks', 'src/scripts/factory/httpLink'],
                     });
 
                     describe('POST collection accept-type', function () {
-                        it('should call server', function (done) {
+                        it('should call server', function () {
                             httpMock.expectPOST(/orders\//).respond(204, {Location: 'somewhere'});
                             link.post(this.resource, 'collection', 'application/json', { type: 'small'});
                             httpMock.flush();
@@ -173,7 +173,7 @@ define(['chai', 'mocks', 'src/scripts/factory/httpLink'],
                     });
 
                     describe('PUT item accept-type', function () {
-                        it('should call server', function (done) {
+                        it('should call server', function () {
                             httpMock.expectPUT(/orders\/1/).respond(204, {Location: 'somewhere'});
                             link.put(this.resource, 'self', 'application/json', { type: 'small'});
                             httpMock.flush();
@@ -181,9 +181,9 @@ define(['chai', 'mocks', 'src/scripts/factory/httpLink'],
                     });
 
                     describe('DELETE item accept-type', function () {
-                        it('should call server', function (done) {
+                        it('should call server', function () {
                             httpMock.expectDELETE(/orders\/1/).respond(204);
-                            link.del(this.resource, 'self', 'application/json');
+                            link.delete(this.resource, 'self', 'application/json');
                             httpMock.flush();
                         });
                     });

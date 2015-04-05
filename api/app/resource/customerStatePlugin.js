@@ -1,4 +1,4 @@
-var statemachine = require('./statemachine.js');
+var statemachine = require('../util/statemachine.js');
 
 module.exports = exports = function customerStatePlugin(schema, options) {
 

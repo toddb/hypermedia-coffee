@@ -25,7 +25,7 @@ module.exports = {
           }
         }
         var r = new Resource('/tst', [new doc()]);
-        r.should.have.property('links').with.lengthOf(4);
+        r.should.have.property('links').with.lengthOf(1);
       },
       'single doc adds attrs to object': function () {
         var doc = function () {
@@ -54,8 +54,9 @@ module.exports = {
             , url = '/tst';
 
         var r = new Resource(url);
-        var o = r.collectionLinks(url, [new doc()]);
-        r.should.have.property('links').with.lengthOf(4);
+        var o = r.addCollection(url, [new doc()]);
+        r.should.have.property('links').with.lengthOf(1);
+        r.should.have.property('items').with.lengthOf(1);
         o.should.equal(r);
         o.should.be.an.instanceof(Resource);
       },

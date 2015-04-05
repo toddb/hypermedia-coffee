@@ -30,7 +30,7 @@ module.exports = {
       'GET - (without id) returns collections of resource': function (done) {
         Resource.get('/tst/', function (err, doc) {
           var o = doc.toJSON();
-          o.links.length.should.equal(4);
+          o.links.length.should.equal(1);
           o.links[0].rel.should.equal('self');
           o.links[0].type.should.equal('application/json');
           o.links[0].href.should.equal('/tst/');
