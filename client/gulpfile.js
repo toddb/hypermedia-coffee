@@ -25,7 +25,7 @@ var gulp = require('gulp'),
 
 var args = yargs.argv;
 var version = args['version'] || '0.0.0.0';
-var api = args['api'] || 'http://localhost:8888'; // https://your-api.example
+var api = args['api'] || 'http://localhost:8888/api/'; // https://your-api.example
 
 // Build
 gulp.task('default', ['build', 'test']);
@@ -55,8 +55,8 @@ gulp.task('build-html', ['clean'], function () {
   return gulp.src('src/index.html')
       .pipe(htmlReplace({
         api: {
-          src: [[api, api]],
-          tpl: '<link rel="api" href="%s"/><link rel="authenticator" href="%s/session/"/>'
+          src: api,
+          tpl: '<link rel="api" href="%s"/>'
         },
         app: {
           src: 'scripts/app.js?v=' + version,
@@ -151,6 +151,6 @@ gulp.task('client', ['build', 'test'], function () {
         livereload: true,
         directoryListing: false,
         open: true,
-        port: 63344
+        port: 8668
       }));
 });
