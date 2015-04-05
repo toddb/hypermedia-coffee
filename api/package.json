@@ -12,9 +12,9 @@
   "dependencies": {
     "express": "4.12.3",
     "hbs": "3.0.x",
-    "request": "2.54.0",
+    "request": "2.55.0",
     "mongoose": "4.0.x",
-    "underscore": "1.8.2",
+    "underscore": "1.8.3",
     "bcrypt": "0.8.2",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
@@ -38,13 +38,13 @@
     "start": "node app/server.js"
   },
   "devDependencies": {
-    "gulp-mocha": "^2.0.0",
+    "gulp-mocha": "^2.0.1",
     "gulp": "^3.8.11",
     "should": "^5.2.0",
     "gulp-debug": "^2.0.1",
     "supertest": "^0.15.0",
     "mocha": "^2.2.1",
-    "mongodb": "^1.4.35",
+    "mongodb": "^2.0.25",
     "mocha-mongoose": "^1.0.4",
     "gulp-load-plugins": "^0.9.0"
   }
