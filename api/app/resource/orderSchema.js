@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    resourceSchema = require('./resourcePlugin'),
+    resourceSchema = require('./plugin/resource'),
     coffeeState = require('./plugin/coffeeState'),
     timestamp = require('./plugin/timestamp'),
     versioner = require('mongoose-versioner');

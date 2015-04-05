@@ -3,7 +3,7 @@
 var mongoose = require('mongoose'),
     ObjectId = require('mongoose').Schema.Types.ObjectId,
     timestamp = require('./plugin/timestamp'),
-    resourceSchema = require('./resourcePlugin');
+    resourceSchema = require('./plugin/resource');
 
 var schema = new mongoose.Schema({
   order: {type: ObjectId, required: true},

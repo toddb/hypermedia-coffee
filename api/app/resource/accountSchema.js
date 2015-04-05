@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
     timestamp = require('./plugin/timestamp'),
     schema = new mongoose.Schema();
 
-schema.plugin(require('./resourcePlugin'));
+schema.plugin(require('./plugin/resource'));
 schema.plugin(timestamp);
 
 schema.add({

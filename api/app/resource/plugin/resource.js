@@ -1,5 +1,5 @@
 var _ = require('underscore')
-  , Resource = require('../representation/index').json;
+  , Resource = require('../../representation/index').json;
 
 module.exports = exports = function resourcePlugin(schema, options) {
 
