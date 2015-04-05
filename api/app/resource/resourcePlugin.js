@@ -82,8 +82,6 @@ module.exports = exports = function resourcePlugin(schema, options) {
     delete ret.versionId;
     delete ret._id;
     delete ret.__v;
-    delete ret.created;
-    delete ret.modified;
   }});
 
 }

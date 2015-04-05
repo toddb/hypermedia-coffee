@@ -1,11 +1,13 @@
 'use strict';
 
-var mongoose = require('mongoose')
-    , bcrypt = require('bcrypt')
-    , SALT_WORK_FACTOR = 10
-    , schema = new mongoose.Schema();
+var mongoose = require('mongoose'),
+    bcrypt = require('bcrypt'),
+    SALT_WORK_FACTOR = 10,
+    timestamp = require('./plugin/timestamp'),
+    schema = new mongoose.Schema();
 
 schema.plugin(require('./resourcePlugin'));
+schema.plugin(timestamp);
 
 schema.add({
   username: {type: String, required: true, unique: true},

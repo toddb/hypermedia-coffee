@@ -10,7 +10,7 @@ exports = module.exports = function (app, salt) {
     res.etag = function (id, time) {
 
       if (!time) {
-        console.log("ETag: unable to create on id %s", id)
+        console.log("ETag: unable to create on id %s - no time provided", id)
         return;
       }
 

@@ -32,6 +32,7 @@ exports.item = function (parent, child) {
       model._actions.forEach(function (rel) {
         doc.addLink(rel, res.locals.self + '/' + rel + '/');
       });
+
       res.etag(model.id, model.modified);
       res.send(doc);
     });
