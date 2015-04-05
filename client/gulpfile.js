@@ -96,6 +96,7 @@ gulp.task('build-requirejs', ['clean'], function (cb) {
         excludeShallow: ['requirejs']
       }
     ],
+    removeCombined: true,
     uglify2: {
       output: {
         beautify: true
@@ -106,11 +107,10 @@ gulp.task('build-requirejs', ['clean'], function (cb) {
           DEBUG: false
         }
       },
-      warnings: true,
+      warnings: false,
       mangle: false
     }
   }, function () {
-    // TODO: it would be nice to clean up files
     cb();
   }, function (err) {
     console.log(err);
