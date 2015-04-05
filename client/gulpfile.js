@@ -2,7 +2,6 @@
 var gulp = require('gulp'),
     rimraf = require('rimraf'),
     uglify = require('gulp-uglify'),
-    minifyCss = require('gulp-minify-css'),
     minifyHTML = require('gulp-minify-html'),
     autoprefixer = require('gulp-autoprefixer'),
     inject = require('gulp-inject'),
@@ -10,12 +9,10 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     htmlReplace = require('gulp-html-replace'),
     ngmin = require('gulp-ngmin'),
-    gulprjs = require('gulp-requirejs'),
     rjs = require('requirejs'),
     gif = require('gulp-if'),
     es = require('event-stream'),
     lr = require('gulp-livereload'),
-    saveLicense = require('uglify-save-license'),
     _ = require('lodash'),
     karma = require('karma').server,
     yargs = require('yargs'),
@@ -71,23 +68,22 @@ gulp.task('build-html', ['clean'], function () {
  * @see https://gist.github.com/rafaelrinaldi/11008190
  * @see https://github.com/jrburke/r.js/blob/master/build/example.build.js
  */
-gulp.task('build-requirejs', ['clean'], function (cb) {
+gulp.task('build-requirejs', ['clean'], function (done) {
   rjs.optimize({
     appDir: 'src',
     baseUrl: 'scripts',
-    dir: './dist',
+    dir: 'dist',
 
     logLevel: 1,
 
-    optimize: 'uglify2',
-    //optimize: 'none',
+    optimize: 'none',
     mainConfigFile: 'src/scripts/main.js',
 
     modules: [
       {
         name: 'bootstrap',
         include: ['requirejs'],
-        exclude: ['app'], //, 'angular'],
+        exclude: ['app'],
         create: true
       },
       {
@@ -96,7 +92,10 @@ gulp.task('build-requirejs', ['clean'], function (cb) {
         excludeShallow: ['requirejs']
       }
     ],
-    removeCombined: true,
+    // still getting bootstrap css files deleted as at v2.1.16
+    // see: https://github.com/jrburke/requirejs/issues/755
+    // removeCombined: true,
+
     uglify2: {
       output: {
         beautify: true
@@ -111,7 +110,7 @@ gulp.task('build-requirejs', ['clean'], function (cb) {
       mangle: false
     }
   }, function () {
-    cb();
+    done();
   }, function (err) {
     console.log(err);
   });

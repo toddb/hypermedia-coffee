@@ -53,7 +53,7 @@ define(
                   .state('home', {
                     url: "/a/{apiUri:.*}",
 
-                    templateUrl: 'scripts/template/index.html',
+                    templateUrl: 'template/index.html',
                     controller: 'HomeController',
                     data: {
                       rel: {
@@ -74,7 +74,7 @@ define(
                   .state('order', {
                     url: "/orders/order/a/{apiUri:.*}",
 
-                    templateUrl: 'scripts/template/orders/item.html',
+                    templateUrl: 'template/orders/item.html',
                     controller: 'OrderController',
                     data: {
                       rel: {
@@ -88,7 +88,7 @@ define(
                   .state('pay', {
                     url: "/orders/order/pay/a/{apiUri:.*}",
 
-                    templateUrl: 'scripts/template/pay/post.html',
+                    templateUrl: 'template/pay/post.html',
                     controller: 'PayController',
                     data: {
                       rel: {
@@ -101,7 +101,7 @@ define(
                   .state('orders', {
                     url: "/orders/a/{apiUri:.*}",
 
-                    templateUrl: 'scripts/template/orders/index.html',
+                    templateUrl: 'template/orders/index.html',
                     controller: 'OrdersController',
                     data: {
                       rel: {

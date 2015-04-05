@@ -28,7 +28,7 @@ define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInt
       backdrop: true,
       keyboard: false,
       backdropClick: false,
-      templateUrl: "./scripts/template/authenticator/post.html",
+      templateUrl: "./template/authenticator/post.html",
       controller: 'LoginModalInstance'
     };
 
@@ -103,7 +103,7 @@ define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInt
           restrict: 'C',
           link: function (scope, elem, attrs) {
           },
-          template: "<span ng-controller='AuthenticatorController' ng-include=\"'./scripts/template/authenticator/get.html'\"></span>"
+          template: "<span ng-controller='AuthenticatorController' ng-include=\"'./template/authenticator/get.html'\"></span>"
         }
       });
 
