@@ -4,14 +4,14 @@
 var should = require('should')
     , _ = require('underscore')
     , mongoose = require('mongoose')
-    , customerState = require('../../app/resource/customerStatePlugin')
+    , coffeeState = require('../../app/resource/plugin/coffeeState')
     , schema = new mongoose.Schema()
     , acct = {type: 'small'}
     , id, order;
 
-schema.plugin(customerState);
+schema.plugin(coffeeState);
 
-var Model = mongoose.model('customerState', schema);
+var Model = mongoose.model('coffeeState', schema);
 
 var transitions = {
   placeOrder: {

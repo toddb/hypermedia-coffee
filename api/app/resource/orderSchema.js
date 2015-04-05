@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose'),
     resourceSchema = require('./resourcePlugin'),
-    customerState = require('./customerStatePlugin'),
+    coffeeState = require('./plugin/coffeeState'),
     timestamp = require('./plugin/timestamp'),
     versioner = require('mongoose-versioner');
 
@@ -11,7 +11,7 @@ var schema = new mongoose.Schema({
 });
 
 schema.plugin(resourceSchema);
-schema.plugin(customerState);
+schema.plugin(coffeeState);
 schema.plugin(timestamp);
 schema.plugin(versioner, {modelName: 'order', mongoose: mongoose});
 

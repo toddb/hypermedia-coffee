@@ -1,6 +1,6 @@
-var statemachine = require('../util/statemachine.js');
+var statemachine = require('./statemachine.js');
 
-module.exports = exports = function customerStatePlugin(schema, options) {
+module.exports = exports = function coffeeState(schema, options) {
 
   var opts = {
     states: {
