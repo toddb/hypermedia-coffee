@@ -39,7 +39,7 @@ The basic system is comprised of the following components:
 - Lightweight backend web server ([NodeJS](nodejs.org) / [Express](http://expressjs.com))
 
 # Dependencies
-- [nodejs](http://nodejs.org) - even then you can use a local version through `setup.sh` which loads v10.5 into `node_lib`
+- [nodejs/npm](http://nodejs.org) - even then you can use a local version through `setup.sh` which loads v10.5 into `node_lib`
 - [mongo](http://www.mongodb.org/)
 - gcc - for some node modules - I used (commandline tools for XCode)[http://developer.apple.com/downloads] - then on 10.8.4 still had problems (`xcode-select: Error: No Xcode is selected. Use xcode-select -switch <path-to-xcode>`). Solution: `sudo xcode-select -switch /usr/bin`
 
@@ -50,6 +50,10 @@ Once you have the dependencies, you need to clone the respository and install th
 
 - fork this repo
 - `git clone <your-new-github-url>`
+- `build.sh`   <-- this is what [travis.ci](https://travis-ci.org/toddb/hypermedia-coffee/) is doing!
+
+You can also do each separately if you want incremental setup on the dependencies:
+
 - `cd server; go.sh`
 - `cd client; go.sh`
 
