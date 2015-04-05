@@ -24,7 +24,7 @@ describe('Authenticated session', function () {
     agent = request.agent(app);
 
     // TODO: use API to create
-    var Account = require(path.resolve('./app/resource')).Account;
+    var Account = require(path.resolve('./app/model')).Account;
     Account.create({
       username: config.testuser.name,
       email: config.testuser.email,

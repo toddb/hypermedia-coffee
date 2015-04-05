@@ -1,12 +1,12 @@
 module.exports = function (app) {
   'use strict';
 
-  var order = require('./order'),
-      api = require('./api'),
-      restrictions = require('./restrictions'),
-      account = require('./account'),
-      session = require('./session'),
-      pay = require('./pay');
+  var order = require('../resource/order'),
+      api = require('../resource/api'),
+      account = require('../resource/account'),
+      session = require('../resource/session'),
+      pay = require('../resource/pay'),
+      restrictions = require('../middleware/allowHeadersMiddleware');
 
   app.map({
     '/': {
