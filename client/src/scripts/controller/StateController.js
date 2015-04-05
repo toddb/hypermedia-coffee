@@ -3,10 +3,10 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
 
   return controllers.controller(
-      'CategoryCtrl',
+      'StateController',
       [
         '$scope', '$log', '$location', '$http', 'UriMapper', '$timeout', 'link',
-        function CategoryCtrl($scope, $log, $location, $http, uriMapper, $timeout, link) {
+        function StateController($scope, $log, $location, $http, uriMapper, $timeout, link) {
 
           /**
            *
@@ -55,7 +55,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
           };
 
           $scope.init = function () {
-            $log.info("Loading CategoryCtrl");
+            $log.info("Loading StateController");
             $scope.categories = [];
 
             var apiUri = uriMapper.fromSitePath($location.path(), '/categories');

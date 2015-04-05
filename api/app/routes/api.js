@@ -8,7 +8,6 @@ module.exports =  function (collections) {
       representation.addLink("orders", res.locals.schema + collections[1]);
       representation.addLink("authenticator", res.locals.schema + collections[0]);
       res.type('application/json');
-      res.set({ Allow: 'GET'});
       res.send(representation);
     };
 };

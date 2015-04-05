@@ -1,7 +1,6 @@
 define(['angular', 'underscore', './controllersModule'], function (angular, _, controllers) {
   'use strict';
 
-
   return controllers.controller(
       'PayController',
       [

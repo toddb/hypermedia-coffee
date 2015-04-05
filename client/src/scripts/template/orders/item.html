@@ -1,0 +1,27 @@
+
+<div class="item">
+    <div class="item-header">    </div>
+    <div class="item-description">
+        <span class="pull-right" ng-include="'./scripts/template/order/delete.html'" />
+
+        <h3>{{ order.type }}</h3>
+        <br/>
+        <a ng-click="gotoNextState()"><p class="visible-lg-*" ng-show="order.state">{{ order.state }}</p></a>
+    </div>
+    <div class="item-description">
+        <img src="{{order.image}}" />
+        <div />
+        <h3>{{ order.value.units }}{{ order.value.amount }}</h3>
+        <h5 ng-show="order.termsAndConditions">{{order.termsAndConditions}}</h5>
+        <blockquote class=" text-muted text-smaller blockquote-reverse">
+            <p><span class="glyphicon glyphicon-time"></span>&nbsp;Finishes: {{ order.repeat.to | timeago }}</p>
+        </blockquote>
+    </div>
+    <div class="item-footer text-muted text-smaller">
+        <p >
+            <span class="glyphicon glyphicon-time"></span>&nbsp;<b>{{order.repeat.from | timeago }}</b>
+        </p>
+    </div>
+
+
+</div>

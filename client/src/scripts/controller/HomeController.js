@@ -9,46 +9,30 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
   }
 
   return controllers.controller(
-      'HomeCtrl',
+      'HomeController',
       [
         '$scope', '$log', '$location', 'UriMapper', 'link', '$state', '$stateParams', '$timeout', 'apiRoot', '$http',
-
-        /**
-         *
-         * @param $scope
-         * @param $log
-         * @param $location
-         * @param {UriMapping} uriMapper
-         * @param link
-         * @constructor
-         * @param $state
-         * @param $stateParams
-         * @param $timeout
-         * @param apiRoot
-         */
-            function HomeCtrl($scope, $log, $location, uriMapper, link, $state, $stateParams, $timeout, apiRoot, $http) {
+        function HomeController($scope, $log, $location, uriMapper, link, $state, $stateParams, $timeout, apiRoot, $http) {
 
           function init() {
             setOrder();
             setOrders();
-            $log.info("Loading HomeCtrl");
+            $log.info("Loading HomeController");
           }
 
-          function setOrder(order){
+          function setOrder(order) {
             $scope.order = order || {};
           }
 
-          function setOrders(){
+          function setOrders() {
             link.get(apiRoot.data, 'orders')
-                .then(function success(response){
+                .then(function success(response) {
                   $scope.orders = response.data;
                 })
           }
 
           function makeStateUri(stateRelation, apiRepresentation, apiLinkRelation) {
             var apiUri = uriMapper.makeRelative(link.getUrl(apiRepresentation, apiLinkRelation));
-
-            $log.debug($state.current.data.rel[stateRelation],  apiUri)
             var href = $state.href($state.current.data.rel[stateRelation], {apiUri: apiUri});
             // see https://github.com/angular/angular.js/issues/1388
             href = href.replace('%252F', '/');

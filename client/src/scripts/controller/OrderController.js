@@ -3,17 +3,17 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
 
   return controllers.controller(
-      'CouponCtrl',
+      'OrderController',
       [
         '$scope', '$log', '$location', '$http', 'UriMapper', 'link', '$timeout',
         function OrderController($scope, $log, $location, $http, uriMapper, link, $timeout) {
 
-          function addCoupon(coupon) {
-            $scope.coupon = coupon;
+          function addOrder(order) {
+            $scope.order = order;
           }
 
           $scope.gotoNextState = function gotoNextState() {
-            var self = link.getUrl($scope.coupon, /pay/);
+            var self = link.getUrl($scope.order, /pay/);
             if (self) {
               var path = uriMapper.toSitePath(self, '/orders/order/pay/a/');
               $log.debug(self + ' -> ' + path);
@@ -26,16 +26,16 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             }
           };
 
-          $scope.delete = function(){
-            link.delete($scope.coupon, 'self')
-                .then(function success(){
+          $scope.delete = function () {
+            link.delete($scope.order, 'self')
+                .then(function success() {
                   $log.info("Deleted")
                 })
           }
 
           $scope.init = function () {
             $log.info("Loading OrderController");
-            $scope.coupon = {};
+            $scope.order = {};
 
             var apiUri = uriMapper.fromSitePath($location.path(), '/orders/order/a/');
             $http(
@@ -45,10 +45,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                   headers: {Accept: 'application/json'}
                 })
                 .then(function success(response) {
-                  $log.debug(response.data)
-                  addCoupon(_.extend(
-                      response.data
-                  ))
+                  addOrder(response.data)
                 }, $log.error);
           };
 

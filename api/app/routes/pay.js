@@ -14,10 +14,7 @@ exports.item = function (parent) {
     Resource.get(req.params.pid, res.locals.schema + parent, function (err, doc) {
       if (err) return res.status(501).send(err);
       res.type('application/json');
-      res.set({ Allow: 'GET,DELETE,PUT'});
-      doc.addLink('collection', res.locals.schema + parent);
-      doc.addLink('delete-form', 'text/html', res.locals.schema + parent + 'delete.html');
-      doc.addLink('edit-form', 'text/html', res.locals.schema + parent + 'put.html');
+      doc.addLink('up', res.locals.schema + parent);
       res.send(doc);
     });
   };
@@ -28,7 +25,6 @@ exports.list = function (req, res) {
     if (err) return res.status(501).send(err);
     res.type('application/json');
 //    doc.addLink('create-form', 'text/html', res.locals.self + 'post.html');
-    res.set({ Allow: 'GET,POST'});
     res.send(doc);
   });
 };

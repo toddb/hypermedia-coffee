@@ -13,12 +13,12 @@ define(
       'provider/uriMapper',
       'provider/httpAuthInterceptor',
       'directive/buttonsRadio',
-      'controller/HomeCtrl',
-      'controller/CouponsCtrl',
-      'controller/CouponCtrl',
-      'controller/CategoryCtrl',
+      'controller/HomeController',
+      'controller/OrdersController',
+      'controller/OrderController',
+      'controller/StateController',
       'controller/PayController',
-      'controller/AuthenticatorCtrl'
+      'controller/AuthenticatorController'
     ],
     function ($, angularAMD) {
       var app = angular
@@ -54,7 +54,7 @@ define(
                     url: "/a/{apiUri:.*}",
 
                     templateUrl: 'scripts/template/index.html',
-                    controller: 'HomeCtrl',
+                    controller: 'HomeController',
                     data: {
                       rel: {
                         'self': 'home',
@@ -74,8 +74,8 @@ define(
                   .state('order', {
                     url: "/orders/order/a/{apiUri:.*}",
 
-                    templateUrl: 'scripts/template/coupon/item.html',
-                    controller: 'CouponCtrl',
+                    templateUrl: 'scripts/template/orders/item.html',
+                    controller: 'OrderController',
                     data: {
                       rel: {
                         'self': 'order',
@@ -101,8 +101,8 @@ define(
                   .state('orders', {
                     url: "/orders/a/{apiUri:.*}",
 
-                    templateUrl: 'scripts/template/coupon/index.html',
-                    controller: 'CouponsCtrl',
+                    templateUrl: 'scripts/template/orders/index.html',
+                    controller: 'OrdersController',
                     data: {
                       rel: {
                         'self': 'orders',
@@ -113,7 +113,7 @@ define(
                     }
                   });
             }])
-          .run(function ($rootScope, $urlRouter, $log, $state) {
+          .run(function ($rootScope, $urlRouter, $log, $state, $location) {
 
             function allServices(mod, r) {
               //var inj = angular.element(document).injector().get;
@@ -136,17 +136,19 @@ define(
                   $log.debug("$stateNotFound", arguments);
                 });
 
-//                console.log(angular.module('app').requires);
-//                console.log(angular.module('controllers')._invokeQueue);
-//                var allMyServices = allServices('app');
-//                $log.debug(allMyServices);
-
             /*
              * This is very useful logging when having issues with setting the
              * $location.path(). This can be due to asynchronous issues with
              * setting the browser URL or it can be a routing issue.
+             *
+             * Add ?debug to the url
              */
-            if (true) {
+            if ($location.search()['debug']) {
+
+              $log.debug("App", angular.module('app').requires);
+              $log.debug("Controllers", angular.module('controllers')._invokeQueue);
+              $log.debug(allServices('app'));
+
 
               $rootScope.$on('$locationChangeSuccess', function (evt) {
                 $log.debug('$locationChangeSuccess', arguments);

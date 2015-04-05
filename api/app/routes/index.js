@@ -19,11 +19,6 @@ module.exports = function (app) {
         post: [session.logIn, session.rememberMe],
         options: restrictions.collection
       }
-    },
-    '/session/': {
-      get: session.collection,
-      post: [session.logIn, session.rememberMe],
-      options: restrictions.collection
     }
   });
 
@@ -33,7 +28,7 @@ module.exports = function (app) {
         get: session.collection,
         ':sid': {
           delete: session.logOut,
-          get: session.item('/session/')
+          get: session.item('/api/session/')
         }
       },
       'order/': {
@@ -41,57 +36,26 @@ module.exports = function (app) {
         post: order.create,
         options: restrictions.collection,
         ':oid': {
-          get: order.item('/order/', '/view/'),
+          get: order.item('/api/order/', '/view/'),
           put: order.update,
           delete: order.del,
           options: restrictions.item,
           '/pay/': {
             post: order.pay(pay.create),
             ':pid': {
-              get: pay.item('/pay/'),
+              get: pay.item('/api/pay/')
             }
           }
         }
-      }
-    }
-  })
-
-  app.mapWithAuthentication({
-    '/session/': {
-      ':sid': {
-        delete: session.logOut,
-        get: session.item('/session/')
-      }
-    },
-    '/account/': {
-      ':uid': {
-        get: account.item,
-        delete: account.delete,
-        post: account.create,
-        options: restrictions.removeonly
-      }
-    },
-    '/order/': {
-      get: order.list,
-      post: order.create,
-      options: restrictions.collection,
-      ':oid': {
-        get: order.item('/order/', '/view/'),
-        put: order.update,
-        delete: order.del,
-        options: restrictions.item,
-        '/pay/': {
-          post: order.pay(pay.create)
+      },
+      '/pay/': {
+        get: pay.list,
+        post: pay.create,
+        ':pid': {
+          get: pay.item('/api/pay/'),
+          put: pay.update,
+          delete: pay.delete
         }
-      }
-    },
-    '/pay/': {
-      get: pay.list,
-      post: pay.create,
-      ':pid': {
-        get: pay.item('/pay/'),
-        put: pay.update,
-        delete: pay.delete
       }
     }
   });

@@ -1,6 +1,8 @@
 define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInterceptor'], function (angular, _, controllers) {
   'use strict';
 
+  var open = false;
+
   function LoginModalInstance($scope, $modalInstance, $log) {
 
     $scope.post = function (username, password) {
@@ -14,35 +16,36 @@ define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInt
 
     $log.info("Loading AuthenticatorController");
 
-    $scope.collection = [];
-    $scope.items = [];
+    function clearItems() {
+      // Clear the array, but do not delete it as it is bound to UI
+      $scope.items.splice(0, $scope.items.length);
+    }
+
+    $scope.collection = [];  // apiCollection
+    $scope.items = [];       // sessionItems
 
     var opts = {
       backdrop: true,
       keyboard: false,
       backdropClick: false,
-      templateUrl: "./scripts/template/authenticator/post.html", // TODO: should get from links
+      templateUrl: "./scripts/template/authenticator/post.html",
       controller: 'LoginModalInstance'
     };
 
     var loginModal;
 
     $scope.$on('event:auth-loginRequired', function () {
+      if (open) return;
+      open = true;
       $log.debug("Login dialog opening");
       loginModal = $modal.open(opts)
           .result
           .then(function (credentials) {
             if (angular.isDefined(credentials)) {
-              link
-                  .post($scope.collection, 'self', 'application/json', credentials)
+              link.post($scope.collection, 'authenticator', 'application/json', credentials)
                   .then(function success(response) {
-                    $http.get(response.headers().location, {
-                      headers: {
-                        'Accept': response.headers()['content-type']
-                      }
-                    })
-                        .then(
-                        function success(response) {
+                    $http.get(response.headers().location)
+                        .then(function success(response) {
                           $scope.items = [response.data];
                           authService.loginConfirmed();
                         },
@@ -56,6 +59,7 @@ define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInt
             }
           }, function () {
             $log.debug("Authentication: complete")
+            open = false;
           });
     });
 
@@ -64,13 +68,16 @@ define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInt
     });
 
     $scope.get = function () {
-      link.get('HEAD', 'authenticator').
+      link.get('HEAD', 'api').
           then(function success(response) {
             $scope.collection = response.data;
-            link.get(response.data, 'last').
-                then(function (response) {
-                  $scope.items = [response.data];
-                });
+            link.get(response.data, 'authenticator')
+                .then(function success(response) {
+                  $http.get(_.last(response.data.items).id)
+                      .then(function (response) {
+                        $scope.items = [response.data];
+                      });
+                })
           }, function error() {
             $log.warn("Authenticator: not found - there is not link relation 'authenticator' on HEAD");
           });
@@ -80,7 +87,7 @@ define(['angular', 'underscore', './controllersModule', '../provider/httpAuthInt
       item = item || this.item;
       link.del(item, 'self').
           then(function () {
-            $scope.items = []; // TODO: manage properly
+            clearItems();
           });
     };
 

@@ -2,12 +2,9 @@ var Resource = require('../representation/index').json;
 
 exports.collection = function (req, res) {
   var resource = new Resource(res.locals.self);
-  if (req.isAuthenticated()) {
-    resource.collectionLinks(res.locals.self, [
-      {_id: req.sessionID}
-    ]);
-    resource.addLink('create-form', 'text/html', res.locals.self + 'post.html');
-  }
+  resource.addCollection(res.locals.self, [
+    {_id: req.sessionID}
+  ]);
   res.send(resource);
 };
 
@@ -17,8 +14,7 @@ exports.item = function (collection) {
       console.log("Pontential session hijacking", req.sessionID, req.params.sid);
     }
     var doc = new Resource(res.locals.self, {username: req.user.username});
-    doc.addLink('collection', res.locals.schema + collection);
-    doc.addLink('delete-form', 'text/html', res.locals.schema + collection + 'delete.html');
+    doc.addLink('up', res.locals.schema + collection);
     res.type('application/json');
     res.send(doc);
   };

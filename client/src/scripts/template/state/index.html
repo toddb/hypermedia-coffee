@@ -1,12 +1,11 @@
 
 <div class="page-header">
-    <h1>Vendor
-        <small>Categories</small>
+    <h1>Different states available - this is reference data</small>
     </h1>
 </div>
 
 <div ng-hide="categories | isEmpty">
-    There are no categories.
+    There are no states - which means something is badly wrong because this reference data.
 </div>
 
 <div ng-show="categories | isEmpty">
@@ -14,7 +13,7 @@
         <li ng-repeat="category in categories"  class="list-group-item">
             <div>
                 {{category.name}}
-            <a ng-click="gotoCategory(category)" type="button" class="btn btn-primary btn-xs pull-right">Go</a>
+                <a ng-click="gotoCategory(category)" type="button" class="btn btn-primary btn-xs pull-right">Go</a>
             </div>
         </li>
    </ul>

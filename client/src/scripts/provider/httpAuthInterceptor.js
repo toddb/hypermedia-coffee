@@ -91,7 +91,6 @@ define(['angular', './providersModule'], function (angular, providers) {
 
               return {
                 loginConfirmed: function () {
-                  // TODO: publish the link relation URL with the event if it is available
                   $rootScope.$broadcast('event:auth-loginConfirmed');
                   retryAll();
                 }
