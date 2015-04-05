@@ -3,11 +3,10 @@
 var mongoose = require('mongoose'),
     bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10,
-    timestamp = require('./plugin/timestamp'),
     schema = new mongoose.Schema();
 
 schema.plugin(require('./plugin/resource'));
-schema.plugin(timestamp);
+schema.plugin(require('./plugin/timestamp'));
 
 schema.add({
   username: {type: String, required: true, unique: true},

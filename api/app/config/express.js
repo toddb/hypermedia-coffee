@@ -40,7 +40,7 @@ module.exports.init = function (db) {
     require('mongoose').connection.once('open', function callback() {
 
       // Fake account for now
-      var Account = require('../resource').Account;
+      var Account = require('../model').Account;
       Account.create({
         username: config.testuser.name,
         email: config.testuser.email,

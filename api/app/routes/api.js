@@ -7,6 +7,7 @@ module.exports =  function (collections) {
       var representation = new Resource(res.locals.self);
       representation.addLink("orders", res.locals.schema + collections[1]);
       representation.addLink("authenticator", res.locals.schema + collections[0]);
+      representation.addLink("authenticator", 'text/html', res.locals.schema + collections[2]);
       res.type('application/json');
       res.send(representation);
     };

@@ -1,7 +1,7 @@
 /*jslint node: true */
 'use strict';
 
-var Resource = require('../../app/resource/index').Order
+var Resource = require('../../app/model/index').Order
   , should = require('should');
 
 //var collection = {

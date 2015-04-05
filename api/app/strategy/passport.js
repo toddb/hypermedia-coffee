@@ -1,7 +1,7 @@
 exports = module.exports = function (app, passport) {
 
 
-  var User = require('../resource').Account,
+  var User = require('../model').Account,
       passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy;
 

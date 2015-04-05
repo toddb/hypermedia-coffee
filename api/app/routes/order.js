@@ -1,5 +1,5 @@
 'use strict';
-var Resource = require('../resource/index').Order;
+var Resource = require('../model/index').Order;
 
 exports.list = function (req, res) {
   Resource.get(res.locals.self, function (err, doc) {

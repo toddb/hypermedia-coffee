@@ -10,7 +10,7 @@ module.exports = function (app) {
 
   app.map({
     '/': {
-      get: api(['/api/session/', '/api/order/']),
+      get: api(['/api/session/', '/api/order/', '/login']),
       options: restrictions.collection
     },
     '/api': {
