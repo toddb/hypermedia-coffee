@@ -30,8 +30,7 @@ module.exports = {
       },
       'GET': function (done) {
         Resource.get('/pay/', function (err, doc) {
-          var o = doc.toJSON();
-          o.links.length.should.equal(1);
+          doc.length.should.equal(1);
           done();
         });
       }
@@ -39,19 +38,15 @@ module.exports = {
     'item': {
       'GET - with id returns item resource': function (done) {
         Resource.get(id, '/pay/', function (err, doc) {
-          doc.should.be.a.object
-          var o = doc.toJSON();
-          o.links.length.should.equal(1);
-          o.order.toString().should.eql(orderId);
+          doc.order.toString().should.eql(orderId);
           done();
         });
       },
       'PUT - full update with returning doc': function (done) {
         Resource.put(id, {token: 'xxxyf675fjhg'}, function (err, doc) {
-          var o = doc.toObject();
           should.not.exist(err);
-          o.__v.should.equal(1);
-          o.token.should.equal('xxxyf675fjhg');
+          doc.__v.should.equal(1);
+          doc.token.should.equal('xxxyf675fjhg');
           done();
         });
       },

@@ -1,5 +1,4 @@
-var _ = require('underscore')
-  , Resource = require('../../representation/index').json;
+var _ = require('underscore');
 
 module.exports = exports = function resourcePlugin(schema, options) {
 
@@ -15,6 +14,7 @@ module.exports = exports = function resourcePlugin(schema, options) {
     })
   };
 
+  // TODO: refactor out this method
   schema.statics.get = function (id, url, cb) {
     if (_.isUndefined(cb)) {
       this.getCollection(id, url);
@@ -25,15 +25,13 @@ module.exports = exports = function resourcePlugin(schema, options) {
 
   schema.statics.getCollection = function (url, cb) {
     this.find({}).exec(function (err, docs) {
-      if (err) cb(err);
-      cb(err, new Resource(url, _.isArray(docs) ? docs : [docs]));
+      cb(err, _.isArray(docs) ? docs : [docs], url);
     });
   };
 
   schema.statics.getItem = function (id, url, cb) {
     this.findById(id, function (err, doc) {
-      if (err) cb(err);
-      cb(err, new Resource(url, doc), doc);
+      cb(err, doc, url);
     });
   };
 
@@ -78,10 +76,12 @@ module.exports = exports = function resourcePlugin(schema, options) {
 
   };
 
-  schema.set('toJSON', { transform: function (doc, ret, options) {
-    delete ret.versionId;
-    delete ret._id;
-    delete ret.__v;
-  }});
+  schema.set('toJSON', {
+    transform: function (doc, ret, options) {
+      delete ret.versionId;
+      delete ret._id;
+      delete ret.__v;
+    }
+  });
 
 }

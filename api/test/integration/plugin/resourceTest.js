@@ -16,7 +16,7 @@ var Resource = mongoose.model('test', schema);
 
 module.exports = {
 
-  'resource: Test Resource Plugin': {
+  'resource: Plugin': {
     'collection': {
       'POST - returns ID of 24 long eg 5110709e4ba4ec7115000011': function (done) {
         Resource.remove({}, function () {
@@ -29,11 +29,10 @@ module.exports = {
       },
       'GET - (without id) returns collections of resource': function (done) {
         Resource.get('/tst/', function (err, doc) {
-          var o = doc.toJSON();
-          o.links.length.should.equal(1);
-          o.links[0].rel.should.equal('self');
-          o.links[0].type.should.equal('application/json');
-          o.links[0].href.should.equal('/tst/');
+          doc.length.should.equal(1);
+          var first = doc[0];
+          first.id.should.equal(id);
+          first.username.should.equal(acct.username);
           done(err);
         });
       }
@@ -41,18 +40,15 @@ module.exports = {
     'item': {
       'GET - with id returns item resource': function (done) {
         Resource.get(id, '/tst/', function (err, doc) {
-          var o = doc.toJSON();
-          o.links.length.should.equal(1);
-          o.username.should.match(/bob/);
+          doc.username.should.match(/bob/);
           done();
         });
       },
       'PUT - full update with returning doc': function (done) {
         Resource.put(id, {username: 'xx'}, function (err, doc) {
-          var o = doc.toObject();
           should.not.exist(err);
-          o.__v.should.equal(1);
-          o.username.should.equal('xx');
+          doc.__v.should.equal(1);
+          doc.username.should.equal('xx');
           done();
         });
       },

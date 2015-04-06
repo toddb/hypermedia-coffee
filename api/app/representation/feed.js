@@ -6,9 +6,8 @@ var _ = require('underscore')
       }
     };
 
-function Resource(url, doc) {
-  // TODO: doc could be Array[ID]
-  // TODO: __type could be defaulted to application/json in ctor and then excluded in toJSON
+function Representation(url, doc) {
+
   this.links = [];
 
   this.selfLink(url);
@@ -25,7 +24,7 @@ function Resource(url, doc) {
   }
 }
 
-Resource.prototype.addLink = fluent(function (rel, type, url) {
+Representation.prototype.addLink = fluent(function (rel, type, url) {
   if (_.isUndefined(type))
     return
 
@@ -37,11 +36,18 @@ Resource.prototype.addLink = fluent(function (rel, type, url) {
   this.links.push({rel: rel, type: type, href: url});
 });
 
-Resource.prototype.selfLink = fluent(function (url) {
+Representation.prototype.addLinks = fluent(function (transition, fn) {
+  var _this = this;
+  _.each(transition, function (rel) {
+    _this.addLink(rel, fn(rel));
+  });
+});
+
+Representation.prototype.selfLink = fluent(function (url) {
   this.addLink('self', url);
 });
 
-Resource.prototype.addCollection = fluent(function (url, docs) {
+Representation.prototype.addCollection = fluent(function (url, docs) {
   if (_.isUndefined(url))
     return;
 
@@ -51,14 +57,14 @@ Resource.prototype.addCollection = fluent(function (url, docs) {
   this.items = [];
   _.each(docs, function (doc) {
     this.items.push({
-      id: url +  doc._id,
+      id: url + doc._id,
       title: doc.type
     });
   }, this);
 
 });
 
-Resource.prototype.toJSON = fluent(function () {
+Representation.prototype.toJSON = fluent(function () {
 });
 
-module.exports = exports = Resource;
+module.exports = exports = Representation;

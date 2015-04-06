@@ -118,7 +118,7 @@ function matches(links, relationshipType, mediaType) {
  * Given a set of links (which can be in several forms), generate a
  * list of filtered links that match the given relation type and media type
  *
- * @param {DOM|CSSSelector|Array<Link>|Resource} arg
+ * @param {DOM|CSSSelector|Array<Link>|Representation} arg
  * @param {String} relationshipType
  * @param {String} mediaType
  * @return {Array.<Link>} an array of links that match

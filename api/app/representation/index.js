@@ -1,3 +1,4 @@
 module.exports = {
-  json: require('./json')
+  Feed: require('./feed'),
+  FeedItem: require('./feed')
 }
