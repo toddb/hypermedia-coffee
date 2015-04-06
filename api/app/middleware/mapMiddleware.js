@@ -2,11 +2,18 @@ module = module.exports = function (app) {
 
   var verbose = app.get('verbose') || false;
 
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
   var isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated()) {
       return next()
     }
-    return res.sendStatus(401);
+    res.status(401);
+    return require('../resource/api')(req, res);
   };
 
   function logRoute(key, route, authenticated) {

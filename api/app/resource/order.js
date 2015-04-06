@@ -1,12 +1,15 @@
 'use strict';
 var Resource = require('../model/index').Order;
 
-exports.list = function (req, res) {
-  Resource.get(res.locals.self, function (err, doc) {
-    if (err) return res.status(501).send(err);
+exports.list = function(parent){
+  return function (req, res) {
+    Resource.get(res.locals.self, function (err, doc) {
+      if (err) return res.status(501).send(err);
+      doc.addLink('up', res.locals.schema + parent);
 //    res.etag();
-    res.send(doc);
-  });
+      res.send(doc);
+    });
+  }
 };
 
 exports.create = function (req, res) {

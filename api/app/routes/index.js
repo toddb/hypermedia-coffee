@@ -8,13 +8,18 @@ module.exports = function (app) {
       pay = require('../resource/pay'),
       restrictions = require('../middleware/allowHeadersMiddleware');
 
+  app.use(function (req, res, next) {
+    res.locals.api = ['/api/session/', '/api/order/', '/login'];
+    next();
+  });
+
   app.map({
     '/': {
-      get: api(['/api/session/', '/api/order/', '/login']),
+      get: api,
       options: restrictions.collection
     },
     '/api': {
-      get: api(['/api/session/', '/api/order/']),
+      get: api,
       '/session/': {
         post: [session.logIn, session.rememberMe],
         options: restrictions.collection
@@ -25,18 +30,18 @@ module.exports = function (app) {
   app.mapWithAuthentication({
     '/api/': {
       'session/': {
-        get: session.collection,
+        get: session.collection('/api/'),
         ':sid': {
           delete: session.logOut,
           get: session.item('/api/session/')
         }
       },
       'order/': {
-        get: order.list,
+        get: order.list('/api/'),
         post: order.create,
         options: restrictions.collection,
         ':oid': {
-          get: order.item('/api/order/', '/view/'),
+          get: order.item('/api/order/'),
           put: order.update,
           delete: order.del,
           options: restrictions.item,

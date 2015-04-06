@@ -1,11 +1,14 @@
 var Resource = require('../representation/index').json;
 
-exports.collection = function (req, res) {
-  var resource = new Resource(res.locals.self);
-  resource.addCollection(res.locals.self, [
-    {_id: req.sessionID}
-  ]);
-  res.send(resource);
+exports.collection = function (parent) {
+  return function (req, res) {
+    var resource = new Resource(res.locals.self);
+    resource.addLink('up', res.locals.schema + parent);
+    resource.addCollection(res.locals.self, [
+      {_id: req.sessionID}
+    ]);
+    res.send(resource);
+  }
 };
 
 exports.item = function (collection) {
@@ -31,22 +34,24 @@ exports.logIn = function (req, res, next) {
       return next(err)
     }
     if (!user) {
-      console.log("User not found", info);
-      return res.sendStatus(401)
+      res.status(401);
+      return require('./api')(req, res, info);
     }
     req.logIn(user, function (err) {
       if (err) {
         return next(err);
       }
       res.set({Location: res.locals.request_url + user._id});
-      res.status(201).send({});
+      res.status(201);
+      return require('./api')(req, res, {username: req.user.username});
     });
   })(req, res, next);
 }
 
 exports.logOut = function (req, res) {
   req.logout();
-  res.sendStatus(204);
+  res.status(204);
+  return require('./api')(req, res, {message: 'Logged out'});
 }
 
 exports.rememberMe = function (req, res, next) {
