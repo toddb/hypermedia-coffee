@@ -45,7 +45,7 @@ module.exports.init = function (db) {
 
     app.use(errorHandler({dumpExceptions: true, showStack: true}));
 
-    require('mongoose').connection.once('open', function callback() {
+    db.connection.once('open', function callback() {
 
       // Fake account for now
       var Account = require('../model').Account;
