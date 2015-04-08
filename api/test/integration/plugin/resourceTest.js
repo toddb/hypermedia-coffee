@@ -24,37 +24,31 @@ module.exports = {
         Resource.post(acct, function (err, _id_) {
           id = _id_;
           id.should.match(/[0-9a-z]{24}/);
-          done();
+          done(err);
         });
       },
       'GET - (without id) returns collections of resource': function (done) {
-        Resource.get('/tst/', function (err, doc) {
-          doc.length.should.equal(1);
-          var first = doc[0];
-          first.id.should.equal(id);
-          first.username.should.equal(acct.username);
+        Resource.getCollection(function(err, doc){
           done(err);
         });
       }
     },
     'item': {
       'GET - with id returns item resource': function (done) {
-        Resource.get(id, '/tst/', function (err, doc) {
+        Resource.getItem(id, function (err, doc) {
           doc.username.should.match(/bob/);
-          done();
+          done(err);
         });
       },
       'PUT - full update with returning doc': function (done) {
         Resource.put(id, {username: 'xx'}, function (err, doc) {
-          should.not.exist(err);
           doc.__v.should.equal(1);
           doc.username.should.equal('xx');
-          done();
+          done(err);
         });
       },
       'DELETE - returns deleted doc': function (done) {
         Resource.delete(id, function (err, doc) {
-          should.not.exist(err);
           should.exist(doc);
           done();
         });

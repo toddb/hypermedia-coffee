@@ -1,7 +1,7 @@
 module.exports = function toJsonRepresentation(app) {
 
-  var Feed = require('../representation').Feed
-  FeedItem = require('../representation').FeedItem;
+  var Feed = require('../representation').Feed,
+      FeedItem = require('../representation').FeedItem;
 
   app.use(function initialise(req, res, next) {
 
@@ -13,10 +13,18 @@ module.exports = function toJsonRepresentation(app) {
       if (fn != undefined) {
         fn(representation)
       }
-
       res.type('application/json');
       res.send(representation)
-    }
+    };
+
+    /**
+     *
+     * @param url
+     * @param fn
+     */
+    res.toRepresentation = function (url, fn) {
+      toJsonRepresentation(new FeedItem(url, {}), fn);
+    };
 
     res.toFeedRepresentation = function (err, doc, url, fn) {
       checkError(err);
@@ -26,6 +34,7 @@ module.exports = function toJsonRepresentation(app) {
     res.toFeedItemRepresentation = function (err, doc, url, fn) {
       checkError(err);
       res.etag(doc.id, doc.modified);
+
       toJsonRepresentation(new FeedItem(url, doc), fn);
     };
 

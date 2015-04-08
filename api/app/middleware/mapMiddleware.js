@@ -13,7 +13,7 @@ module = module.exports = function (app) {
       return next()
     }
     res.status(401);
-    return require('../resource/api')(req, res);
+    require('../resource/api')(req, res);
   };
 
   function logRoute(key, route, authenticated) {

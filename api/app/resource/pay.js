@@ -9,7 +9,7 @@ exports.delete = function (req, res) {
 exports.item = function (parent) {
   return function (req, res) {
     var url = res.locals.schema + parent;
-    Payment.get(req.params.pid, url, function (err, doc) {
+    Payment.getItem(req.params.pid, function (err, doc) {
       res.toFeedItemRepresentation(err, doc, url, function (representation) {
         representation.addLink('up', res.locals.schema + parent);
       });
@@ -19,7 +19,7 @@ exports.item = function (parent) {
 
 exports.list = function (req, res) {
   var url = res.locals.request_url;
-  Payment.get(url, function (err, doc) {
+  Payment.getCollection(function (err, doc) {
     res.toFeedRepresentation(err, doc, url);
   });
 };

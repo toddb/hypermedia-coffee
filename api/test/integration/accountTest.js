@@ -21,7 +21,7 @@ module.exports = {
         });
       },
       'GET': function (done) {
-        Account.getCollection('/account/', function (err, doc) {
+        Account.getCollection(function (err, doc) {
           doc.length.should.equal(1);
           done(err);
         });
@@ -29,7 +29,7 @@ module.exports = {
     },
     'item': {
       'GET': function (done) {
-        Account.get(id, '/account/', function (err, doc) {
+        Account.getItem(id, function (err, doc) {
           doc.username.should.match(/someone/);
           done();
         });

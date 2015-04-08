@@ -9,16 +9,15 @@ exports.delete = function (req, res) {
 // TODO: broken
 exports.item = function (req, res) {
   var url = '/account/';
-  Resource.get(req.params.uid, url, function (err, doc) {
+  Resource.getItem(req.params.uid, function (err, doc) {
     res.toFeedItemRepresentation(err, doc, url);
   });
 };
 
 exports.list = function (req, res) {
-  // TODO: something that resembles an implementation
   var url = res.locals.request_url;
-  Resource.get(url, function (err, doc) {
-    res.toFeedRepresentation(err, doc, url);
+  Resource.getCollection(function (err, doc) {
+    res.toFeedRepresentation(err, doc, url)
   });
 };
 

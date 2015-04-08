@@ -14,13 +14,12 @@ module.exports = {
         });
         Order.post({type: 'medium'}, function (err, id) {
           id.should.not.be.null;
-          done();
+          done(err);
         });
       },
       'GET': function (done) {
-        Order.get('/order/', function (err, doc) {
-          doc.should.not.be.null;
-          done();
+        Order.getCollection(function(err, doc){
+          done(err);
         });
       }
     }

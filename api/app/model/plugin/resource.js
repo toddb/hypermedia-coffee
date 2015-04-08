@@ -14,24 +14,15 @@ module.exports = exports = function resourcePlugin(schema, options) {
     })
   };
 
-  // TODO: refactor out this method
-  schema.statics.get = function (id, url, cb) {
-    if (_.isUndefined(cb)) {
-      this.getCollection(id, url);
-    } else {
-      this.getItem(id, url, cb);
-    }
-  };
-
-  schema.statics.getCollection = function (url, cb) {
+  schema.statics.getCollection = function (cb) {
     this.find({}).exec(function (err, docs) {
-      cb(err, _.isArray(docs) ? docs : [docs], url);
+      cb(err, _.isArray(docs) ? docs : [docs]);
     });
   };
 
-  schema.statics.getItem = function (id, url, cb) {
+  schema.statics.getItem = function (id, cb) {
     this.findById(id, function (err, doc) {
-      cb(err, doc, url);
+      cb(err, doc);
     });
   };
 

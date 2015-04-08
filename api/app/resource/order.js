@@ -4,7 +4,7 @@ var Order = require('../model').Order;
 exports.list = function (parent) {
   return function (req, res) {
     var url = res.locals.self;
-    Order.get(url, function (err, doc, aa) {
+    Order.getCollection(function(err, doc){
       res.toFeedRepresentation(err, doc, url, function (representation) {
         representation.addLink('up', res.locals.schema + parent);
       });
@@ -19,7 +19,7 @@ exports.create = function (req, res) {
 exports.item = function (parent, child) {
   return function (req, res) {
     var url = res.locals.schema + parent + req.params.oid;
-    Order.get(req.params.oid, url, function (err, doc) {
+    Order.getItem(req.params.oid, function (err, doc) {
       res.toFeedItemRepresentation(err, doc, url, function (representation) {
         representation.addLink('up', res.locals.schema + parent);
         representation.addLinks(doc._actions, function (rel) {
