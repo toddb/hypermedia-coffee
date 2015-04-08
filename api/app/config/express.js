@@ -64,7 +64,7 @@ module.exports.init = function (db) {
           log.debug('Account: ' + doc.username + " saved.\n");
         }
       });
-    })
+    });
 
   }
 
