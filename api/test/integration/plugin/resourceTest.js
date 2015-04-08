@@ -1,18 +1,17 @@
 /*jslint node: true */
 'use strict';
 
-var should = require('should')
-    , mongoose = require('mongoose')
-    , RepositoryPlugin = require('../../../app/model/plugin/resource')
-    , schema = new mongoose.Schema({
-      username: {type: String, required: true}
-    })
-    , acct = {username: 'bob'}
-    , id;
+var should = require('should'),
+    mongoose = require('mongoose'),
+    RepositoryPlugin = require('../../../app/model/plugin/resource');
 
-schema.plugin(RepositoryPlugin);
+var Schema = new mongoose.Schema({
+  username: {type: String, required: true}
+})
+Schema.plugin(RepositoryPlugin);
+var Resource = mongoose.model('test', Schema);
 
-var Resource = mongoose.model('test', schema);
+var id, acct = {username: 'bob'};
 
 module.exports = {
 
@@ -28,7 +27,7 @@ module.exports = {
         });
       },
       'GET - (without id) returns collections of resource': function (done) {
-        Resource.getCollection(function(err, doc){
+        Resource.getCollection(function (err, doc) {
           done(err);
         });
       }
