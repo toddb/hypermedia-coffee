@@ -1,4 +1,5 @@
 var config = require('./index'),
+    log = require('./logger'),
     express = require('express'),
     passport = require('passport'),
     session = require('express-session'),
@@ -30,11 +31,18 @@ module.exports.init = function (db) {
   }));
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(logger("combined", {"stream": log.stream}));
+
+  app.log = log;
+  app.use(function(req, res, next){
+    res.log = log;
+    next();
+  });
 
   app.use('/login', serveStatic('public'));
 
   if ('production' != app.settings.env) {
-    app.use(logger('combined'));
+
     app.use(errorHandler({dumpExceptions: true, showStack: true}));
 
     require('mongoose').connection.once('open', function callback() {
@@ -48,15 +56,14 @@ module.exports.init = function (db) {
       }, function (err, doc) {
         if (err) {
           if (err.code == 11000) {
-            console.log('Account: ' + config.testuser.name + ' exists.\n');
+            log.debug('Account: ' + config.testuser.name + ' exists.\n');
           } else {
-            console.log(err);
+            log.error(err);
           }
         } else {
-          console.log('Account: ' + doc.username + " saved.\n");
+          log.debug('Account: ' + doc.username + " saved.\n");
         }
       });
-      console.log();
     })
 
   }

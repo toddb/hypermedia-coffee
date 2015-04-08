@@ -1,8 +1,5 @@
 module = module.exports = function (app) {
 
-  var verbose = app.get('verbose') || false;
-
-
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
@@ -17,9 +14,7 @@ module = module.exports = function (app) {
   };
 
   function logRoute(key, route, authenticated) {
-    if (verbose) {
-      console.log('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
-    }
+    app.log.debug('%s %s', key, route, (authenticated ? '       [ requires authentication ]' : ''));
   }
 
   app.mapWithAuthentication = function (route) {

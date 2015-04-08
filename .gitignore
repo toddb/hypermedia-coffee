@@ -11,5 +11,5 @@ projectFilesBackup*
 libpeerconnection.log
 .DS_Store
 selenium
-
+*.log
 tmp
