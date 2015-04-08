@@ -2,12 +2,8 @@
 
 var mongoose = require('mongoose');
 
-function model(name) {
-  return mongoose.model(name, require('./' + name + 'Schema'));
-}
-
 module.exports = {
-  Account: model('account'),
-  Order: model('order'),
-  Pay: model('pay')
+  Account: mongoose.model('account', require('./accountSchema')),
+  Order: mongoose.model('order', require('./orderSchema')),
+  Pay: mongoose.model('pay', require('./paySchema'))
 };
