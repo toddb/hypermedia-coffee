@@ -50,4 +50,4 @@ schema.methods.generateRandomToken = function () {
   return token;
 };
 
-module.exports = schema;
+module.exports = mongoose.model('account', schema);

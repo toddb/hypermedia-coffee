@@ -25,4 +25,4 @@ schema.pre('save', function (next) {
   next();
 });
 
-module.exports = schema;
+module.exports = mongoose.model('order', schema);
