@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @module model
+ * @type {mongoose.model|exports}
+ */
+
 var mongoose = require('mongoose'),
     ObjectId = require('mongoose').Schema.Types.ObjectId,
     timestamp = require('./plugin/timestamp'),
@@ -33,4 +38,7 @@ schema.pre('save', function (next) {
   next();
 });
 
+/**
+ * Pay model
+ */
 module.exports = mongoose.model('pay', schema);

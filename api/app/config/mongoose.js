@@ -12,6 +12,9 @@ var config = require('./index'),
 
 mongoose.connection.on('error', log.error.bind(log, 'connection error:'));
 
+/**
+ * @deprecated
+ */
 module.exports.loadModels = function () {
   glob("**/*Schema.js", function (err, modelPath) {
     modelPath.forEach(function (model) {
@@ -21,15 +24,21 @@ module.exports.loadModels = function () {
   });
 };
 
-module.exports.loadPlugins = function () {
-  glob("**/*Plugin.js", function (err, modelPath) {
-    modelPath.forEach(function (plugin) {
-      log.debug("Loading plugin: " + plugin)
-      require(path.resolve(plugin));
-    })
-  });
-};
+/**
+ * @callback CallBack
+ * @param {mongoose} db Instance of the mongoose database
+ */
 
+/**
+ * Connect mongoose
+ * @example
+ *
+ * mongoose.connect(function (db) {
+ *  app = express.init(db)
+ * });
+ *
+ * @param {CallBack} cb Callback
+ */
 module.exports.connect = function (cb) {
   var _this = this;
   var db = mongoose.connect(config.db, function (err) {
@@ -38,7 +47,6 @@ module.exports.connect = function (cb) {
       log.error(err);
     } else {
       //_this.loadModels();
-      //_this.loadPlugins();
       if (cb) cb(db);
     }
   });
@@ -47,8 +55,20 @@ module.exports.connect = function (cb) {
   });
 };
 
+/**
+ * @Returns {mongoose.connection}
+ */
 module.exports.connection = mongoose.connection;
 
+/**
+ * @callback CallBack
+ * @param {Error} err
+ */
+
+/**
+ * Disconnect mongoose
+ * @param {CallBack} cb
+ */
 module.exports.disconnect = function (cb) {
   mongoose.disconnect(function (err) {
     log.info(chalk.yellow('Disconnected from MongoDB.'));

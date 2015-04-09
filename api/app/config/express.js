@@ -11,6 +11,13 @@ var config = require('./index'),
     serveStatic = require('serve-static'),
     errorHandler = require('errorhandler');
 
+/**
+ * Initialises the express instance with routes, middleware, logging and authentication strategies.
+ * Current this approach uses session state to hold authentication (and is persisted in mongo)
+ *
+ * @param {mongoose} db Database instance
+ * @returns {*|express|exports}
+ */
 module.exports.init = function (db) {
 
   var app = express();
@@ -33,11 +40,17 @@ module.exports.init = function (db) {
   app.use(passport.session());
   app.use(logger("combined", {"stream": log.stream}));
 
+  /**
+   * Exposes the logger to req, res cycles via req.app.log
+   * @type {winston.Logger|exports}
+   */
   app.log = log;
-  app.use(function(req, res, next){
-    res.log = log;
-    next();
-  });
+
+  /**
+   * Exposes the mongoose db to req, res cycles via req.app.db.models
+   * @type {winston.Logger|exports}
+   */
+  app.db = db;
 
   app.use('/login', serveStatic('public'));
 

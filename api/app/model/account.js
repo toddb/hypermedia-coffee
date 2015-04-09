@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @module model
+ * @type {mongoose.model|exports}
+ */
+
 var mongoose = require('mongoose'),
     bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10,
@@ -50,4 +55,7 @@ schema.methods.generateRandomToken = function () {
   return token;
 };
 
+/**
+ *  Account model
+ */
 module.exports = mongoose.model('account', schema);

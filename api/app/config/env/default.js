@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ *
+ * @type {{port: (number), app: {title: string, description: string, keywords: string}, info: boolean, sessionSecret: string}}
+ */
 module.exports = {
   port: process.env.PORT || 8888,
   app: {

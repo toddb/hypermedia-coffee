@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @module model
+ * @type {mongoose.model|exports}
+ */
+
 var mongoose = require('mongoose'),
     resourceSchema = require('./plugin/resource'),
     coffeeState = require('./plugin/coffeeState'),
@@ -25,4 +30,7 @@ schema.pre('save', function (next) {
   next();
 });
 
+/**
+ * Order model
+ */
 module.exports = mongoose.model('order', schema);

@@ -103,7 +103,6 @@ function filterLinks(links, relationshipType, mediaType) {
  * @param {String} mediaType
  * @return {Boolean} Whether there is one or more matching links
  */
-
 function matches(links, relationshipType, mediaType) {
   return !_.isEmpty(filter(links, relationshipType, mediaType));
 }
@@ -123,7 +122,6 @@ function matches(links, relationshipType, mediaType) {
  * @param {String} mediaType
  * @return {Array.<Link>} an array of links that match
  */
-
 function filter(arg, relationshipType, mediaType) {
   mediaType = mediaType || '*/*';
 
@@ -153,6 +151,7 @@ function makeNotFoundMessage(links, relationshipType, mediaType) {
 }
 
 /**
+ * Get the first 'href' that matches the filter criteria.
  *
  * @param {Array.<Link>|Object} links
  * @param {String|RegExp} relationshipType
@@ -169,6 +168,14 @@ function getUrl(links, relationshipType, mediaType) {
   }
 }
 
+/**
+ *  Get the first 'title' that matches the filter criteria.
+ *
+ * @param {Array.<Link>|Object} links
+ * @param {String|RegExp} relationshipType
+ * @param {?String=} mediaType
+ * @returns {String} The title of the relationship
+ */
 function getTitle(links, relationshipType, mediaType) {
   var candidateLinks = filter(links, relationshipType, mediaType);
   if (!_.isEmpty(candidateLinks)) {
@@ -181,16 +188,50 @@ function getTitle(links, relationshipType, mediaType) {
 
 module.exports = exports = {
 
-  // Get the first 'href' that matches the filter criteria.
+  /**
+   * Get the first 'href' that matches the filter criteria.
+   *
+   * @param {Array.<Link>|Object} links
+   * @param {String|RegExp} relationshipType
+   * @param {?String=} mediaType
+   * @returns {String} The uri of the relationship
+   */
   getUrl: getUrl,
+  /**
+   *  Get the first 'title' that matches the filter criteria.
+   *
+   * @param {Array.<Link>|Object} links
+   * @param {String|RegExp} relationshipType
+   * @param {?String=} mediaType
+   * @returns {String} The title of the relationship
+   */
   getTitle: getTitle,
 
-  // Filter the list of links based on a relationship type and media type.
-  // The result is an array of links objects.
-  //
-  // The results are not sorted. When multiple link entries are matched
-  // then the order should not be assumed.
+  /**
+   * Filter the list of links based on a relationship type and media type.
+   * The result is an array of links objects.
+   *
+   * The results are not sorted. When multiple link entries are matched
+   * then the order should not be assumed.
+   *
+   * Given a set of links (which can be in several forms), generate a
+   * list of filtered links that match the given relation type and media type
+   *
+   * @param {DOM|CSSSelector|Array<Link>|Representation} arg
+   * @param {String} relationshipType
+   * @param {String} mediaType
+   * @return {Array.<Link>} an array of links that match
+   */
   filter: filter,
 
+
+  /**
+   * Query whether the 'links' has one or more link elements that match the given criteria.
+   *
+   * @param {Array.<Link>|Object} links
+   * @param {String} relationshipType
+   * @param {String} mediaType
+   * @return {Boolean} Whether there is one or more matching links
+   */
   matches: matches
 }

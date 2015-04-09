@@ -1,6 +1,11 @@
-// from https://github.com/tblobaum/mongoose-troop/blob/master/lib/timestamp.js
-
-// Plugin
+'use strict'
+/**
+ * Timestamp plugin adding created and modified to a model
+ *
+ * @see  https://github.com/tblobaum/mongoose-troop/blob/master/lib/timestamp.js
+ * @param {mongoose.Schema} schema
+ * @param {{createdPath: string, modifiedPath: string, useVirtual: boolean}} options
+ */
 function timestamp (schema, options) {
   options || (options = {})
 
@@ -38,4 +43,7 @@ function timestamp (schema, options) {
   })
 }
 
+/**
+ * Timestamp schema plugin
+ */
 module.exports = timestamp

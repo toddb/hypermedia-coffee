@@ -24,8 +24,23 @@ var logger = new winston.Logger({
   exitOnError: false
 });
 
+/**
+ *
+ * @type {winston.Logger}
+ */
 module.exports = logger;
+
+/**
+ *
+ * @type {{write: Function}}
+ */
 module.exports.stream = {
+  /**
+   * Writes out to the logger.
+   *
+   * @param {String} message
+   * @param encoding
+   */
   write: function (message, encoding) {
     logger.info(message);
   }
