@@ -53,7 +53,7 @@ module.exports = function (app) {
           }
         }
       },
-      '/pay/': {
+      'pay/': {
         get: pay.list,
         post: pay.create,
         ':pid': {
