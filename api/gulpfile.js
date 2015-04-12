@@ -8,6 +8,7 @@ var gulp = require('gulp'),
  * Acceptance is already under spec because of an async issue with supertest
  *
  * Configured such that when teamcity if available it reports to teamcity just like magic
+ * see: https://confluence.jetbrains.com/display/TCD8/Predefined+Build+Parameters
  */
 var mocha_opts = {
   reporter: (process.env.TEAMCITY_VERSION == undefined) ? 'spec' : 'mocha-teamcity-reporter',
