@@ -26,7 +26,8 @@ var version = args['version'] || '0.0.0.0';
 var api = args['api'] || 'http://localhost:8888/api/'; // https://your-api.example
 
 var inBuildEnvironment = process.env.TEAMCITY_VERSION;
-var browsers = !inBuildEnvironment ? ['Chrome'] : ['PhantomJS'];
+var browsers = !inBuildEnvironment ? ['Chrome', 'PhantomJS'] : ['PhantomJS'];
+var reporters =  !inBuildEnvironment ? ['progress'] : ['teamcity'];
 
 /**
  *  Main build targets
@@ -171,6 +172,7 @@ gulp.task('test', function (done) {
   karma.start({
     configFile: karmaCommonConf,
     browsers: browsers,
+    reporters: reporters,
     singleRun: true
   }, done);
 });
