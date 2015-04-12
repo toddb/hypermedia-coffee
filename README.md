@@ -39,8 +39,9 @@ The basic system is comprised of the following components:
 - Lightweight backend web server ([NodeJS](nodejs.org) / [Express](http://expressjs.com))
 
 # Dependencies
+- `bzip2` is required for a compile of one of the node dependencies 
 - [nodejs/npm](http://nodejs.org) - even then you can use a local version through `setup.sh` which loads v10.5 into `node_lib`
-- [mongo](http://www.mongodb.org/)
+- [mongo](http://www.mongodb.org/) (required for integration and acceptance tests, as well as a running system)
 - gcc - for some node modules - I used (commandline tools for XCode)[http://developer.apple.com/downloads] - then on 10.8.4 still had problems (`xcode-select: Error: No Xcode is selected. Use xcode-select -switch <path-to-xcode>`). Solution: `sudo xcode-select -switch /usr/bin`
 
 

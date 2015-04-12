@@ -76,7 +76,7 @@ gulp.task('build-requirejs', ['clean'], function (done) {
 
     logLevel: 1,
 
-    optimize: 'none',
+    optimize: 'uglify2',
     mainConfigFile: 'src/scripts/main.js',
 
     modules: [

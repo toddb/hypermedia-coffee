@@ -45,8 +45,9 @@
     "gulp-debug": "^2.0.1",
     "supertest": "^0.15.0",
     "mocha": "^2.2.1",
-    "mongodb": "^2.0.25",
+    "mongodb": "~1",
     "mocha-mongoose": "^1.0.4",
-    "gulp-load-plugins": "^0.9.0"
+    "gulp-load-plugins": "^0.9.0",
+    "mocha-teamcity-reporter": ">=0.0.1"
   }
 }

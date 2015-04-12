@@ -3,8 +3,14 @@ var gulp = require('gulp'),
     gulpLoadPlugins = require('gulp-load-plugins'),
     plugins = gulpLoadPlugins();
 
+/**
+ * Micro/Integration tests are running under `exports` - TODO: should be refactored to `spec`
+ * Acceptance is already under spec because of an async issue with supertest
+ *
+ * Configured such that when teamcity if available it reports to teamcity just like magic
+ */
 var mocha_opts = {
-  reporter: 'spec',
+  reporter: (process.env.TEAMCITY_VERSION == undefined) ? 'spec' : 'mocha-teamcity-reporter',
   ui: 'exports'
 };
 
@@ -51,10 +57,11 @@ gulp.task('acceptance', ['env:test'], function (done) {
   var mongoose = require('./app/config/mongoose');
   var error;
 
+
   mongoose.connect(function () {
     gulp.src('test/acceptance/**/*.js')
         .pipe(plugins.debug())
-        .pipe(plugins.mocha())
+        .pipe(plugins.mocha({reporter: process.env.TEAMCITY_VERSION == undefined ? 'spec' : 'mocha-teamcity-reporter'}))
         .on('error', function (err) {
           error = err;
         })
