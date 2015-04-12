@@ -15,6 +15,8 @@ var mocha_opts = {
   ui: 'exports'
 };
 
+var mongoose;
+
 gulp.task('default', ['micro']);
 
 gulp.task('env:test', function () {
@@ -36,7 +38,7 @@ gulp.task('micro', ['env:test'], function () {
 });
 
 gulp.task('integration', ['env:test'], function (done) {
-  var mongoose = require('./app/config/mongoose');
+  mongoose = mongoose ? mongoose : require('./app/config/mongoose');
   var error;
 
   mongoose.connect(function () {
@@ -49,15 +51,15 @@ gulp.task('integration', ['env:test'], function (done) {
         .on('end', function () {
           mongoose.disconnect(function () {
             done(error);
+            //process.exit(error ? 1 : 0);
           });
         });
   });
 });
 
 gulp.task('acceptance', ['env:test'], function (done) {
-  var mongoose = require('./app/config/mongoose');
+  mongoose = mongoose ? mongoose : require('./app/config/mongoose');
   var error;
-
 
   mongoose.connect(function () {
     gulp.src('test/acceptance/**/*Spec.js')
@@ -69,7 +71,7 @@ gulp.task('acceptance', ['env:test'], function (done) {
         .on('end', function () {
           mongoose.disconnect(function () {
             done(error);
-            process.exit(0);
+            process.exit(error ? 1 : 0);
           });
         });
   });

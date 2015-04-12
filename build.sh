@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
-cd api
-npm install
-# tests must be run separately rather as one set of tasks
-node_modules/.bin/gulp micro
-node_modules/.bin/gulp integration
-node_modules/.bin/gulp acceptance
+set -e
+GULP=node_modules/.bin/gulp
+BOWER=node_modules/.bin/bower
 
-cd ../client
-npm install
-node_modules/.bin/bower update
-node_modules/.bin/gulp build
-node_modules/.bin/gulp test-travis
+( cd api && npm install )
+#( cd api/app && npm install )
+# tests must be run separately rather as one set of tasks
+( cd api && $GULP micro )
+( cd api && $GULP integration )
+( cd api && $GULP acceptance )
+
+( cd client ; npm install ; $BOWER update ; $GULP build test )
+

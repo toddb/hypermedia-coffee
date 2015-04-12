@@ -5,7 +5,6 @@
  */
 var config = require('./index'),
     log = require('./logger'),
-    chalk = require('chalk'),
     path = require('path'),
     glob = require('glob'),
     mongoose = require('mongoose');
@@ -43,7 +42,7 @@ module.exports.connect = function (cb) {
   var _this = this;
   var db = mongoose.connect(config.db, function (err) {
     if (err) {
-      log.error(chalk.red('Could not connect to MongoDB! ' + config.db));
+      log.error('Could not connect to MongoDB! ' + config.db);
       log.error(err);
     } else {
       //_this.loadModels();
@@ -51,7 +50,7 @@ module.exports.connect = function (cb) {
     }
   });
   mongoose.connection.on('open', function () {
-    log.info(chalk.green('Connected ' + config.db));
+    log.info('Connected ' + config.db);
   });
 };
 
@@ -71,7 +70,7 @@ module.exports.connection = mongoose.connection;
  */
 module.exports.disconnect = function (cb) {
   mongoose.disconnect(function (err) {
-    log.info(chalk.yellow('Disconnected from MongoDB.'));
+    log.info('Disconnected from MongoDB.');
     cb(err);
   });
 };

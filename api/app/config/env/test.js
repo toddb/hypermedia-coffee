@@ -6,7 +6,7 @@
  */
 module.exports = {
   db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/test',
-  port: process.env.PORT || 68888 || Math.floor(Math.random() * 61439 + 7000),
+  port: process.env.PORT || 62888 || Math.floor(Math.random() * 51439 + 7000),
   sessionSecret: 'sect87key1supp0se',
   testuser: {
     name: 'bob',
