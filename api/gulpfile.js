@@ -30,7 +30,7 @@ gulp.task('env:prod', function () {
 });
 
 gulp.task('micro', ['env:test'], function () {
-  return gulp.src('test/micro/**/*.js', {read: false})
+  return gulp.src('test/micro/**/*Test.js', {read: false})
       .pipe(plugins.debug())
       .pipe(plugins.mocha(mocha_opts));
 });
@@ -40,7 +40,7 @@ gulp.task('integration', ['env:test'], function (done) {
   var error;
 
   mongoose.connect(function () {
-    gulp.src('test/integration/**/*.js')
+    gulp.src('test/integration/**/*Test.js')
         .pipe(plugins.debug())
         .pipe(plugins.mocha(mocha_opts))
         .on('error', function (err) {
@@ -60,7 +60,7 @@ gulp.task('acceptance', ['env:test'], function (done) {
 
 
   mongoose.connect(function () {
-    gulp.src('test/acceptance/**/*.js')
+    gulp.src('test/acceptance/**/*Spec.js')
         .pipe(plugins.debug())
         .pipe(plugins.mocha({reporter: process.env.TEAMCITY_VERSION == undefined ? 'spec' : 'mocha-teamcity-reporter'}))
         .on('error', function (err) {
