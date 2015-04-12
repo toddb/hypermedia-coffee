@@ -1,6 +1,7 @@
 /*global require*/
 var gulp = require('gulp'),
     rimraf = require('rimraf'),
+    clean = require('gulp-clean'),
     uglify = require('gulp-uglify'),
     minifyHTML = require('gulp-minify-html'),
     autoprefixer = require('gulp-autoprefixer'),
@@ -24,12 +25,14 @@ var args = yargs.argv;
 var version = args['version'] || '0.0.0.0';
 var api = args['api'] || 'http://localhost:8888/api/'; // https://your-api.example
 
-// Build
+
+/**
+ *  Main build targets
+ */
 gulp.task('default', ['build', 'test']);
 gulp.task('build', ['build-html', 'build-requirejs']);
 
 gulp.task('dev', ['default', 'watch']);
-
 
 gulp.task('watch', function () {
   lr.listen();
@@ -37,13 +40,14 @@ gulp.task('watch', function () {
       .watch('src/**/*', ['build'])
       .on('change', lr.changed);
 });
+
 /**
  *  Clean the generated files
  */
-gulp.task('clean', function (cb) {
+gulp.task('clean', function (done) {
   rimraf('dist', function () {
     mkdirp('dist');
-    cb();
+    done();
   });
 });
 
@@ -67,8 +71,17 @@ gulp.task('build-html', ['clean'], function () {
 /**
  * @see https://gist.github.com/rafaelrinaldi/11008190
  * @see https://github.com/jrburke/r.js/blob/master/build/example.build.js
+ *
+ * `requirejs-backup-css` is required because of a bug in requirejs deleting external files - you
+ * then must call `requirejs-restore-css` after. This is done in the `build-requirejs` target
+ * @see still getting bootstrap css files deleted as at v2.1.16
+ *      --> https://github.com/jrburke/requirejs/issues/755
+ *
+ *  Note: if you get the error:    Error: ENOENT, lstat '/hypermedia-coffee/client/bower_components/bootstrap/dist/css/bootstrap.css'
+ *        then you will need to reinstall the bootstrap library: delete from file system and then `node_modules/.bin/bower update`
  */
-gulp.task('build-requirejs', ['clean'], function (done) {
+gulp.task('build-requirejs', ['clean', 'requirejs-backup-css'], function (done) {
+
   rjs.optimize({
     appDir: 'src',
     baseUrl: 'scripts',
@@ -94,7 +107,7 @@ gulp.task('build-requirejs', ['clean'], function (done) {
     ],
     // still getting bootstrap css files deleted as at v2.1.16
     // see: https://github.com/jrburke/requirejs/issues/755
-    // removeCombined: true,
+    removeCombined: true,
 
     uglify2: {
       output: {
@@ -110,10 +123,42 @@ gulp.task('build-requirejs', ['clean'], function (done) {
       mangle: false
     }
   }, function () {
+    // sorry, this must be started after all the require work has completed
+    gulp.start('requirejs-restore-css');
     done();
   }, function (err) {
     console.log(err);
   });
+});
+
+
+/**
+ * Only required because of bug in requirejs - saves the file to a `./tmp` directory
+ *
+ * @see still getting bootstrap css files deleted as at v2.1.16
+ *      --> https://github.com/jrburke/requirejs/issues/755
+ *
+ */
+gulp.task('requirejs-backup-css', function (done) {
+  gulp.src('./bower_components/bootstrap/dist/css/bootstrap.css')
+      .pipe(gulp.dest('./tmp'))
+      .on('end', function () {
+        // make sure the task runs sequentially
+        // see https://github.com/gulpjs/gulp/issues/67
+        done();
+      });
+});
+
+/**
+ * Only required because of bug in requirejs - restores file and deletes `./tmp` directory
+ *
+ * @see still getting bootstrap css files deleted as at v2.1.16
+ *      --> https://github.com/jrburke/requirejs/issues/755
+ */
+gulp.task('requirejs-restore-css', function () {
+  gulp.src('./tmp/**')
+      .pipe(clean())
+      .pipe(gulp.dest('./bower_components/bootstrap/dist/css'));
 });
 
 var karmaCommonConf = __dirname + '/karma.conf.js';

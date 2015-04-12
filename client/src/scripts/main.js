@@ -10,7 +10,6 @@ require.config({
   paths: {
     'angular': '../../bower_components/angular/angular',
     'angular-ui-utils': '../../bower_components/angular-ui-utils/ui-utils',
-    'angular-route': '../../bower_components/angular-route/angular-route',
     'angular-ui-router': '../../bower_components/angular-ui-router/release/angular-ui-router',
     'angularAMD': '../../bower_components/angularAMD/angularAMD',
     'angular-bootstrap': '../../bower_components/angular-bootstrap/ui-bootstrap',
