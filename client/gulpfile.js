@@ -25,6 +25,8 @@ var args = yargs.argv;
 var version = args['version'] || '0.0.0.0';
 var api = args['api'] || 'http://localhost:8888/api/'; // https://your-api.example
 
+var inBuildEnvironment = process.env.TEAMCITY_VERSION;
+var browsers = !inBuildEnvironment ? ['Chrome'] : ['PhantomJS'];
 
 /**
  *  Main build targets
@@ -168,14 +170,7 @@ var karmaCommonConf = __dirname + '/karma.conf.js';
 gulp.task('test', function (done) {
   karma.start({
     configFile: karmaCommonConf,
-    singleRun: true
-  }, done);
-});
-
-gulp.task('test-travis', function (done) {
-  karma.start({
-    configFile: karmaCommonConf,
-    browsers: ['PhantomJS', 'Firefox'],
+    browsers: browsers,
     singleRun: true
   }, done);
 });
