@@ -49,39 +49,63 @@ describe("One owner, admin both access to resource:", function () {
 
   describe('Resource Customer1:', function () {
 
-    it('should allow a user see their own perms', function (done) {
-      auth.isAllowed(customer1User, resourceCustomer1, 'read')
-          .then(done);
+    describe('Users:', function () {
+
+      describe('Access:', function () {
+        it('should allow a user see their own perms', function (done) {
+          auth.isAllowed(customer1User, resourceCustomer1, 'read')
+              .then(done);
+        });
+
+       });
+
+      describe('Deny:', function () {
+        it('should disallow other users to see other users perms', function (done) {
+          auth.isAllowed(customer2User, resourceCustomer1, 'read')
+              .then(null, function notAuthorised(err) {
+                done(err);
+              });
+        });
+      });
     });
 
-    it('should allow an admin to inherit users perms', function (done) {
-      auth.isAllowed(adminUser, resourceCustomer1, 'read')
-          .then(done);
+    describe('Admin:', function () {
+      it('should allow an admin to inherit users perms', function (done) {
+        auth.isAllowed(adminUser, resourceCustomer1, 'read')
+            .then(done);
+      });
     });
 
-    it('should disallow other users to see other users perms', function (done) {
-      auth.isAllowed(customer2User, resourceCustomer1, 'read')
-          .then(null, function notAuthorised(err) {
-            done(err);
-          });
-    });
+
   });
 
   describe('Resource Customer2:', function () {
-    it('should allow a user see their own perms', function (done) {
-      auth.isAllowed(customer2User, resourceCustomer2, 'read')
-          .then(done);
-    });
-    it('should allow an admin to inherit users perms', function (done) {
-      auth.isAllowed(adminUser, resourceCustomer2, 'read')
-          .then(done);
+
+    describe('Users:', function () {
+
+      describe('Access:', function () {
+        it('should allow a user see their own perms', function (done) {
+          auth.isAllowed(customer2User, resourceCustomer2, 'read')
+              .then(done);
+        });
+
+      });
+
+      describe('Deny:', function () {
+        it('should disallow other users to see other users perms', function (done) {
+          auth.isAllowed(customer1User, resourceCustomer2, 'read')
+              .then(null, function notAuthorised(err) {
+                done(err);
+              });
+        });
+      });
     });
 
-    it('should disallow other users to see other users perms', function (done) {
-      auth.isAllowed(customer1User, resourceCustomer2, 'read')
-          .then(null, function notAuthorised(err) {
-            done(err);
-          });
+    describe('Admin:', function () {
+      it('should allow an admin to inherit users perms', function (done) {
+        auth.isAllowed(adminUser, resourceCustomer2, 'read')
+            .then(done);
+      });
     });
 
   });
