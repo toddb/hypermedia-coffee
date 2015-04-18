@@ -57,6 +57,12 @@ gulp.task('integration', ['env:test'], function (done) {
   });
 });
 
+gulp.task('acl', function () {
+  gulp.src('test/integration/**/*Spec.js', {read: false})
+      .pipe(plugins.debug())
+      .pipe(plugins.mocha({reporter: 'spec', ui: 'bdd'}));
+})
+
 gulp.task('acceptance', ['env:test'], function (done) {
   mongoose = mongoose ? mongoose : require('./app/config/mongoose');
   var error;
