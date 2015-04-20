@@ -9,7 +9,7 @@ module.exports = function (app) {
       restrictions = require('../middleware/allowHeadersMiddleware');
 
   app.use(function (req, res, next) {
-    res.locals.api = ['/api/session/', '/api/order/', '/login'];
+    res.locals.api = ['/api/account/', '/api/order/', '/login'];
     next();
   });
 
@@ -20,7 +20,7 @@ module.exports = function (app) {
     },
     '/api': {
       get: api,
-      '/session/': {
+      '/account/': {
         post: [session.logIn, session.rememberMe],
         options: restrictions.collection
       }
@@ -29,11 +29,11 @@ module.exports = function (app) {
 
   app.mapWithAuthentication({
     '/api/': {
-      'session/': {
+      'account/': {
         get: session.collection('/api/'),
         ':sid': {
           delete: session.logOut,
-          get: session.item('/api/session/')
+          get: session.item('/api/account/')
         }
       },
       'order/': {
