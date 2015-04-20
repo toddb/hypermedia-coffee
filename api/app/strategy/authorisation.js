@@ -1,19 +1,31 @@
 var neo4j = require('node-neo4j'),
     Acl = require("graph-acl"),
-    Q = require('q');
+    Q = require('q'),
+    perms = require('./perms');
 
+/**
+ *
+ * @type {{connection: string}}
+ */
 var internals = {
   connection: 'http://localhost:7474'
 };
 
 /**
- * @type Acl
+ *
+ * @param {URI|String} [connection=http://localhost:7474] - connection to the neo4j database
+ * @type {Authorisation}
+ * @constructor
  */
+var Authorisation = function (connection) {
+  internals.server = new internals.Server(connection);
+  this.acl = internals.server.acl;
+};
 
 /**
  *
  * @param {URI|String} [connectionString=http://localhost:7474] - connection to the neo4j database
- * @returns {Acl}
+ * @returns {internals.Server}
  * @constructor
  */
 internals.Server = function (connection) {
@@ -24,15 +36,17 @@ internals.Server = function (connection) {
 
 /**
  *
- * @param connection
- * @returns {internals}
- * @constructor
+ * @type {Authorisation|Function}
  */
-exports = module.exports = function (connection) {
-  internals.server = new internals.Server(connection);
-  internals.acl = internals.server.acl;
-  return internals
+exports = module.exports = function(connection){
+  return new Authorisation(connection);
 };
+
+/**
+ *
+ * @type {{permissions: *[], READ: string, WRITE: string, DELETE: string, LIST: string, CREATE: string, READ_PERMS: string, WRITE_PERMS: string, CREATOR: string, OWNER: string}}
+ */
+exports.perms = perms;
 
 /**
  * Creates a user and adds the user to a group of the same name
@@ -40,10 +54,10 @@ exports = module.exports = function (connection) {
  * @param {string?} [group=user]
  * @returns {deferred.promise|{then, catch, finally}}
  */
-internals.addUser = function (user, group) {
+Authorisation.prototype.addUser = function (user, group) {
   var deferred = Q.defer();
 
-  internals.acl.addUserRoles(user, group || user, function (err, roles) {
+  this.acl.addUserRoles(user, group || user, function (err, roles) {
 
     if (err) {
       deferred.reject(err)
@@ -62,10 +76,10 @@ internals.addUser = function (user, group) {
  * @param {string\Array} group
  * @returns {deferred.promise|{then, catch, finally}}
  */
-internals.addUserToGroup = function (user, group) {
+Authorisation.prototype.addUserToGroup = function (user, group) {
   var deferred = Q.defer();
 
-  internals.acl.addRoleParents(user, group, function (err, roles) {
+  this.acl.addRoleParents(user, group, function (err, roles) {
 
     if (err) {
       deferred.reject(err)
@@ -85,11 +99,11 @@ internals.addUserToGroup = function (user, group) {
  * @param perms
  * @returns {deferred.promise|{then, catch, finally}}
  */
-internals.allow = function (user, resource, perms) {
+Authorisation.prototype.allow = function (user, resource, perms) {
 
   var deferred = Q.defer();
 
-  internals.acl.allow(user, resource, perms, function (err, created) {
+  this.acl.allow(user, resource, perms, function (err, created) {
 
     if (err) {
       deferred.reject(err)
@@ -103,17 +117,20 @@ internals.allow = function (user, resource, perms) {
 };
 
 /**
+ * Is a user allow access to a resource based a full set of perms.
+ *
+ * Note: the underlying implementation only returns on a full match
  *
  * @param user
  * @param resource
  * @param perms
  * @returns {deferred.promise|{then, catch, finally}}
  */
-internals.isAllowed = function (user, resource, perms) {
+Authorisation.prototype.isAllowed = function (user, resource, perms) {
 
   var deferred = Q.defer();
 
-  internals.acl.isAllowed(user, resource, perms, function (err, result) {
+  this.acl.isAllowed(user, resource, perms, function (err, result) {
 
     if (err || result === false) {
       deferred.reject(err);

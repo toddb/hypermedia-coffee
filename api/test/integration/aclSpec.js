@@ -2,7 +2,8 @@ var expect = require('chai').expect,
     Q = require('q');
 
 var authorisation = require('../../app/strategy/authorisation');
-var auth = authorisation();
+var auth = authorisation(),
+    perms = authorisation.perms;
 
 var adminUser = 'account/1';
 var customer1User = 'account/2';
@@ -35,8 +36,8 @@ describe("One owner, admin both access to resource:", function () {
               .then(function () {
 
                 Q.allSettled([
-                  auth.allow([customer1User, adminGroup], resourceCustomer1, 'read'),
-                  auth.allow([customer2User, adminGroup], resourceCustomer2, 'read')])
+                  auth.allow([customer1User, adminGroup], resourceCustomer1, perms.permissions),
+                  auth.allow([customer2User, adminGroup], resourceCustomer2, perms.READ)])
 
                     .then(function () {
                       done();
@@ -53,7 +54,7 @@ describe("One owner, admin both access to resource:", function () {
 
       describe('Access:', function () {
         it('should allow a user see their own perms', function (done) {
-          auth.isAllowed(customer1User, resourceCustomer1, 'read')
+          auth.isAllowed(customer1User, resourceCustomer1, perms.permissions)
               .then(done);
         });
 
@@ -61,7 +62,7 @@ describe("One owner, admin both access to resource:", function () {
 
       describe('Deny:', function () {
         it('should disallow other users to see other users perms', function (done) {
-          auth.isAllowed(customer2User, resourceCustomer1, 'read')
+          auth.isAllowed(customer2User, resourceCustomer1, perms.READ)
               .then(null, function notAuthorised(err) {
                 done(err);
               });
@@ -71,7 +72,7 @@ describe("One owner, admin both access to resource:", function () {
 
     describe('Admin:', function () {
       it('should allow an admin to inherit users perms', function (done) {
-        auth.isAllowed(adminUser, resourceCustomer1, 'read')
+        auth.isAllowed(adminUser, resourceCustomer1, perms.permissions)
             .then(done);
       });
     });
@@ -85,7 +86,7 @@ describe("One owner, admin both access to resource:", function () {
 
       describe('Access:', function () {
         it('should allow a user see their own perms', function (done) {
-          auth.isAllowed(customer2User, resourceCustomer2, 'read')
+          auth.isAllowed(customer2User, resourceCustomer2, perms.READ)
               .then(done);
         });
 
@@ -93,7 +94,7 @@ describe("One owner, admin both access to resource:", function () {
 
       describe('Deny:', function () {
         it('should disallow other users to see other users perms', function (done) {
-          auth.isAllowed(customer1User, resourceCustomer2, 'read')
+          auth.isAllowed(customer1User, resourceCustomer2, perms.READ)
               .then(null, function notAuthorised(err) {
                 done(err);
               });
@@ -103,7 +104,7 @@ describe("One owner, admin both access to resource:", function () {
 
     describe('Admin:', function () {
       it('should allow an admin to inherit users perms', function (done) {
-        auth.isAllowed(adminUser, resourceCustomer2, 'read')
+        auth.isAllowed(adminUser, resourceCustomer2, perms.READ)
             .then(done);
       });
     });
