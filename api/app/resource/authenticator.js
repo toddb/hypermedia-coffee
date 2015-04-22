@@ -1,3 +1,8 @@
+/**
+ *
+ * @param parent
+ * @returns {Function} - (req, res)
+ */
 exports.collection = function (parent) {
   return function (req, res) {
     var url = res.locals.self;
@@ -9,7 +14,7 @@ exports.collection = function (parent) {
 };
 
 exports.item = function (collection) {
-  return function (req, res, next) {
+  return function (req, res) {
     if (req.isAuthenticated() && req.sessionID != req.params.sid) {
       console.log("Pontential session hijacking", req.sessionID, req.params.sid);
     }
@@ -19,36 +24,45 @@ exports.item = function (collection) {
   };
 };
 
-exports.logIn = function (req, res, next) {
-  var passport = req._passport.instance;
+/**
+ *
+ * @param collection
+ * @param parent
+ * @returns {Function}
+ */
+exports.logIn = function (collection, parent) {
+  return function (req, res, next) {
+    var passport = req._passport.instance;
 
-  req.logout();
+    req.logout();
 
-  passport.authenticate('local', function (err, user, info) {
-    if (err) {
-      console.log("Error in login");
-      return next(err)
-    }
-    if (!user) {
-      res.status(401);
-      return require('./api')(req, res, info);
-    }
-    req.logIn(user, function (err) {
+    passport.authenticate('local', function (err, user, info) {
       if (err) {
-        return next(err);
+        return next(err)
       }
-      res.set({Location: res.locals.request_url + user._id});
-      res.status(201);
-      return require('./api')(req, res, {username: req.user.username});
-    });
-  })(req, res, next);
-}
+      if (!user) {
+        res.status(401);
+        return parent(req, res, info);
+      }
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+        res.set({Location: res.locals.schema + collection + user._id});
+        res.status(201);
+        return parent(req, res, {username: req.user.username});
+      });
+    })(req, res, next);
+  }
+};
 
-exports.logOut = function (req, res) {
-  req.logout();
-  res.status(204);
-  return require('./api')(req, res, {message: 'Logged out'});
-}
+exports.logOut = function (parent) {
+  return function (req, res) {
+    req.logout();
+    res.status(204);
+    return parent(req, res, {message: 'Logged out'});
+  };
+};
 
 exports.rememberMe = function (req, res, next) {
   if (req.body.rememberme) {

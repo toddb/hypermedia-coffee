@@ -4,12 +4,12 @@ module.exports = function (app) {
   var order = require('../resource/order'),
       api = require('../resource/api'),
       account = require('../resource/account'),
-      session = require('../resource/session'),
+      authenticator = require('../resource/authenticator'),
       pay = require('../resource/pay'),
       restrictions = require('../middleware/allowHeadersMiddleware');
 
   app.use(function (req, res, next) {
-    res.locals.api = ['/api/account/', '/api/order/', '/login'];
+    res.locals.api = ['/api/authenticator/', '/api/order/', '/login'];
     next();
   });
 
@@ -20,8 +20,8 @@ module.exports = function (app) {
     },
     '/api': {
       get: api,
-      '/account/': {
-        post: [session.logIn, session.rememberMe],
+      '/authenticator/': {
+        post: [authenticator.logIn('/api/account/', api), authenticator.rememberMe],
         options: restrictions.collection
       }
     }
@@ -30,10 +30,10 @@ module.exports = function (app) {
   app.mapWithAuthentication({
     '/api/': {
       'account/': {
-        get: session.collection('/api/'),
+        get: authenticator.collection('/api/'),
         ':sid': {
-          delete: session.logOut,
-          get: session.item('/api/account/')
+          delete: authenticator.logOut(api),
+          get: authenticator.item('/api/account/')
         }
       },
       'order/': {
