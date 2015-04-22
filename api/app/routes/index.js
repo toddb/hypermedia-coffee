@@ -29,6 +29,9 @@ module.exports = function (app) {
 
   app.mapWithAuthentication({
     '/api/': {
+      'authenticator/': {
+        get: authenticator.collection('/api/account/')
+      },
       'account/': {
         get: authenticator.collection('/api/'),
         ':sid': {

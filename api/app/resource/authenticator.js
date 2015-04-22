@@ -1,18 +1,24 @@
 /**
+ * Creates a Feed representation of the logged in user account
  *
- * @param parent
- * @returns {Function} - (req, res)
+ * @param {String} parent - root path of the url
+ * @returns {Function} - middleware (req, res)
  */
 exports.collection = function (parent) {
   return function (req, res) {
     var url = res.locals.self;
     res.toFeedRepresentation(null, {}, url, function (representation) {
       representation.addLink('up', res.locals.schema + parent);
-      representation.addCollection(url, [{_id: req.sessionID}]);
+      representation.addCollection(res.locals.schema + parent, [{_id: req.user.id}]);
     });
   }
 };
 
+/**
+ * Creates a FeedItem representation of the logged in user account
+ * @param collection
+ * @returns {Function} - middelware (req, res)
+ */
 exports.item = function (collection) {
   return function (req, res) {
     if (req.isAuthenticated() && req.sessionID != req.params.sid) {
@@ -25,6 +31,8 @@ exports.item = function (collection) {
 };
 
 /**
+ * Applies the `local` authentication strategy returning the parent representation (Api) but with logged in
+ * user in the Location header
  *
  * @param collection
  * @param parent
@@ -56,6 +64,11 @@ exports.logIn = function (collection, parent) {
   }
 };
 
+/**
+ * Uses the authentication strategy to logout the user
+ * @param parent
+ * @returns {Function}
+ */
 exports.logOut = function (parent) {
   return function (req, res) {
     req.logout();
@@ -64,6 +77,14 @@ exports.logOut = function (parent) {
   };
 };
 
+/**
+ * Basic rememberMe middleware for cookie expiry
+ *
+ * TODO: do this properly, tb - Apr 2015
+ * @param req
+ * @param res
+ * @param next
+ */
 exports.rememberMe = function (req, res, next) {
   if (req.body.rememberme) {
     req.session.cookie.maxAge = 9000; //2592000000 30*24*60*60*1000 Remember 'me' for 30 days

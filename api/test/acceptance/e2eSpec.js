@@ -23,6 +23,8 @@ describe('Authenticated session', function () {
     app = express.init(mongoose);
     agent = request.agent(app);
 
+    app.get
+
     // TODO: use API to create
     var Account = require(path.resolve('./app/model')).Account;
     Account.create({
