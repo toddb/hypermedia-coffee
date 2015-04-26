@@ -20,6 +20,10 @@ schema.add({
   accessToken: {type: String} // Used for Remember Me
 });
 
+schema.methods.empty = function (cb) {
+  cb(this.paths);
+};
+
 schema.pre('save', function (next) {
   var user = this;
 

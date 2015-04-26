@@ -1,6 +1,7 @@
 'use strict';
 
 var should = require('should'),
+    _ = require('underscore'),
     path = require('path'),
     link = require(path.resolve('./app/util/linkRelation')),
     request = require('supertest'),
@@ -19,35 +20,15 @@ var pathname = function (uri) {
 describe('Authenticated session', function () {
   var app, agent, credentials, apiResource;
 
-  before(function (done) {
+  before(function startup() {
+
     app = express.init(mongoose);
     agent = request.agent(app);
 
-    app.get
-
-    // TODO: use API to create
-    var Account = require(path.resolve('./app/model')).Account;
-    Account.create({
-      username: config.testuser.name,
-      email: config.testuser.email,
-      password: config.testuser.password
-    }, function (err, doc) {
-      if (err) {
-        if (err.code == 11000) {
-          console.log('Account: ' + config.testuser.name + ' exists.\n');
-        } else {
-          console.log(err);
-        }
-      } else {
-        console.log('Account: ' + doc.username + " saved.\n");
-      }
-      done();
-    });
-
-
   });
 
-  before(function authenticate(done) {
+  before(function apiCredentials(done) {
+
     agent.get('/api/')
         .accept('json')
         .expect(200)
@@ -61,17 +42,50 @@ describe('Authenticated session', function () {
             Cookie: res.header['set-cookie'][0].split(';')[0]
           }
 
-          agent.post(pathname(link.getUrl(apiResource, 'authenticator')))
-              .accept('json')
-              .set(credentials)
-              .send({username: config.testuser.name, password: config.testuser.password})
-              .expect('location', isPresent)
-              .expect(201, done)
+          done();
         });
   });
 
+  before(function register(done) {
+
+    agent.get(pathname(link.getUrl(apiResource, 'authenticator')))
+        .accept('json')
+        .set(credentials)
+        .expect(200)
+        .end(function (err, res) {
+
+          agent.get(pathname(link.getUrl(res.body, 'register')))
+              .accept('json')
+              .set(credentials)
+              .end(function (err, res) {
+
+                var registrationDetails = _.extend({}, res.body, {
+                  username: config.testuser.name,
+                  email: config.testuser.email,
+                  password: config.testuser.password
+                });
+
+                agent.post(pathname(link.getUrl(res.body, 'self')))
+                    .accept('json')
+                    .set(credentials)
+                    .send(registrationDetails)
+                    .expect(/200|409|User already exists/, done);
+              });
+        });
+  });
+
+  before(function authenticate(done) {
+
+    agent.post(pathname(link.getUrl(apiResource, 'authenticator')))
+        .accept('json')
+        .set(credentials)
+        .send({username: config.testuser.name, password: config.testuser.password})
+        .expect('location', isPresent)
+        .expect(201, done);
+  });
 
   describe('Creating an order', function () {
+
     var orderResource, orderPaymentResource;
 
     it('should place an order', function (done) {
@@ -95,6 +109,7 @@ describe('Authenticated session', function () {
     });
 
     it('should pay on new item', function (done) {
+
       agent.post(pathname(link.getUrl(orderResource, 'pay')))
           .accept('json')
           .set(credentials)

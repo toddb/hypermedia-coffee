@@ -8,8 +8,9 @@ module.exports = exports = function resourcePlugin(schema, options) {
     model = this.saveVersion ? {data: model} : model;
 
     this._save(model, function (err, doc) {
-      if (err) cb(err);
-      if (_.isUndefined(doc) || _.isUndefined(doc.id)) cb(err);
+      if (err || _.isUndefined(doc) || _.isUndefined(doc.id)) {
+        return cb(err);
+      }
       cb(err, doc.versionOfId ? doc.versionOfId : doc.id);
     })
   };
@@ -65,6 +66,32 @@ module.exports = exports = function resourcePlugin(schema, options) {
       });
     }
 
+  };
+
+  /**
+   * Creates an empty resource without metadata for a create-form.
+   *
+   * It builds it up from the schema and then removes backlisted fields
+   *
+   * TODO: do this well
+   *
+   * @param {Array.string} fields - fields to additionally blacklist
+   * @returns {Object|Resource}
+   */
+  schema.statics.empty = function (fields) {
+    var ret = {};
+    for (path in this.schema.paths) {
+      ret[path] = "";
+    }
+    for (field in fields) {
+      delete ret[field];
+    }
+    delete ret.versionId;
+    delete ret._id;
+    delete ret.__v;
+    delete ret.modified;
+    delete ret.created;
+    return ret;
   };
 
   schema.set('toJSON', {

@@ -6,7 +6,9 @@ module.exports = function toJsonRepresentation(app) {
   app.use(function initialise(req, res, next) {
 
     function checkError(err) {
-      if (err) return res.status(501).send(err);
+      if (err) {
+        res.status(501).send(err)
+      };
     }
 
     /**

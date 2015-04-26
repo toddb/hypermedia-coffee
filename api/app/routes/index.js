@@ -18,20 +18,25 @@ module.exports = function (app) {
       get: api,
       options: restrictions.collection
     },
-    '/api': {
+    '/api/': {
       get: api,
-      '/authenticator/': {
+      'authenticator/': {
+        get: authenticator.collection('/api/', '/api/account/', 'account/'),
         post: [authenticator.logIn('/api/account/', api), authenticator.rememberMe],
-        options: restrictions.collection
+        options: restrictions.collection,
+        'account': {
+          get: account.createForm('/api/authenticator/'),
+          post: account.create
+        }
+      },
+      'account/': {
+        post: account.create
       }
     }
   });
 
   app.mapWithAuthentication({
     '/api/': {
-      'authenticator/': {
-        get: authenticator.collection('/api/account/')
-      },
       'account/': {
         get: authenticator.collection('/api/'),
         ':sid': {

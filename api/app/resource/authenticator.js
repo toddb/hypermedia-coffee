@@ -2,14 +2,21 @@
  * Creates a Feed representation of the logged in user account
  *
  * @param {String} parent - root path of the url
+ * @param account
+ * @param register
  * @returns {Function} - middleware (req, res)
  */
-exports.collection = function (parent) {
+exports.collection = function (parent, account, register) {
   return function (req, res) {
     var url = res.locals.self;
     res.toFeedRepresentation(null, {}, url, function (representation) {
       representation.addLink('up', res.locals.schema + parent);
-      representation.addCollection(res.locals.schema + parent, [{_id: req.user.id}]);
+      representation.addLink('register', res.locals.self + register);
+      representation.addLink('linkedin', 'http://example.com/not-real');
+      representation.addLink('google', 'http://example.com/not-real');
+      if (req.isAuthenticated()) {
+        representation.addCollection(res.locals.schema + account, [{_id: req.user.id}]);
+      }
     });
   }
 };

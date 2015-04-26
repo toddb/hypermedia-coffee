@@ -23,5 +23,20 @@ exports.list = function (req, res) {
 
 // this will be used to create an account (rather than for authentication)
 exports.create = function (req, res) {
-  Resource.post(req.body, res.toCreatedRepresentation);
+  Resource.post(req.body, function (err, id) {
+    if (err.code === 11000) {
+      res.status(409)
+      res.send("User already exists");
+    } else {
+      res.toCreatedRepresentation(err, id);
+    }
+  });
 };
+
+exports.createForm = function (parent) {
+  return function (req, res) {
+    res.toFeedRepresentation(null, Resource.empty(), res.locals.self, function (representation) {
+      representation.addLink('authenticator', res.locals.schema + parent);
+    });
+  }
+}
