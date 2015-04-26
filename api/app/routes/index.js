@@ -27,10 +27,10 @@ module.exports = function (app) {
         'account': {
           get: account.createForm('/api/authenticator/'),
           post: account.create
+        },
+        'logout': {
+          post: authenticator.logOut(api)
         }
-      },
-      'account/': {
-        post: account.create
       }
     }
   });

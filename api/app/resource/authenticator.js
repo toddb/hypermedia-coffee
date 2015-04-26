@@ -73,7 +73,7 @@ exports.logIn = function (collection, parent) {
 
 /**
  * Uses the authentication strategy to logout the user
- * @param parent
+ * @param {Function} parent
  * @returns {Function}
  */
 exports.logOut = function (parent) {
