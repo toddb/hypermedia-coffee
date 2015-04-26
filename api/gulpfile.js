@@ -38,7 +38,7 @@ gulp.task('micro', ['env:test'], function () {
 });
 
 gulp.task('integration', ['env:test'], function (done) {
-  mongoose = mongoose ? mongoose : require('./app/config/mongoose');
+  mongoose = mongoose ? mongoose : require('./src/config/mongoose');
   var error;
 
   mongoose.connect(function () {
@@ -64,7 +64,7 @@ gulp.task('acl', function () {
 })
 
 gulp.task('acceptance', ['env:test'], function (done) {
-  mongoose = mongoose ? mongoose : require('./app/config/mongoose');
+  mongoose = mongoose ? mongoose : require('./src/config/mongoose');
   var error;
 
   mongoose.connect(function () {

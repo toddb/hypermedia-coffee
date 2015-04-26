@@ -39,7 +39,7 @@ define(['chai', 'mocks', 'src/scripts/factory/httpLink'],
                 it("should get href uri", function () {
                     link.getUrl('HEAD', 'collection', 'text/html').should.equal('http://semanticlink-test/');
                 });
-                it("should not find Uri", function () {
+                it("should not find Uri - and logs", function () {
                     link.getUrl('HEAD', 'self', 'text/html').should.equal('');
                 });
             });

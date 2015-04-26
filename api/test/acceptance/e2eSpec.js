@@ -3,12 +3,12 @@
 var should = require('should'),
     _ = require('underscore'),
     path = require('path'),
-    link = require(path.resolve('./app/util/linkRelation')),
+    link = require(path.resolve('./src/util/linkRelation')),
     request = require('supertest'),
     mongoose = require('mongoose'),
     url = require('url'),
-    config = require(path.resolve('./app/config/')),
-    express = require(path.resolve('./app/config/express'));
+    config = require(path.resolve('./src/config/')),
+    express = require(path.resolve('./src/config/express'));
 
 var isPresent = /^$|\S+/;
 

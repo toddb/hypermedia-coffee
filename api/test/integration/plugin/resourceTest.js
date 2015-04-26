@@ -3,7 +3,7 @@
 
 var should = require('should'),
     mongoose = require('mongoose'),
-    RepositoryPlugin = require('../../../app/model/plugin/resource');
+    RepositoryPlugin = require('../../../src/model/plugin/resource');
 
 var Schema = new mongoose.Schema({
   username: {type: String, required: true}

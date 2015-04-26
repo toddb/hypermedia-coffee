@@ -3,7 +3,7 @@
 
 var should = require('should'),
     mongoose = require('mongoose'),
-    Feed = require('../../app/representation').Feed;
+    Feed = require('../../src/representation').Feed;
 
 module.exports = {
   'Feed - json': {

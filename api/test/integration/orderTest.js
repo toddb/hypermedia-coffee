@@ -1,7 +1,7 @@
 /*jslint node: true */
 'use strict';
 
-var Order = require('../../app/model').Order
+var Order = require('../../src/model').Order
   , should = require('should');
 
 var id;

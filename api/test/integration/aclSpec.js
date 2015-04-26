@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
     Q = require('q');
 
-var authorisation = require('../../app/strategy/authorisation');
+var authorisation = require('../../src/strategy/authorisation');
 var auth = authorisation(),
     perms = authorisation.perms;
 

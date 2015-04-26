@@ -2,7 +2,7 @@
 'use strict';
 
 var should = require('should'),
-    Account = require('../../app/model').Account,
+    Account = require('../../src/model').Account,
     acct = {username: 'someone', email: 'bob@nowhere.com', password: 'secret'},
     id;
 

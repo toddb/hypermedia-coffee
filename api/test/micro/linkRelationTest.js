@@ -2,7 +2,7 @@
 'use strict';
 
 var should = require('should'),
-    link = require('../../app/util/linkRelation');
+    link = require('../../src/util/linkRelation');
 
 module.exports = {
   'HttpLink': {
