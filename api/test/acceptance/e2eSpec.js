@@ -8,21 +8,24 @@ var should = require('should'),
     mongoose = require('mongoose'),
     url = require('url'),
     config = require(path.resolve('./src/config/')),
+    log = require(path.resolve('./src/config/logger')),
     express = require(path.resolve('./src/config/express'));
 
 var isPresent = /^$|\S+/;
 
 // Supertest does not accept absolute paths
 var pathname = function (uri) {
+  log.debug(uri);
   return url.parse(uri).pathname;
 }
 
-describe('Authenticated session', function () {
+describe('e2e - authenticated session', function () {
   var app, agent, credentials, apiResource;
 
   before(function startup() {
 
     app = express.init(mongoose);
+    //mongoose.set('debug', true);
     agent = request.agent(app);
 
   });

@@ -29,7 +29,7 @@ exports.collection = function (parent, account, register) {
 exports.item = function (collection) {
   return function (req, res) {
     if (req.isAuthenticated() && req.sessionID != req.params.sid) {
-      console.log("Pontential session hijacking", req.sessionID, req.params.sid);
+      req.app.log.warn("Pontential session hijacking", req.sessionID, req.params.sid);
     }
     res.toFeedItemRepresentation(null, {username: req.user.username}, res.locals.self, function (representation) {
       representation.addLink('up', res.locals.schema + collection);

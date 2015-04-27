@@ -11,6 +11,10 @@ var config = require('./index'),
 
 mongoose.connection.on('error', log.error.bind(log, 'connection error:'));
 
+mongoose.set('debug', function (collectionName, method, query, doc, options ) {
+  log.debug('mongo collection: %s method: %s', collectionName, method);
+});
+
 /**
  * @deprecated
  */

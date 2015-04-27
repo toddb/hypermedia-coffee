@@ -24,12 +24,12 @@ exports.list = function (req, res) {
 // this will be used to create an account (rather than for authentication)
 exports.create = function (req, res) {
   Resource.post(req.body, function (err, id) {
-    if (err.code === 11000) {
+    if (err && err.code === 11000) {
+
       res.status(409)
-      res.send("User already exists");
-    } else {
-      res.toCreatedRepresentation(err, id);
+      return res.send("User already exists");
     }
+    res.toCreatedRepresentation(err, id);
   });
 };
 

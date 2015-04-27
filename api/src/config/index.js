@@ -11,7 +11,7 @@ var _ = require('lodash'),
 var validate = function () {
   if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'development';
-    log.error('NODE_ENV is not defined! Using default development environment');
+    log.warn('NODE_ENV is not defined! Using default development environment');
   }
 };
 

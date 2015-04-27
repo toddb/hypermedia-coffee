@@ -7,7 +7,9 @@ module.exports = exports = function resourcePlugin(schema, options) {
     this._save = this.saveVersion ? this.saveVersion : this.create;
     model = this.saveVersion ? {data: model} : model;
 
+
     this._save(model, function (err, doc) {
+
       if (err || _.isUndefined(doc) || _.isUndefined(doc.id)) {
         return cb(err);
       }
