@@ -27,9 +27,11 @@ schema.pre('save', function (next) {
   var Order = require('../order');
   Order.findById(this._parent, function (err, doc) {
     doc._items.push(self);                            // TODO: only works for new
-    doc.save();
+    doc.save(function(err, doc, numAffected){
+      next();
+    });
   });
-  next();
+
 });
 
 /**

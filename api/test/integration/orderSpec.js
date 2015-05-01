@@ -52,12 +52,36 @@ describe('Order', function () {
 
     it('add single items', function (done) {
 
-      Order.putItem(orderId, item, function (err, doc) {
+      Order.getItem(orderId, function (err, doc) {
         expect(err).to.be.null;
         expect(doc).to.be.not.null;
-        expect(doc._items).to.contain(itemId)
+        expect(doc._items).to.contain(itemId);
         done();
-      })
+      });
+
+    });
+
+    it('add multiple items', function (done) {
+
+      OrderItem.post({_parent: orderId, type: 'large'}, function (err, id) {
+
+        Order.getItem(orderId, function (err, doc) {
+
+          console.log(doc)
+
+          expect(err).to.be.null;
+          expect(doc).to.be.not.null;
+          expect(doc._items).to.contain(itemId);
+          expect(doc._items).to.contain(id);
+
+          done();
+        });
+      });
+
+
+    });
+
+    xit('update an item', function () {
 
     });
   });
