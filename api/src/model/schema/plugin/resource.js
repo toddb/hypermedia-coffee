@@ -71,6 +71,22 @@ module.exports = exports = function resourcePlugin(schema, options) {
   };
 
   /**
+   * TODO: deal with existing and Array.<item>
+   * @param id
+   * @param item
+   * @param cb
+   */
+  schema.statics.putItem = function (id, item, cb) {
+    var self = this;
+    self.getItem(id, function (err, doc) {
+      doc._items.push(item);
+
+      self.put(id, doc, cb);
+
+    })
+  };
+
+  /**
    * Creates an empty resource without metadata for a create-form.
    *
    * It builds it up from the schema and then removes backlisted fields

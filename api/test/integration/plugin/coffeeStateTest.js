@@ -4,7 +4,7 @@
 var should = require('should')
     , _ = require('underscore')
     , mongoose = require('mongoose')
-    , coffeeState = require('../../../src/model/plugin/coffeeState')
+    , coffeeState = require('../../../src/model/schema/plugin/coffeeState')
     , schema = new mongoose.Schema()
     , acct = {type: 'small'}
     , id, order;

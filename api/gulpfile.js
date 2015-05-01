@@ -47,6 +47,29 @@ gulp.task('integration', ['env:test'], function (done) {
         .pipe(plugins.mocha(mocha_opts))
         .on('error', function (err) {
           error = err;
+          plugins.util.log(plugins.util.colors.red('Error (' + err.message + ')\n') + err.code + '\n' + err.stack);
+        })
+        .on('end', function () {
+          mongoose.disconnect(function () {
+            done(error);
+            //process.exit(error ? 1 : 0);
+          });
+        });
+  });
+});
+
+
+gulp.task('integrationSpec', ['env:test'], function (done) {
+  mongoose = mongoose ? mongoose : require('./src/config/mongoose');
+  var error;
+
+  mongoose.connect(function () {
+    gulp.src('test/integration/**/*Spec.js')
+        .pipe(plugins.debug())
+        .pipe(plugins.mocha({reporter: 'spec', ui: 'bdd'}))
+        .on('error', function (err) {
+          error = err;
+          plugins.util.log(plugins.util.colors.red('Error (' + err.message + ')\n') + err.code + '\n' + err.stack);
         })
         .on('end', function () {
           mongoose.disconnect(function () {
@@ -73,6 +96,7 @@ gulp.task('acceptance', ['env:test'], function (done) {
         .pipe(plugins.mocha({reporter: process.env.TEAMCITY_VERSION == undefined ? 'spec' : 'mocha-teamcity-reporter'}))
         .on('error', function (err) {
           error = err;
+          plugins.util.log(plugins.util.colors.red('Error (' + err.message + ')\n') + err.code + '\n' + err.stack);
         })
         .on('end', function () {
           mongoose.disconnect(function () {

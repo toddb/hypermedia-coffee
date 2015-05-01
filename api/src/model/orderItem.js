@@ -6,9 +6,9 @@
  */
 
 var mongoose = require('mongoose'),
-    orderSchema = require('./schema/order');
+    orderItemSchema = require('./schema/orderItem');
 
 /**
  * Order model
  */
-module.exports = mongoose.model('order', orderSchema);
+module.exports = mongoose.model('orderItem', orderItemSchema);
