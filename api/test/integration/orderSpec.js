@@ -67,8 +67,6 @@ describe('Order', function () {
 
         Order.getItem(orderId, function (err, doc) {
 
-          console.log(doc)
-
           expect(err).to.be.null;
           expect(doc).to.be.not.null;
           expect(doc._items).to.contain(itemId);
