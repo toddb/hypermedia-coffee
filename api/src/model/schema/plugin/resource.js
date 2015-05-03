@@ -70,7 +70,7 @@ module.exports = exports = function resourcePlugin(schema, options) {
 
         // iterate using the .toObject() to gather up all values
         // TODO: this implementation needs to allow for guards ( eg created, owner)
-        _.each(model.toObject(), function (v, k) {
+        _.each(model.toObject ? model.toObject() :  model, function (v, k) {
           doc.set(k, v);
         });
         doc.increment();
