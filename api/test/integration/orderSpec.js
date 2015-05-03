@@ -81,7 +81,7 @@ describe('Order', function () {
     });
 
     it('update an item', function (done) {
-      Order.getItem(orderId, function(err, doc){
+      Order.getItem(orderId, function (err, doc) {
 
         expect(err).to.be.null;
         expect(doc).to.be.not.null;
@@ -91,19 +91,19 @@ describe('Order', function () {
 
         var item = _.first(initialItems);
 
-        OrderItem.getItem(item, function(err, doc){
+        OrderItem.getItem(item, function (err, doc) {
           expect(err).to.be.null;
           expect(doc).to.be.not.null;
           doc.type = 'small';
 
-          OrderItem.put(item, doc, function(err, doc){
+          OrderItem.put(item, doc, function (err, doc) {
 
             expect(err).to.be.null;
             expect(doc).to.be.not.null;
 
             expect(doc.type).to.equal('small');
 
-            Order.getItem(orderId, function(err, doc){
+            Order.getItem(orderId, function (err, doc) {
               expect(err).to.be.null;
               expect(doc).to.be.not.null;
 
@@ -116,7 +116,26 @@ describe('Order', function () {
         })
 
 
-      })
+      });
+    });
+
+    it('delete an item', function (done) {
+
+      OrderItem.delete(itemId, function (err, doc) {
+        expect(err).to.be.null;
+        expect(doc).to.be.not.null;
+
+        var deletedId = doc._id;
+        expect(deletedId).to.be.not.null;
+
+        Order.findById(orderId, function(err, doc){
+
+          expect(err).to.be.null;
+          expect(doc._items).to.not.contain(deletedId);
+
+          done();
+        })
+      });
     });
   });
 });

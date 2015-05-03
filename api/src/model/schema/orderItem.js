@@ -22,7 +22,35 @@ var schema = new mongoose.Schema({
 schema.plugin(resourceSchema);
 schema.plugin(timestamp);
 
+schema.pre('remove', function (next) {
+
+  log.debug("Removing child from parent: orderItem to order")
+  var self = this;
+
+  var Order = require('../order');
+
+  Order.findById(self._parent, function (err, orderDoc) {
+
+    // only update if the child exists
+    var indexOf = orderDoc._items.indexOf(self._id);
+    if (indexOf > -1) {
+      orderDoc._items.splice(indexOf, 1);
+      orderDoc.save(function (err, doc, numAffected) {
+        if (err) {
+          next(err);
+        }
+        next();
+      });
+    } else {
+      next();
+    }
+  });
+
+});
+
 schema.pre('save', function (next) {
+
+  log.debug("Adding child to parent: orderItem to order")
 
   var self = this;
   var Order = require('../order');
@@ -38,11 +66,11 @@ schema.pre('save', function (next) {
         }
         next();
       });
-    } else{
+    } else {
       next();
 
     }
-   });
+  });
 
 });
 
