@@ -64,7 +64,7 @@ gulp.task('integrationSpec', ['env:test'], function (done) {
   var error;
 
   mongoose.connect(function () {
-    gulp.src('test/integration/**/*Spec.js')
+    gulp.src(['test/integration/**/*Spec.js', '!test/integration/**/aclSpec.js'])
         .pipe(plugins.debug())
         .pipe(plugins.mocha({reporter: 'spec', ui: 'bdd'}))
         .on('error', function (err) {
