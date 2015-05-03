@@ -23,15 +23,26 @@ schema.plugin(resourceSchema);
 schema.plugin(timestamp);
 
 schema.pre('save', function (next) {
-  log.debug('Saving order item');
+
   var self = this;
   var Order = require('../order');
+
   Order.findById(this._parent, function (err, doc) {
-    doc._items = _.union(doc._items, [self]);
-    doc.save(function (err, doc, numAffected) {
+
+    // only update the parent if the child is new
+    if (doc._items.indexOf(self._id) == -1) {  // underscore contains isn't working ??
+      doc._items.push(self);
+      doc.save(function (err, doc, numAffected) {
+        if (err) {
+          next(err);
+        }
+        next();
+      });
+    } else{
       next();
-    });
-  });
+
+    }
+   });
 
 });
 

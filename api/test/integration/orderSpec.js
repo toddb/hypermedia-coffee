@@ -3,7 +3,8 @@
 
 var Order = require('../../src/model').Order,
     OrderItem = require('../../src/model/orderItem'),
-    expect = require('chai').expect;
+    expect = require('chai').expect,
+    _ = require('underscore');
 
 var isAnId = /^[a-f0-9]{24}$/;
 
@@ -79,8 +80,43 @@ describe('Order', function () {
 
     });
 
-    xit('update an item', function () {
+    it('update an item', function (done) {
+      Order.getItem(orderId, function(err, doc){
 
+        expect(err).to.be.null;
+        expect(doc).to.be.not.null;
+
+        var initialItems = doc._items;
+        expect(initialItems).to.be.not.empty;
+
+        var item = _.first(initialItems);
+
+        OrderItem.getItem(item, function(err, doc){
+          expect(err).to.be.null;
+          expect(doc).to.be.not.null;
+          doc.type = 'small';
+
+          OrderItem.put(item, doc, function(err, doc){
+
+            expect(err).to.be.null;
+            expect(doc).to.be.not.null;
+
+            expect(doc.type).to.equal('small');
+
+            Order.getItem(orderId, function(err, doc){
+              expect(err).to.be.null;
+              expect(doc).to.be.not.null;
+
+              expect(doc._items).to.have.length(initialItems.length);
+
+              done();
+
+            })
+          });
+        })
+
+
+      })
     });
   });
 });

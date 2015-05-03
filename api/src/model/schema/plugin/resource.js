@@ -1,4 +1,5 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+    log = require('../../../config/logger');
 
 module.exports = exports = function resourcePlugin(schema, options) {
 
@@ -60,7 +61,10 @@ module.exports = exports = function resourcePlugin(schema, options) {
       self.findById(id, function (err, doc) {
         if (err) return cb(err);
         // TODO: need to invoke validators - see http://mongoosejs.com/docs/api.html#model_Model-findByIdAndUpdate
-        _.each(model, function (v, k) {
+
+        // iterate using the .toObject() to gather up all values
+        // TODO: this implementation needs to allow for guards ( eg created, owner)
+        _.each(model.toObject(), function (v, k) {
           doc.set(k, v);
         });
         doc.increment();
@@ -73,16 +77,13 @@ module.exports = exports = function resourcePlugin(schema, options) {
   /**
    * TODO: deal with existing and Array.<item>
    * @param id
-   * @param item
+   * @param updatedDoc
    * @param cb
    */
-  schema.statics.putItem = function (id, item, cb) {
+  schema.statics.putItem = function (id, updatedDoc, cb) {
     var self = this;
     self.getItem(id, function (err, doc) {
-      doc._items.push(item);
-
       self.put(id, doc, cb);
-
     })
   };
 
