@@ -74,7 +74,7 @@ define(
                   .state('order', {
                     url: "/orders/order/a/{apiUri:.*}",
 
-                    templateUrl: 'template/orders/item.html',
+                    templateUrl: 'template/order/index.html',
                     controller: 'OrderController',
                     data: {
                       rel: {

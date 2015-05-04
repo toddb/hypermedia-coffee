@@ -1,14 +1,26 @@
+<div ng-include="'./template/orderItem/post.html'"/>
 
-<div class="item">
+
+<div ng-hide="order.items | isEmpty">
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h2 class="text-center">There is currently no coffee items added.</h2>
+        </div>
+    </div>
+</div>
+
+<div class="item" ng-show="order.items | isEmpty" >
     <div class="item-header">    </div>
     <div class="item-description">
         <span class="pull-right" ng-include="'./template/order/delete.html'" />
 
         <h3>{{ order.type }}</h3>
         <br/>
-        <a ng-click="gotoNextState()"><p class="visible-lg-*" ng-show="order.state">{{ order.state }}</p></a>
+        <a ng-click="gotoNextState()"><p class="visible-lg-*" ng-show="order.state">{{ order.items }}</p></a>
     </div>
     <div class="item-description">
+        <div data-ng-repeat="item in items">{{ item.type }} <span ng-include="'./template/orderItem/delete.html'"></span>
+        </div>
         <img src="{{order.image}}" />
         <div />
         <h3>{{ order.value.units }}{{ order.value.amount }}</h3>

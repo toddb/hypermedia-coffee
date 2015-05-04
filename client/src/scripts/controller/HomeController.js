@@ -15,13 +15,8 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
         function HomeController($scope, $log, $location, uriMapper, link, $state, $stateParams, $timeout, apiRoot, $http) {
 
           function init() {
-            setOrder();
             setOrders();
             $log.info("Loading HomeController");
-          }
-
-          function setOrder(order) {
-            $scope.order = order || {};
           }
 
           function setOrders() {
@@ -40,8 +35,8 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
           }
 
           $scope.create = function (item, attrs) {
-            setOrder();
-            link.post(apiRoot.data, 'orders', 'application/json', _.pick(item, attrs)).
+            setOrders();
+            link.post(apiRoot.data, 'orders', 'application/json', _.pick(item, attrs) || {}).
                 then(function success(response) {
                   $http.get(response.headers().location, {
                     headers: {
@@ -49,8 +44,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                     }
                   })
                       .then(function success(response) {
-                        setOrder(response.data);
-                        setOrders();
+                        $scope.gotoOrder(response.data);
                       },
                       $log.error)
                 }, $log.error);
@@ -58,6 +52,21 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.ordersHref = function () {
             return makeStateUri('orders', apiRoot.data, 'orders');
+          };
+
+          $scope.gotoOrder = function (order) {
+
+            var self = link.getUrl(order, 'self');
+            if (self) {
+              var path = uriMapper.toSitePath(self, '/orders/order/a/');
+              $log.debug(self + ' -> ' + path);
+
+              $timeout(function () {
+                $location.path(path);
+              });
+            } else {
+              $log.error('Orders has no mapping');
+            }
           };
 
           init();
