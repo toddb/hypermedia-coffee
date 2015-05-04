@@ -8,7 +8,7 @@ module.exports = function toJsonRepresentation(app) {
     function checkError(err) {
       if (err) {
         res.status(501).send(err)
-      };
+      }
     }
 
     /**
@@ -39,15 +39,30 @@ module.exports = function toJsonRepresentation(app) {
     };
 
     /**
+     *  @example
+     *
+     * function(doc){
+     *    return {
+     *      id: url + doc._id,
+     *   title: doc.type
+     *    };
+     * }
+     *
+     * @callback LinkPredicate
+     * @param {object} doc
+     */
+
+    /**
      * Sends Feed resource across the wire as a FeedItem json representation
      * @param {Error} err
      * @param {object} doc resource to be returned
      * @param {string} url to identify the representation self link relation
-     * @param {Predicate} fn predicate on a representation
+     * @param {Predicate?} fn predicate on a representation
+     * @param {LinkPredicate?} itemLink predicate that must return an object with {id:string, title:string}
      */
-    res.toFeedRepresentation = function (err, doc, url, fn) {
+    res.toFeedRepresentation = function (err, doc, url, fn, itemLink) {
       checkError(err);
-      toJsonRepresentation(new Feed(url, doc), fn);
+      toJsonRepresentation(new Feed(url, doc, itemLink), fn);
     };
 
     /**

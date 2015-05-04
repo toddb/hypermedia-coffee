@@ -7,6 +7,20 @@ var _ = require('underscore')
     };
 
 /**
+ *  @example
+ *
+ * function(doc){
+ *    return {
+ *      id: url + doc._id,
+        title: doc.type
+ *    };
+ * }
+ *
+ * @callback LinkPredicate
+ * @param {object} doc
+ */
+
+/**
  * @example
  * var representation = new Representation('http://example.com/api', {});
  *
@@ -21,9 +35,10 @@ var _ = require('underscore')
  *
  * @param {string} url The uri of the relationship
  * @param {object} doc The resource document
+ * @param {?LinkPredicate} itemLink Callback that must return an object with {id:string, title:string}
  * @constructor
  */
-function Representation(url, doc) {
+function Representation(url, doc, itemLink) {
 
   this.links = [];
 
@@ -33,7 +48,7 @@ function Representation(url, doc) {
     return
 
   if (_.isArray(doc)) {
-    this.addCollection(url, doc);
+    this.addCollection(url, doc, itemLink);
   } else {
     _.each(doc.toJSON ? doc.toJSON() : doc, function (v, k) {
       this[k] = v;
@@ -134,7 +149,7 @@ Representation.prototype.selfLink = fluent(function (url) {
  *    };
  * }
  *
- * @callback Predicate
+ * @callback LinkPredicate
  * @param {object} doc
  */
 
@@ -153,17 +168,17 @@ Representation.prototype.selfLink = fluent(function (url) {
  *
  * @param {string} url The uri of the relationship
  * @param {Array.<Object>} docs The list of resources
- * @param {?Predicate} fn Callback that must return an object with {id:string, title:string}
+ * @param {?LinkPredicate} fn Callback that must return an object with {id:string, title:string}
  */
-Representation.prototype.addCollection = fluent(function (url, docs, fn) {
+Representation.prototype.addCollection = fluent(function (url, docs, itemLink) {
   if (_.isUndefined(url))
     return;
 
   if (_.isEmpty(docs))
     return;
 
-  if (_.isUndefined(fn)) {
-    fn = function (doc) {
+  if (_.isUndefined(itemLink)) {
+    itemLink = function (doc) {
       return {
         id: url + doc._id,
         title: doc.type
@@ -172,7 +187,7 @@ Representation.prototype.addCollection = fluent(function (url, docs, fn) {
   }
   this.items = [];
   _.each(docs, function (doc) {
-    this.items.push(fn(doc));
+    this.items.push(itemLink(doc));
   }, this);
 
 });

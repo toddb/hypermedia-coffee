@@ -2,6 +2,7 @@ module.exports = function (app) {
   'use strict';
 
   var order = require('../resource/order'),
+      orderItem = require('../resource/orderItem'),
       api = require('../resource/api'),
       account = require('../resource/account'),
       authenticator = require('../resource/authenticator'),
@@ -45,14 +46,21 @@ module.exports = function (app) {
         }
       },
       'order/': {
-        get: order.list('/api/'),
+        get: order.list('/api/', '/item/'),
         post: order.create,
         options: restrictions.collection,
         ':oid': {
-          get: order.item('/api/order/'),
-          put: order.update,
-          delete: order.del,
+          get: orderItem.list('/api/order/', '/item/'),
           options: restrictions.item,
+          '/item/': {
+            get: orderItem.createForm('/api/order/'),
+            post: orderItem.create,
+            ':oiid': {
+              //put: orderItem.update,
+              //delete: orderItem.del,
+              get: orderItem.item('/api/order/')
+            }
+          },
           '/pay/': {
             post: order.pay(pay.create),
             ':pid': {

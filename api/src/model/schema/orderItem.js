@@ -22,6 +22,8 @@ var schema = new mongoose.Schema({
 schema.plugin(resourceSchema);
 schema.plugin(timestamp);
 
+schema.blacklist = ['_parent'];
+
 schema.pre('remove', function (next) {
 
   log.debug("Removing child from parent: orderItem to order")
@@ -55,10 +57,10 @@ schema.pre('save', function (next) {
   var self = this;
   var Order = require('../order');
 
-  Order.findById(this._parent, function (err, doc) {
+  Order.findById(self._parent, function (err, doc) {
 
     // only update the parent if the child is new
-    if (doc._items.indexOf(self._id) == -1) {  // underscore contains isn't working ??
+    if (doc._items && doc._items.indexOf(self._id) == -1) {  // underscore contains isn't working ??
       doc._items.push(self);
       doc.save(function (err, doc, numAffected) {
         if (err) {

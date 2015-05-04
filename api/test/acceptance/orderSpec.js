@@ -20,7 +20,7 @@ var pathname = function (uri) {
   return url.parse(uri).pathname;
 }
 
-describe('e2e - authenticated session', function () {
+describe('Order', function () {
   var app, agent, credentials, apiResource;
 
   before(function startup() {
@@ -73,10 +73,7 @@ describe('e2e - authenticated session', function () {
                     .accept('json')
                     .set(credentials)
                     .send(registrationDetails)
-                    .end(function(err, res){
-                      expect(res.status).to.match(/201|409/);
-                      done();
-                    })
+                    .expect(/200|409|User already exists/, done);
               });
         });
   });
@@ -93,58 +90,109 @@ describe('e2e - authenticated session', function () {
 
   describe('Creating an order', function () {
 
-    var orderResource, orderPaymentResource;
+    var orderCollectionResource;
 
-    it('should place an order', function (done) {
+    before(function (done) {
       agent.post(pathname(link.getUrl(apiResource, 'orders')))
           .accept('json')
           .set(credentials)
-          .send({type: 'medium'})
-          .expect('location', isPresent)
-          .expect(201)
-          .end(function (err, resp) {
-
-            agent.get(pathname(resp.header['location']))
-                .accept('json')
-                .set(credentials)
-                .expect(200)
-                .end(function (err, res) {
-                  orderResource = res.body;
-                  done();
-                })
-          });
-    });
-
-    xit('should pay on new item', function (done) {
-
-      agent.post(pathname(link.getUrl(orderResource, 'pay')))
-          .accept('json')
-          .set(credentials)
-          .send({token: '345d77568gq4GSDG78'})
+          .send({})
           .expect('location', isPresent)
           .expect(201)
           .end(function (err, res) {
 
-            agent.get(pathname(res.header['location']))
+            var orderCollectionUrl = res.header['location'];
+
+            agent.get(pathname(orderCollectionUrl))
                 .accept('json')
                 .set(credentials)
                 .expect(200)
                 .end(function (err, res) {
-                  orderPaymentResource = res.body;
+                  orderCollectionResource = res.body;
 
-                  agent.get(pathname(link.getUrl(orderResource, 'self')))
+                  expect(orderCollectionResource.items).to.be.defined;
+                  expect(orderCollectionResource.items).to.be.empty;
+                  expect(orderCollectionResource._items).to.be.undefined;
+
+                  done();
+                });
+          });
+    });
+
+    it('should create a new order without any items', function (done) {
+
+      agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+          .accept('json')
+          .set(credentials)
+          .expect(200)
+          .end(function(err, res){
+            expect(err).to.be.null;
+            expect(res.body.items).to.be.undefined;
+            done();
+          })
+
+    });
+
+    it('should create a new order item on order', function (done) {
+
+      // Here's the new order
+      var newOrder = {type: 'med'};
+
+      // retrieve the create form
+      agent.get(pathname(link.getUrl(orderCollectionResource, 'create-form')))
+          .accept('json')
+          .set(credentials)
+          .expect(200)
+          .end(function(err, res){
+
+            expect(err).to.be.null;
+            expect(res.body).to.be.not.null;
+
+            expect(res.body.type).to.be.defined;
+            // update the form (we should be checking that this field already exists
+            var order = _.extend(res.body, newOrder);
+
+            // create the resource on the collection
+            agent.post(pathname(link.getUrl(orderCollectionResource, 'create-form')))
+                .accept('json')
+                .set(credentials)
+                .send(order)
+                .expect('location', isPresent)
+                .expect(201)
+                .end(function (err, res) {
+
+                  var orderUrl = res.header['location'];
+                  expect(err).to.be.null;
+
+                  agent.get(pathname(orderUrl))
                       .accept('json')
                       .set(credentials)
                       .expect(200)
                       .end(function (err, res) {
-                        orderResource = res.body;
-                        done();
-                      })
-                })
+                        expect(err).to.be.null;
 
-          });
+                        var order = res.body;
+                        expect(order.type).to.equal('med');
+                        expect(order.modified).to.be.defined;
+
+                        agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+                            .accept('json')
+                            .set(credentials)
+                            .expect(200)
+                            .end(function(err, res){
+                              expect(err).to.be.null;
+                              expect(res.body.items).to.have.length(1);
+
+                              done();
+                            })
+
+                      });
+
+                });
+          })
 
     });
+
 
   });
 

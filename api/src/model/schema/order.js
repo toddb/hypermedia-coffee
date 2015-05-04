@@ -22,14 +22,14 @@ schema.plugin(timestamp);
 //schema.plugin(versioner, {modelName: 'order', mongoose: mongoose});
 
 
-schema.pre('save', function (next) {
-  if (this.isNew) {
-    this.placeOrder(function (err) {
-      if (err) next(err);
-    })
-  }
-  next();
-});
+//schema.pre('save', function (next) {
+//  if (this.isNew) {
+//    this.placeOrder(function (err) {
+//      if (err) next(err);
+//    })
+//  }
+//  next();
+//});
 
 /**
  * Order model

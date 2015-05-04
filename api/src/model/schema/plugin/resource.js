@@ -18,6 +18,12 @@ module.exports = exports = function resourcePlugin(schema, options) {
     })
   };
 
+  schema.statics.getCollectionByParent = function (id, cb) {
+    this.find({_parent: id}).exec(function (err, docs) {
+      cb(err, _.isArray(docs) ? docs : [docs]);
+    });
+  };
+
   schema.statics.getCollection = function (cb) {
     this.find({}).exec(function (err, docs) {
       cb(err, _.isArray(docs) ? docs : [docs]);
@@ -30,9 +36,15 @@ module.exports = exports = function resourcePlugin(schema, options) {
     });
   };
 
+  schema.statics.getItemByParent = function (id, parent, cb) {
+    this.findOne({_id: id, _parent: parent}, function (err, doc) {
+      cb(err, doc);
+    });
+  };
+
   schema.statics.delete = function (id, cb) {
-    this.findById(id, function(err, doc){
-      if (err){
+    this.findById(id, function (err, doc) {
+      if (err) {
         cb(err);
       }
 
@@ -70,7 +82,7 @@ module.exports = exports = function resourcePlugin(schema, options) {
 
         // iterate using the .toObject() to gather up all values
         // TODO: this implementation needs to allow for guards ( eg created, owner)
-        _.each(model.toObject ? model.toObject() :  model, function (v, k) {
+        _.each(model.toObject ? model.toObject() : model, function (v, k) {
           doc.set(k, v);
         });
         doc.increment();
@@ -96,21 +108,37 @@ module.exports = exports = function resourcePlugin(schema, options) {
   /**
    * Creates an empty resource without metadata for a create-form.
    *
-   * It builds it up from the schema and then removes backlisted fields
+   * It builds it up from the schema and then removes backlisted fields. Backlisted fields are set on the schema
    *
-   * TODO: do this well
+   * Example:
+   *
+   *  var schema = new mongoose.Schema({
+   *    _parent: {type: mongoose.Schema.Types.ObjectId, ref: 'order'},
+   *    type: {type: String, required: true}
+   *  });
+   *
+   *  schema.blacklist = ['_parent'];
+   *
+   * Returns:
+   *
+   * {
+   *   type: ""
+   * }
    *
    * @param {Array.string} fields - fields to additionally blacklist
    * @returns {Object|Resource}
    */
   schema.statics.empty = function (fields) {
+
     var ret = {};
+    var blacklist = _.union(this.schema.blacklist || [], fields || []);
+
     for (path in this.schema.paths) {
-      ret[path] = "";
+      if (!_.contains(blacklist, path)){
+        ret[path] = "";
+      }
     }
-    for (field in fields) {
-      delete ret[field];
-    }
+
     delete ret.versionId;
     delete ret._id;
     delete ret.__v;

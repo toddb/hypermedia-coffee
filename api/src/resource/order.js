@@ -1,12 +1,13 @@
 'use strict';
 var Order = require('../model').Order;
 
-exports.list = function (parent) {
+exports.list = function (parent, child) {
   return function (req, res) {
     var url = res.locals.self;
     Order.getCollection(function(err, doc){
       res.toFeedRepresentation(err, doc, url, function (representation) {
         representation.addLink('up', res.locals.schema + parent);
+        //representation.addLink('create-form', url);
       });
     });
   }
