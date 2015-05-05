@@ -1,10 +1,11 @@
 'use strict';
 
 var should = require('should'),
+    expect = require('chai').expect,
     _ = require('underscore'),
     path = require('path'),
     link = require(path.resolve('./src/util/linkRelation')),
-    request = require('supertest'),
+    request = require('supertest-as-promised'),
     mongoose = require('mongoose'),
     url = require('url'),
     config = require(path.resolve('./src/config/')),
@@ -27,22 +28,19 @@ describe('Account', function () {
 
   });
 
-  before(function apiCredentials(done) {
+  before(function apiCredentials() {
 
-    agent.get('/api/')
+    return agent
+        .get('/api/')
         .accept('json')
         .expect(200)
-        .end(function (err, res) {
-
-          if (err) done(err);
+        .then(function (res) {
 
           apiResource = res.body;
 
           credentials = {
             Cookie: res.header['set-cookie'][0].split(';')[0]
-          }
-
-          done();
+          };
         });
   });
 
@@ -56,60 +54,64 @@ describe('Account', function () {
       password: 'secret'
     };
 
-    before(function (done) {
-      agent.get(pathname(link.getUrl(apiResource, 'authenticator')))
+    before(function () {
+      return agent
+          .get(pathname(link.getUrl(apiResource, 'authenticator')))
           .accept('json')
           .set(credentials)
           .expect(200)
-          .end(function (err, res) {
+          .then(function (res) {
+            return agent
+                .get(pathname(link.getUrl(res.body, 'register')))
+                .accept('json')
+                .set(credentials);
 
-            agent.get(pathname(link.getUrl(res.body, 'register')))
+          })
+          .then(function (res) {
+            var registrationDetails = _.extend({}, res.body, user);
+
+            return agent
+                .post(pathname(link.getUrl(res.body, 'self')))
                 .accept('json')
                 .set(credentials)
-                .end(function (err, res) {
-
-                  var registrationDetails = _.extend({}, res.body, user);
-
-                  agent.post(pathname(link.getUrl(res.body, 'self')))
-                      .accept('json')
-                      .set(credentials)
-                      .send(registrationDetails)
-                      .expect(201, done)
-                });
+                .send(registrationDetails)
+                .expect(201)
+                .then(function (res) {
+                  console.log("here")
+                })
           });
     });
 
-    it('should be able to register an account and authenticate', function (done) {
+    it('should be able to register an account and authenticate', function () {
 
-      agent.post(pathname(link.getUrl(apiResource, 'authenticator')))
+      return agent
+          .post(pathname(link.getUrl(apiResource, 'authenticator')))
           .accept('json')
           .set(credentials)
           .send(user)
           .expect('location', isPresent)
-          .expect(201, function (err, res) {
-            done();
-          });
+          .expect(201);
     });
 
-    it('should be able to delete an account by choosing from authenticator resource', function (done) {
+    it('should be able to delete an account by choosing from authenticator resource', function () {
 
-      agent.get(pathname(link.getUrl(apiResource, 'authenticator')))
+      return agent
+          .get(pathname(link.getUrl(apiResource, 'authenticator')))
           .accept('json')
           .set(credentials)
           .expect(200)
-          .end(function (err, res) {
-
-            agent.get(pathname(res.body.items[0].id))
+          .then(function (res) {
+            return agent
+                .get(pathname(res.body.items[0].id))
                 .accept('json')
+                .set(credentials);
+
+          })
+          .then(function (res) {
+            return agent
+                .delete(pathname(link.getUrl(res.body, 'self')))
                 .set(credentials)
-                .end(function (err, res) {
-
-                  agent.delete(pathname(link.getUrl(res.body, 'self')))
-                      .set(credentials)
-                      .expect(204, done)
-
-                });
-
+                .expect(204);
           });
     });
   });
