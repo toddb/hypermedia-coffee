@@ -7,9 +7,16 @@ module.exports = function toJsonRepresentation(app) {
 
     function checkError(err) {
       if (err) {
-        res.status(501).send(err)
+        return res.status(501).send(err)
       }
     }
+
+    function checkEmpty(doc) {
+      if (!doc) {
+        return res.status(404).send()
+      }
+    }
+
 
     /**
      * @callback Predicate
@@ -62,6 +69,7 @@ module.exports = function toJsonRepresentation(app) {
      */
     res.toFeedRepresentation = function (err, doc, url, fn, itemLink) {
       checkError(err);
+      checkEmpty(doc);
       toJsonRepresentation(new Feed(url, doc, itemLink), fn);
     };
 
@@ -74,9 +82,11 @@ module.exports = function toJsonRepresentation(app) {
      */
     res.toFeedItemRepresentation = function (err, doc, url, fn) {
       checkError(err);
-      res.etag(doc.id, doc.modified);
-
-      toJsonRepresentation(new FeedItem(url, doc), fn);
+      checkEmpty(doc);
+      if (doc){
+        res.etag(doc.id, doc.modified);
+        toJsonRepresentation(new FeedItem(url, doc), fn);
+      }
     };
 
     /**
@@ -100,7 +110,7 @@ module.exports = function toJsonRepresentation(app) {
      */
     res.toNoResponseRepresentation = function (err) {
       checkError(err);
-      res.status(204);
+      res.status(204).send();
     };
 
     next();

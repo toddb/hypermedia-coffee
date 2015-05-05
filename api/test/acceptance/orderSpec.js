@@ -92,7 +92,7 @@ describe('Order', function () {
 
     var orderCollectionResource;
 
-    before(function (done) {
+    before(function createEmptyOrderCollection(done) {
       agent.post(pathname(link.getUrl(apiResource, 'orders')))
           .accept('json')
           .set(credentials)
@@ -125,7 +125,7 @@ describe('Order', function () {
           .accept('json')
           .set(credentials)
           .expect(200)
-          .end(function(err, res){
+          .end(function (err, res) {
             expect(err).to.be.null;
             expect(res.body.items).to.be.undefined;
             done();
@@ -133,66 +133,111 @@ describe('Order', function () {
 
     });
 
-    it('should create a new order item on order', function (done) {
+    describe('Order Item', function () {
 
-      // Here's the new order
       var newOrder = {type: 'med'};
+      var orderUrl;
 
-      // retrieve the create form
-      agent.get(pathname(link.getUrl(orderCollectionResource, 'create-form')))
-          .accept('json')
-          .set(credentials)
-          .expect(200)
-          .end(function(err, res){
+      before(function createNewOrder(done) {
 
-            expect(err).to.be.null;
-            expect(res.body).to.be.not.null;
+        agent.get(pathname(link.getUrl(orderCollectionResource, 'create-form')))
+            .accept('json')
+            .set(credentials)
+            .expect(200)
+            .end(function (err, res) {
 
-            expect(res.body.type).to.be.defined;
-            // update the form (we should be checking that this field already exists
-            var order = _.extend(res.body, newOrder);
+              expect(err).to.be.null;
+              expect(res.body).to.be.not.null;
 
-            // create the resource on the collection
-            agent.post(pathname(link.getUrl(orderCollectionResource, 'create-form')))
-                .accept('json')
-                .set(credentials)
-                .send(order)
-                .expect('location', isPresent)
-                .expect(201)
-                .end(function (err, res) {
+              expect(res.body.type).to.be.defined;
+              // update the form (we should be checking that this field already exists
+              var order = _.extend(res.body, newOrder);
 
-                  var orderUrl = res.header['location'];
-                  expect(err).to.be.null;
+              // create the resource on the collection
+              agent.post(pathname(link.getUrl(orderCollectionResource, 'create-form')))
+                  .accept('json')
+                  .set(credentials)
+                  .send(order)
+                  .expect('location', isPresent)
+                  .expect(201)
+                  .end(function (err, res) {
 
-                  agent.get(pathname(orderUrl))
-                      .accept('json')
-                      .set(credentials)
-                      .expect(200)
-                      .end(function (err, res) {
-                        expect(err).to.be.null;
+                    orderUrl = res.header['location'];
+                    expect(err).to.be.null;
 
-                        var order = res.body;
-                        expect(order.type).to.equal('med');
-                        expect(order.modified).to.be.defined;
+                    done();
 
-                        agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
-                            .accept('json')
-                            .set(credentials)
-                            .expect(200)
-                            .end(function(err, res){
-                              expect(err).to.be.null;
-                              expect(res.body.items).to.have.length(1);
+                  });
+            })
+      });
 
-                              done();
-                            })
+      it('should create a new order item on order', function (done) {
 
-                      });
+        agent.get(pathname(orderUrl))
+            .accept('json')
+            .set(credentials)
+            .expect(200)
+            .end(function (err, res) {
+              expect(err).to.be.null;
 
-                });
-          })
+              var order = res.body;
+              expect(order.type).to.equal('med');
+              expect(order.modified).to.be.defined;
+
+              agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+                  .accept('json')
+                  .set(credentials)
+                  .expect(200)
+                  .end(function (err, res) {
+                    expect(err).to.be.null;
+                    expect(res.body.items).to.have.length(1);
+
+                    done();
+                  })
+
+            });
+
+
+      });
+
+      it('should be able to delete an item order and it not be returned in the collection', function (done) {
+
+        agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+            .accept('json')
+            .set(credentials)
+            .expect(200)
+            .end(function (err, res) {
+              expect(err).to.be.null;
+
+              var items = res.body.items;
+              expect(items).to.be.defined;
+
+              agent.del(pathname(orderUrl))
+                  .set(credentials)
+                  .expect(204)
+                  .end(function (err, res) {
+
+                    agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+                        .accept('json')
+                        .set(credentials)
+                        .expect(200)
+                        .end(function (err, res) {
+
+                          expect(res.body.items).to.be.undefined;
+                          expect(res.body.items || []).to.have.length.lessThan(items.length);
+
+                          agent.get(pathname(orderUrl))
+                              .accept('json')
+                              .set(credentials)
+                              .expect(404, done);
+
+                        });
+                  });
+            });
+
+      });
 
     });
-
 
   });
 

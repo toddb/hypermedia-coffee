@@ -33,7 +33,7 @@ exports.item = function (parent, child) {
   return function (req, res) {
     var url = res.locals.schema + parent + req.params.oid;
     OrderItem.getItemByParent(req.params.oiid, req.params.oid, function (err, doc) {
-      res.toFeedItemRepresentation(err, doc, url, function (representation) {
+       res.toFeedItemRepresentation(err, doc, url, function (representation) {
         representation.addLink('up', url);
         representation.addLinks(doc._actions, function (rel) {
           return res.locals.self + '/' + rel + '/'
@@ -55,8 +55,9 @@ exports.createForm = function (parent) {
 //exports.update = function (req, res) {
 //  OrderItem.put(req.params.oid, req.body, res.NoResponseRepresentation);
 //};
-//
-//exports.del = function (req, res) {
-//  OrderItem.delete(req.params.oid, res.NoResponseRepresentation);
-//};
-//
+
+// TODO: ensure that it deletes with correct parent
+exports.delete = function (req, res) {
+  OrderItem.delete(req.params.oiid, res.toNoResponseRepresentation);
+};
+
