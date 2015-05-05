@@ -75,10 +75,7 @@ describe('Account', function () {
                 .accept('json')
                 .set(credentials)
                 .send(registrationDetails)
-                .expect(201)
-                .then(function (res) {
-                  console.log("here")
-                })
+                .expect(201);
           });
     });
 

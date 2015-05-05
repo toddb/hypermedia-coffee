@@ -5,7 +5,7 @@ var should = require('should'),
     _ = require('underscore'),
     path = require('path'),
     link = require(path.resolve('./src/util/linkRelation')),
-    request = require('supertest'),
+    request = require('supertest-as-promised'),
     mongoose = require('mongoose'),
     url = require('url'),
     config = require(path.resolve('./src/config/')),
@@ -31,117 +31,119 @@ describe('e2e - authenticated session', function () {
 
   });
 
-  before(function apiCredentials(done) {
+  before(function apiCredentials() {
 
-    agent.get('/api/')
+    return agent
+        .get('/api/')
         .accept('json')
         .expect(200)
-        .end(function (err, res) {
-
-          if (err) done(err);
+        .then(function (res) {
 
           apiResource = res.body;
 
           credentials = {
             Cookie: res.header['set-cookie'][0].split(';')[0]
           }
-
-          done();
         });
   });
 
-  before(function register(done) {
+  before(function register() {
 
-    agent.get(pathname(link.getUrl(apiResource, 'authenticator')))
+    return agent
+        .get(pathname(link.getUrl(apiResource, 'authenticator')))
         .accept('json')
         .set(credentials)
         .expect(200)
-        .end(function (err, res) {
+        .then(function (res) {
 
-          agent.get(pathname(link.getUrl(res.body, 'register')))
+          return agent
+              .get(pathname(link.getUrl(res.body, 'register')))
+              .accept('json')
+              .set(credentials);
+
+        })
+        .then(function (res) {
+
+          var registrationDetails = _.extend({}, res.body, {
+            username: config.testuser.name,
+            email: config.testuser.email,
+            password: config.testuser.password
+          });
+
+          return agent
+              .post(pathname(link.getUrl(res.body, 'self')))
               .accept('json')
               .set(credentials)
-              .end(function (err, res) {
-
-                var registrationDetails = _.extend({}, res.body, {
-                  username: config.testuser.name,
-                  email: config.testuser.email,
-                  password: config.testuser.password
-                });
-
-                agent.post(pathname(link.getUrl(res.body, 'self')))
-                    .accept('json')
-                    .set(credentials)
-                    .send(registrationDetails)
-                    .end(function(err, res){
-                      expect(res.status).to.match(/201|409/);
-                      done();
-                    })
-              });
+              .send(registrationDetails)
+              .then(function (res) {
+                expect(res.status).to.match(/201|409/);
+              })
         });
   });
 
-  before(function authenticate(done) {
+  before(function authenticate() {
 
-    agent.post(pathname(link.getUrl(apiResource, 'authenticator')))
+    return agent
+        .post(pathname(link.getUrl(apiResource, 'authenticator')))
         .accept('json')
         .set(credentials)
         .send({username: config.testuser.name, password: config.testuser.password})
         .expect('location', isPresent)
-        .expect(201, done);
+        .expect(201);
   });
 
   describe('Creating an order', function () {
 
     var orderResource, orderPaymentResource;
 
-    it('should place an order', function (done) {
-      agent.post(pathname(link.getUrl(apiResource, 'orders')))
+    it('should place an order', function () {
+      return agent
+          .post(pathname(link.getUrl(apiResource, 'orders')))
           .accept('json')
           .set(credentials)
           .send({type: 'medium'})
           .expect('location', isPresent)
           .expect(201)
-          .end(function (err, resp) {
+          .then(function (res) {
 
-            agent.get(pathname(resp.header['location']))
+            return agent.get(pathname(res.header['location']))
                 .accept('json')
                 .set(credentials)
                 .expect(200)
-                .end(function (err, res) {
+                .then(function (res) {
                   orderResource = res.body;
-                  done();
                 })
           });
     });
 
-    xit('should pay on new item', function (done) {
+    xit('should pay on new item', function () {
 
-      agent.post(pathname(link.getUrl(orderResource, 'pay')))
+      return agent
+          .post(pathname(link.getUrl(orderResource, 'pay')))
           .accept('json')
           .set(credentials)
           .send({token: '345d77568gq4GSDG78'})
           .expect('location', isPresent)
           .expect(201)
-          .end(function (err, res) {
+          .then(function (res) {
 
-            agent.get(pathname(res.header['location']))
+            return agent.get(pathname(res.header['location']))
+                .accept('json')
+                .set(credentials)
+                .expect(200);
+
+          })
+          .then(function (res) {
+
+            orderPaymentResource = res.body;
+
+            agent.get(pathname(link.getUrl(orderResource, 'self')))
                 .accept('json')
                 .set(credentials)
                 .expect(200)
-                .end(function (err, res) {
-                  orderPaymentResource = res.body;
-
-                  agent.get(pathname(link.getUrl(orderResource, 'self')))
-                      .accept('json')
-                      .set(credentials)
-                      .expect(200)
-                      .end(function (err, res) {
-                        orderResource = res.body;
-                        done();
-                      })
+                .then(function (res) {
+                  orderResource = res.body;
                 })
-
           });
 
     });

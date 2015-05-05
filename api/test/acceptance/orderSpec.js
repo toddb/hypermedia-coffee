@@ -5,7 +5,7 @@ var should = require('should'),
     _ = require('underscore'),
     path = require('path'),
     link = require(path.resolve('./src/util/linkRelation')),
-    request = require('supertest'),
+    request = require('supertest-as-promised'),
     mongoose = require('mongoose'),
     url = require('url'),
     config = require(path.resolve('./src/config/')),
@@ -31,104 +31,105 @@ describe('Order', function () {
 
   });
 
-  before(function apiCredentials(done) {
+  before(function apiCredentials() {
 
-    agent.get('/api/')
+    return agent
+        .get('/api/')
         .accept('json')
         .expect(200)
-        .end(function (err, res) {
-
-          if (err) done(err);
+        .then(function (res) {
 
           apiResource = res.body;
 
           credentials = {
             Cookie: res.header['set-cookie'][0].split(';')[0]
           }
-
-          done();
         });
   });
 
-  before(function register(done) {
+  before(function register() {
 
-    agent.get(pathname(link.getUrl(apiResource, 'authenticator')))
+    return agent
+        .get(pathname(link.getUrl(apiResource, 'authenticator')))
         .accept('json')
         .set(credentials)
         .expect(200)
-        .end(function (err, res) {
+        .then(function (res) {
 
-          agent.get(pathname(link.getUrl(res.body, 'register')))
+          return agent
+              .get(pathname(link.getUrl(res.body, 'register')))
+              .accept('json')
+              .set(credentials);
+
+        })
+        .then(function (res) {
+          var registrationDetails = _.extend({}, res.body, {
+            username: config.testuser.name,
+            email: config.testuser.email,
+            password: config.testuser.password
+          });
+
+          return agent
+              .post(pathname(link.getUrl(res.body, 'self')))
               .accept('json')
               .set(credentials)
-              .end(function (err, res) {
-
-                var registrationDetails = _.extend({}, res.body, {
-                  username: config.testuser.name,
-                  email: config.testuser.email,
-                  password: config.testuser.password
-                });
-
-                agent.post(pathname(link.getUrl(res.body, 'self')))
-                    .accept('json')
-                    .set(credentials)
-                    .send(registrationDetails)
-                    .expect(/200|409|User already exists/, done);
-              });
+              .send(registrationDetails)
+              .expect(/200|409|User already exists/);
         });
+
   });
 
-  before(function authenticate(done) {
+  before(function authenticate() {
 
-    agent.post(pathname(link.getUrl(apiResource, 'authenticator')))
+    return agent
+        .post(pathname(link.getUrl(apiResource, 'authenticator')))
         .accept('json')
         .set(credentials)
         .send({username: config.testuser.name, password: config.testuser.password})
         .expect('location', isPresent)
-        .expect(201, done);
+        .expect(201);
   });
 
   describe('Creating an order', function () {
 
     var orderCollectionResource;
 
-    before(function createEmptyOrderCollection(done) {
-      agent.post(pathname(link.getUrl(apiResource, 'orders')))
+    before(function createEmptyOrderCollection() {
+      return agent
+          .post(pathname(link.getUrl(apiResource, 'orders')))
           .accept('json')
           .set(credentials)
           .send({})
           .expect('location', isPresent)
           .expect(201)
-          .end(function (err, res) {
+          .then(function (res) {
 
             var orderCollectionUrl = res.header['location'];
 
-            agent.get(pathname(orderCollectionUrl))
+            return agent
+                .get(pathname(orderCollectionUrl))
                 .accept('json')
                 .set(credentials)
                 .expect(200)
-                .end(function (err, res) {
+                .then(function (res) {
                   orderCollectionResource = res.body;
 
                   expect(orderCollectionResource.items).to.be.defined;
                   expect(orderCollectionResource.items).to.be.empty;
                   expect(orderCollectionResource._items).to.be.undefined;
-
-                  done();
                 });
           });
     });
 
-    it('should create a new order without any items', function (done) {
+    it('should create a new order without any items', function () {
 
-      agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+      return agent
+          .get(pathname(link.getUrl(orderCollectionResource, 'self')))
           .accept('json')
           .set(credentials)
           .expect(200)
-          .end(function (err, res) {
-            expect(err).to.be.null;
+          .then(function (res) {
             expect(res.body.items).to.be.undefined;
-            done();
           })
 
     });
@@ -138,61 +139,52 @@ describe('Order', function () {
       var newOrder = {type: 'med'};
       var orderUrl;
 
-      before(function createNewOrder(done) {
+      before(function createNewOrder() {
 
-        agent.get(pathname(link.getUrl(orderCollectionResource, 'create-form')))
+        return agent
+            .get(pathname(link.getUrl(orderCollectionResource, 'create-form')))
             .accept('json')
             .set(credentials)
             .expect(200)
-            .end(function (err, res) {
-
-              expect(err).to.be.null;
+            .then(function (res) {
               expect(res.body).to.be.not.null;
-
               expect(res.body.type).to.be.defined;
               // update the form (we should be checking that this field already exists
               var order = _.extend(res.body, newOrder);
 
               // create the resource on the collection
-              agent.post(pathname(link.getUrl(orderCollectionResource, 'create-form')))
+              return agent
+                  .post(pathname(link.getUrl(orderCollectionResource, 'create-form')))
                   .accept('json')
                   .set(credentials)
                   .send(order)
                   .expect('location', isPresent)
                   .expect(201)
-                  .end(function (err, res) {
-
+                  .then(function (res) {
                     orderUrl = res.header['location'];
-                    expect(err).to.be.null;
-
-                    done();
-
                   });
             })
       });
 
-      it('should create a new order item on order', function (done) {
+      it('should create a new order item on order', function () {
 
-        agent.get(pathname(orderUrl))
+        return agent
+            .get(pathname(orderUrl))
             .accept('json')
             .set(credentials)
             .expect(200)
-            .end(function (err, res) {
-              expect(err).to.be.null;
-
+            .then(function (res) {
               var order = res.body;
               expect(order.type).to.equal('med');
               expect(order.modified).to.be.defined;
 
-              agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+              return agent
+                  .get(pathname(link.getUrl(orderCollectionResource, 'self')))
                   .accept('json')
                   .set(credentials)
                   .expect(200)
-                  .end(function (err, res) {
-                    expect(err).to.be.null;
+                  .then(function (res) {
                     expect(res.body.items).to.have.length(1);
-
-                    done();
                   })
 
             });
@@ -200,40 +192,46 @@ describe('Order', function () {
 
       });
 
-      it('should be able to delete an item order and it not be returned in the collection', function (done) {
+      it('should be able to delete an item order and it not be returned in the collection', function () {
+        var items
 
-        agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
+        return agent
+            .get(pathname(link.getUrl(orderCollectionResource, 'self')))
             .accept('json')
             .set(credentials)
             .expect(200)
-            .end(function (err, res) {
-              expect(err).to.be.null;
-
-              var items = res.body.items;
+            .then(function (res) {
+              items = res.body.items;
               expect(items).to.be.defined;
 
-              agent.del(pathname(orderUrl))
+              return agent
+                  .del(pathname(orderUrl))
                   .set(credentials)
-                  .expect(204)
-                  .end(function (err, res) {
+                  .expect(204);
 
-                    agent.get(pathname(link.getUrl(orderCollectionResource, 'self')))
-                        .accept('json')
-                        .set(credentials)
-                        .expect(200)
-                        .end(function (err, res) {
+            })
+            .then(function (res) {
 
-                          expect(res.body.items).to.be.undefined;
-                          expect(res.body.items || []).to.have.length.lessThan(items.length);
-
-                          agent.get(pathname(orderUrl))
-                              .accept('json')
-                              .set(credentials)
-                              .expect(404, done);
-
-                        });
+              return agent
+                  .get(pathname(link.getUrl(orderCollectionResource, 'self')))
+                  .accept('json')
+                  .set(credentials)
+                  .expect(200)
+                  .then(function (res) {
+                    expect(res.body.items).to.be.undefined;
+                    expect(res.body.items || []).to.have.length.lessThan(items.length);
                   });
+            })
+            .then(function (res) {
+
+              return agent
+                  .get(pathname(orderUrl))
+                  .accept('json')
+                  .set(credentials)
+                  .expect(404);
+
             });
+        ;
 
       });
 
