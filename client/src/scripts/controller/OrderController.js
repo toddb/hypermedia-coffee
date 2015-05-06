@@ -96,12 +96,12 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             $log.info("TBC")
           }
 
-          $scope.create = function (item, attrs) {
+          $scope.create = function (item) {
 
             link.get($scope.order, 'create-form', 'application/json')
                 .then(function success(response) {
 
-                  link.post(response.data, 'self', 'application/json', _.pick(item, attrs) || {}).
+                  link.post(response.data, 'self', 'application/json', item || {}).
                       then(function success(response) {
                         $http.get(response.headers().location, {
                           headers: {
