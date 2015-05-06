@@ -34,7 +34,7 @@ require.config({
     'angular-bootstrap': ['angular'],
     'angular-bootstrap-tpls': ['angular', 'angular-bootstrap'],
     'metis-menu': ['jquery'],
-    'sb-admin-2': ['jquery'],
+    'sb-admin-2': ['metis-menu'],
 
     /**
      * Date.js will extend the {@link Date} object with a {@link Date.TimeSpan}
