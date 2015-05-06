@@ -1,8 +1,10 @@
 @import url('../../bower_components/bootstrap/dist/css/bootstrap.css');
-@import url('../../bower_components/metisMenu/dist/metisMenu.min.css');
+@import url('../../bower_components/metisMenu/dist/metisMenu.css');
 @import url('../../bower_components/startbootstrap-sb-admin-2/dist/css/timeline.css');
 @import url('../../bower_components/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css');
 @import url('../../bower_components/font-awesome/css/font-awesome.min.css');
+@import url('../../bower_components/Slidebars/distribution/0.10.2/slidebars.css');
 /*@import url('cards.css');*/
 @import url('login.css');
+@import url('main.css');
 

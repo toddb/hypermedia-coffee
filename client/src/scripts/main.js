@@ -19,7 +19,8 @@ require.config({
     'requirejs': "../../bower_components/requirejs/require",
     'underscore': '../../bower_components/underscore/underscore',
     'metis-menu': '../../bower_components/metisMenu/dist/metisMenu',
-    'sb-admin-2': '../../bower_components/startbootstrap-sb-admin-2/dist/js/sb-admin-2'
+    'sb-admin-2': '../../bower_components/startbootstrap-sb-admin-2/dist/js/sb-admin-2',
+    'slidebars': '../../bower_components/Slidebars/distribution/0.10.2/slidebars'
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
@@ -35,6 +36,7 @@ require.config({
     'angular-bootstrap-tpls': ['angular', 'angular-bootstrap'],
     'metis-menu': ['jquery'],
     'sb-admin-2': ['metis-menu'],
+    'slidebars': ['jquery'],
 
     /**
      * Date.js will extend the {@link Date} object with a {@link Date.TimeSpan}

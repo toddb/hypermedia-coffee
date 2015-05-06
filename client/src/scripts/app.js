@@ -20,7 +20,8 @@ define(
       'controller/PayController',
       'controller/AuthenticatorController',
       'metis-menu',
-      'sb-admin-2'
+      'sb-admin-2',
+      'slidebars'
 
     ],
     function ($, angularAMD) {
