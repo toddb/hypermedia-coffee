@@ -1,45 +1,40 @@
-
-<div class="page-header">
-    <h1>Coffee
-        <small>Orders</small>
-    </h1>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Paid Orders ({{orders.length}})</h1>
+    </div>
 </div>
 
-
-<div ng-hide="orders | isEmpty">
-    <div class="container-fluid">
+<div class="row" ng-hide="orders | isEmpty">
+    <div class="col-lg-12">
         <div class="jumbotron">
-            <h2 class="text-center">There are currently no orders.</h2>
+            <p>There are currently no orders</p>
         </div>
     </div>
 </div>
 
+<div class="row" ng-show="orders | isEmpty">
+    <div class="col-lg-3 col-md-6" data-ng-repeat="order in orders">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-coffee fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">2</div>
+                        <div>{{ order.type }}</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" ng-click="gotoOrder(order)">
+                <div class="panel-footer">
+                    <span class="pull-left">3 mins</span>
+                    <span class="pull-right"><button type="button" class="btn btn-default btn-circle btn-lg"><i class="fa fa-check"></i>
+                    </button></span>
 
-<div ng-show="orders | isEmpty" class="container">
-    <div class="row>">
-        <div data-ng-repeat="order in orders" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-            <a ng-click="gotoOrder(order)">
-                <div class="item">
-                    <div class="item-header"></div>
-                    <div class="item-description">
-                        <h3>{{ order.type }}</h3>
-                        <p class="text-muted visible-lg-*" ng-show="order.state">{{ order.state }}</p>
-                    </div>
-                    <div class="item-description">
-                            <h3>{{ order.value.units }}{{ order.value.amount }}</h3>
-                            <h5 ng-show="order.extras">{{order.extras}}</h5>
-                            <blockquote class=" text-muted text-smaller blockquote-reverse">
-                                <p><span class="glyphicon glyphicon-time"></span>&nbsp;Ready by: {{ order.repeat.to | timeago }}</p>
-                            </blockquote>
-                    </div>
-                    <div class="item-footer text-muted text-smaller">
-                        <p >
-                            <span class="glyphicon glyphicon-time"></span>&nbsp;<b>Ordered at {{order.repeat.from | timeago }}</b>
-                        </p>
-                    </div>
+                    <div class="clearfix"></div>
                 </div>
             </a>
         </div>
     </div>
-
 </div>

@@ -18,7 +18,10 @@ define(
       'controller/OrderController',
       'controller/StateController',
       'controller/PayController',
-      'controller/AuthenticatorController'
+      'controller/AuthenticatorController',
+      'metis-menu',
+      'sb-admin-2'
+
     ],
     function ($, angularAMD) {
       var app = angular
