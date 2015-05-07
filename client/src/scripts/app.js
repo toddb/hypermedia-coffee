@@ -12,7 +12,6 @@ define(
         'util/uriMapping',
         'provider/uriMapper',
         'provider/httpAuthInterceptor',
-        'directive/buttonsRadio',
         'controller/HomeController',
         'controller/OrdersController',
         'controller/OrderController',
