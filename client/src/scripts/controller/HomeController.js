@@ -69,10 +69,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             }
           };
 
-          angular.element(document).ready(function () {
-            $.slidebars();
-          });
-
           init();
         }
 

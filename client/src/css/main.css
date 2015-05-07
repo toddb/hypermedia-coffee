@@ -153,8 +153,6 @@
 }
 
 /* Left */
-
-
 .sb-menu li .sb-open-right, .sb-menu li small {
     display: inline-block;
     padding: 14px;
@@ -162,4 +160,9 @@
 
 .sb-menu li img {
     margin: 14px;
+}
+
+#page-wrapper{
+    padding-top: 30px;
+    margin: 30px 0 0 0;
 }
