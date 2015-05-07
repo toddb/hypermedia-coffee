@@ -43,7 +43,16 @@ module.exports = exports = function resourcePlugin(schema, options) {
   };
 
   schema.statics.delete = function (id, cb) {
-    this.findByIdAndRemove(id, cb);
+
+    // We can't use findByIdAndRemove because we need to invoke middle hooks,
+    // see http://mongoosejs.com/docs/api.html#model_Model.findOneAndRemove
+    this.findById(id, function(err, doc){
+      if (err){
+        cb(err);
+      }
+
+      doc.remove(cb);
+    });
   };
 
   schema.statics.put = function (id, model, cb) {

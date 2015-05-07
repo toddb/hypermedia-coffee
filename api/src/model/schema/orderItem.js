@@ -30,9 +30,9 @@ schema.pre('remove', function (next) {
   var self = this;
 
   var Order = require('../order');
-
   Order.findById(self._parent, function (err, orderDoc) {
 
+    console.log("removing")
     // only update if the child exists
     var indexOf = orderDoc._items.indexOf(self._id);
     if (indexOf > -1) {

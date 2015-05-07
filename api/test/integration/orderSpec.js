@@ -127,6 +127,8 @@ describe('Order', function () {
 
         var deletedId = doc._id;
         expect(deletedId).to.be.not.null;
+        expect(deletedId.toString()).to.be.eq(itemId);
+        expect(doc._parent.toString()).to.be.eq(orderId);
 
         Order.findById(orderId, function(err, doc){
 
