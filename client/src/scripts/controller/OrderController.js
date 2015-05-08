@@ -71,7 +71,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.delete = function (item) {
 
-            console.log($scope.items)
             link.delete(item, 'self')
                 .then(function success() {
                   removeItem(item);
@@ -85,8 +84,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.create = function (item) {
 
-            console.log($scope.items)
-
             link.get($scope.order, 'create-form', 'application/json')
                 .then(function success(response) {
 
@@ -98,9 +95,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                           }
                         })
                             .then(function success(response) {
-                              $log.debug(response.data)
                               addItem(response.data);
-                              $log.debug($scope.items)
                             },
                             $log.error)
                       }, $log.error);
