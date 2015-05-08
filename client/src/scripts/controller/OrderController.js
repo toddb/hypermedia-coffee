@@ -80,6 +80,11 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.deleteAll = function () {
             $log.info("TBC")
+          } ;
+
+          $scope.pay = function(item){
+            $log.debug("Pay : not implemented");
+
           }
 
           $scope.create = function (item) {
@@ -109,6 +114,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             $scope.items = [];
 
             var orderUri = uriMapper.fromSitePath($location.path(), '/orders/order/a/');
+            $log.debug($location.path() + ' -> ' + orderUri);
             $http(
                 {
                   method: 'GET',
@@ -117,7 +123,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                 })
                 .then(function success(response) {
 
-                  $scope.order = response.data.links;
+                  $scope.order = response.data;
 
                   _(response.data.items).each(function (item) {
                     addItem(

@@ -24,11 +24,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             }
           }
 
-          function clearOrders() {
-            // Clear the array, but do not delete it as it is bound to UI
-            $scope.orders.splice(0, $scope.orders.length);
-          }
-
           function addOrder(item) {
             $scope.orders.push(item);
           }
@@ -56,6 +51,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             $scope.orders = [];
 
             var apiUri = uriMapper.fromSitePath($location.path(), '/orders/a/');
+            $log.debug($location.path() + ' -> ' + apiUri);
             $http(
                 {
                   method: 'GET',
