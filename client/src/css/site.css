@@ -8,3 +8,12 @@
 @import url('login.css');
 @import url('main.css');
 
+
+.btn-circle.btn-xxxl {
+    width: 150px;
+    height: 150px;
+    padding: 10px 16px;
+    border-radius: 75px;
+    font-size: 36px;
+    line-height: 2;
+}
