@@ -8,13 +8,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
         '$scope', '$log', '$location', '$http', 'UriMapper', 'link', '$timeout',
         function OrderController($scope, $log, $location, $http, uriMapper, link, $timeout) {
 
-          $scope.order = {links: [], items: []};
-
-          function addOrder(order) {
-            // Need to bind to the reference inside the object
-            $scope.order.links = order.links;
-            $scope.order.items = order.items;
-          }
 
           function addItem(item) {
             $scope.items.push(item);
@@ -54,14 +47,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             }
           }
 
-          function clearItems() {
-            if (!$scope.items) {
-              $scope.items = [];
-            }
-            // Clear the array, but do not delete it as it is bound to UI
-            $scope.items.splice(0, $scope.items.length);
-          }
-
           function updateItem(item) {
             updateObjectByUri($scope.items, item);
           }
@@ -71,7 +56,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
           }
 
           $scope.gotoNextState = function gotoNextState() {
-            var self = link.getUrl($scope.order, /pay/);
+            var self = link.getUrl($scope.items, /pay/);
             if (self) {
               var path = uriMapper.toSitePath(self, '/orders/order/pay/a/');
               $log.debug(self + ' -> ' + path);
@@ -85,6 +70,8 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
           };
 
           $scope.delete = function (item) {
+
+            console.log($scope.items)
             link.delete(item, 'self')
                 .then(function success() {
                   removeItem(item);
@@ -98,6 +85,8 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.create = function (item) {
 
+            console.log($scope.items)
+
             link.get($scope.order, 'create-form', 'application/json')
                 .then(function success(response) {
 
@@ -109,7 +98,9 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                           }
                         })
                             .then(function success(response) {
+                              $log.debug(response.data)
                               addItem(response.data);
+                              $log.debug($scope.items)
                             },
                             $log.error)
                       }, $log.error);
@@ -120,7 +111,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.init = function () {
             $log.info("Loading OrderController");
-            clearItems();
+            $scope.items = [];
 
             var orderUri = uriMapper.fromSitePath($location.path(), '/orders/order/a/');
             $http(
@@ -131,7 +122,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                 })
                 .then(function success(response) {
 
-                  addOrder(response.data);
+                  $scope.order = response.data.links;
 
                   _(response.data.items).each(function (item) {
                     addItem(
@@ -139,7 +130,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                           links: [
                             {rel: 'self', href: item.id}
                           ],
-                          type: item.title
+                          type: item.title || ''
                         });
 
                     // Get the order

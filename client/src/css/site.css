@@ -17,3 +17,11 @@
     font-size: 36px;
     line-height: 2;
 }
+.btn-circle.btn-xxl {
+    width: 120px;
+    height: 120px;
+    padding: 10px 16px;
+    border-radius: 60px;
+    font-size: 36px;
+    line-height: 1.8;
+}

@@ -58,7 +58,7 @@ module.exports = function (app) {
             ':oiid': {
               //put: orderItem.update,
               //delete: orderItem.del,
-              get: orderItem.item('/api/order/'),
+              get: orderItem.item('/api/order/', '/item/'),
               delete: orderItem.delete
             }
           },

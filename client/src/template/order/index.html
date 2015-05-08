@@ -17,6 +17,7 @@
 </div>
 
 <div class="row" ng-show="items | isEmpty">
+    <!-- coffees -->
     <div class="col-lg-3 col-md-6" data-ng-repeat="item in items">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -25,16 +26,19 @@
                         <i class="fa fa-coffee fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <span class="pull-right" ng-include="'./template/orderItem/delete.html'"/></span>
+                        <button type="button" class="btn btn-danger btn-circle btn-lg pull-right"
+                                ng-click="delete(item)">
+                            <i class="fa fa-remove"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-                <div class="panel-footer">
-
-                    <div class="clearfix"></div>
-                </div>
+            <div class="panel-footer">
+                <div class="clearfix"></div>
+            </div>
         </div>
     </div>
+    <!-- pay  -->
     <div class="col-lg-3 col-md-6">
         <div class="panel panel-success">
             <div class="panel-heading">
@@ -52,7 +56,6 @@
                 </div>
             </div>
             <div class="panel-footer">
-
                 <div class="clearfix"></div>
             </div>
         </div>

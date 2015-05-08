@@ -31,13 +31,11 @@ exports.create = function (req, res) {
 
 exports.item = function (parent, child) {
   return function (req, res) {
-    var url = res.locals.schema + parent + req.params.oid;
+    var parentUrl = res.locals.schema + parent + req.params.oid;
+    var url = parentUrl + child + req.params.oiid;
     OrderItem.getItemByParent(req.params.oiid, req.params.oid, function (err, doc) {
        res.toFeedItemRepresentation(err, doc, url, function (representation) {
-        representation.addLink('up', url);
-        representation.addLinks(doc._actions, function (rel) {
-          return res.locals.self + '/' + rel + '/'
-        })
+        representation.addLink('up', parentUrl);
       });
     });
   };
