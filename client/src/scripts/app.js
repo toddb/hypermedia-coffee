@@ -56,7 +56,7 @@ define(
                         .state('home', {
                           url: "/a/{apiUri:.*}",
 
-                          templateUrl: 'template/index.html',
+                          templateUrl: 'template/home/index.html',
                           controller: 'HomeController',
                           data: {
                             rel: {
