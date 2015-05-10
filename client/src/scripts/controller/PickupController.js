@@ -3,10 +3,10 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
 
   return controllers.controller(
-      'OrderController',
+      'PickupController',
       [
         '$scope', '$log', '$location', '$http', 'UriMapper', 'link', '$timeout',
-        function OrderController($scope, $log, $location, $http, uriMapper, link, $timeout) {
+        function PickupController($scope, $log, $location, $http, uriMapper, link, $timeout) {
 
 
           function addItem(item) {
@@ -30,23 +30,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             }
           }
 
-          /**
-           *
-           * @param {Array} array
-           * @param oldValue
-           */
-          function removeObjectByUri(array, oldValue) {
-            if (_(array).isArray()) {
-              var self = link.getUrl(oldValue, /self|canonical/);
-              for (var index = 0; index < array.length; ++index) {
-                if (self == link.getUrl(array[index], /self|canonical/)) {
-                  array.splice(index, 1);
-                  return;
-                }
-              }
-            }
-          }
-
           function makeStateUri(stateRelation, apiRepresentation, apiLinkRelation) {
             var apiUri = uriMapper.makeRelative(link.getUrl(apiRepresentation, apiLinkRelation));
             var href = $state.href($state.current.data.rel[stateRelation], {apiUri: apiUri});
@@ -58,10 +41,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           function updateItem(item) {
             updateObjectByUri($scope.items, item);
-          }
-
-          function removeItem(item) {
-            removeObjectByUri($scope.items, item);
           }
 
           $scope.gotoNextState = function () {
@@ -78,43 +57,16 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             }
           };
 
-          $scope.delete = function (item) {
+          $scope.home = function () {
 
-            link.delete(item, 'self')
-                .then(function success() {
-                  removeItem(item);
-                  $log.info("Deleted")
-                })
-          }
-
-          $scope.deleteAll = function () {
-            $log.info("Not implementated")
-          } ;
-
-          $scope.create = function (item) {
-
-            link.get($scope.order, 'create-form', 'application/json')
-                .then(function success(response) {
-
-                  link.post(response.data, 'self', 'application/json', item || {}).
-                      then(function success(response) {
-                        $http.get(response.headers().location, {
-                          headers: {
-                            'Accept': response.headers()['content-type']
-                          }
-                        })
-                            .then(function success(response) {
-                              addItem(response.data);
-                            },
-                            $log.error)
-                      }, $log.error);
-
-                }, $log.error);
+            $timeout(function () {
+              $location.path('home');
+            });
 
           };
 
-          $scope.loadOrder = function(){
-            var orderUri = uriMapper.fromSitePath($location.path(), '/orders/order/a/');
+          $scope.loadOrder = function () {
+            var orderUri = uriMapper.fromSitePath($location.path(), '/orders/order/pickup/a/');
             $log.debug($location.path() + ' -> ' + orderUri);
             $http(
                 {
@@ -150,7 +102,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
           }
 
           $scope.init = function () {
-            $log.info("Loading OrderController");
+            $log.info("Loading PickupController");
             $scope.items = [];
             $scope.loadOrder();
 

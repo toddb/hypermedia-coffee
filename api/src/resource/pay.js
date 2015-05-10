@@ -30,6 +30,14 @@ exports.create = function (req, res) {
   });
 };
 
+exports.createForm = function (parent) {
+  return function (req, res) {
+    res.toFeedRepresentation(null, Pay.empty(), res.locals.self, function(representation){
+      representation.addLink('up', res.locals.schema + parent + req.params.oid);
+    });
+  }
+};
+
 exports.update = function (req, res) {
   Pay.put(req.params.pid, req.body, res.NoResponseRepresentation);
 };

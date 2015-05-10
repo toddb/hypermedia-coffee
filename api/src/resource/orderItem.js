@@ -19,8 +19,7 @@ exports.item = function (parent, child) {
   };
 };
 
-exports.createForm = function (parent, self) {
-
+exports.createForm = function (parent) {
   return function (req, res) {
     res.toFeedRepresentation(null, OrderItem.empty(), res.locals.self, function(representation){
       representation.addLink('up', res.locals.schema + parent + req.params.oid);

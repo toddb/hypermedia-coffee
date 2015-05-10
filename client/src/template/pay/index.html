@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="col-lg-12">
+        <span class="pull-left">
+            <button type="button" class="btn btn-default btn-circle btn-lg" ng-click="back()">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+        </span>
+
+        <h1 class="page-header">Payment required</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <p><i>Clicking on one of these items goes off and makes a payment and returns a payment token.</i></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-md-6" data-ng-repeat="payment in ['mastercard', 'visa', 'paypal']">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <i class="fa fa-5x" ng-class="'fa-cc-' + payment"></i>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <span class="pull-right">
+                            <button type="button" class="btn btn-warning btn-circle btn-xl" ng-click="makePayment()">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <i class="fa fa-5x fa-money"></i>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <span class="pull-right"><button type="button" class="btn btn-default btn-circle btn-xl"
+                                                         ng-click="makePayment()"><i
+                                class="fa fa-check"></i>
+                        </button></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

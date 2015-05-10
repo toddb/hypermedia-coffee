@@ -17,6 +17,7 @@ define(
       'controller/OrderController',
       'controller/StateController',
       'controller/PayController',
+      'controller/PickupController',
       'controller/AuthenticatorController',
       'metis-menu',
       'sb-admin-2',
@@ -112,13 +113,25 @@ define(
                   .state('pay', {
                     url: "/orders/order/pay/a/{apiUri:.*}",
 
-                    templateUrl: 'template/pay/post.html',
+                    templateUrl: 'template/pay/index.html',
                     controller: 'PayController',
                     data: {
                       rel: {
                         'self': 'pay',
                         'home': 'home',
                         'up': 'order'
+                      }
+                    }
+                  })
+                  .state('pickup', {
+                    url: "/orders/order/pickup/a/{apiUri:.*}",
+
+                    templateUrl: 'template/pickup/index.html',
+                    controller: 'PickupController',
+                    data: {
+                      rel: {
+                        'self': 'pickup',
+                        'home': 'home'
                       }
                     }
                   })

@@ -53,7 +53,7 @@ module.exports = function (app) {
           get: order.item('/api/order/', '/item/'),
           options: restrictions.item,
           '/placeOrder/': {  /* same as `item` for get and post */
-            get: orderItem.createForm('/api/order/', '/item/'),
+            get: orderItem.createForm('/api/order/'),
             post: orderItem.create
           },
           '/item/': {
@@ -65,6 +65,7 @@ module.exports = function (app) {
             }
           },
           '/pay/': {
+            get: pay.createForm('/api/order/'),
             post: order.pay(pay.create),
             ':pid': {
               get: pay.item('/api/order/')
