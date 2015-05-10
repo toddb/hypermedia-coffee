@@ -42,6 +42,7 @@ module.exports = exports = function resourcePlugin(schema, options) {
     });
   };
 
+
   schema.statics.delete = function (id, cb) {
 
     // We can't use findByIdAndRemove because we need to invoke middle hooks,

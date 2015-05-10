@@ -29,12 +29,14 @@ var statemachine = require('./statemachine.js');
  *  var mongoose = require('mongoose'),
  *  coffeeState = require('./plugin/coffeeState'),
  *
- *  var schema = new mongoose.Schema({
- *   type: {type: String, required: true}
- * });
- *
+ *  var schema = new mongoose.Schema({});
  *  schema.plugin(coffeeState);
  *
+ *  var coffee = mongoose.Model('Coffee', schema);
+ *
+ *  coffee.state        // returns `start`
+ *  coffee.placeOrder() // would successfully transition
+ *  coffee.state        // returns `orderPlaced`
  *
  * @type {Function}
  * @param {mongoose.Schema} schema

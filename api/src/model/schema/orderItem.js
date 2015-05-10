@@ -26,52 +26,16 @@ schema.blacklist = ['_parent'];
 
 schema.pre('remove', function (next) {
 
-  log.debug("Removing child from parent: orderItem to order")
-  var self = this;
-
   var Order = require('../order');
-  Order.findById(self._parent, function (err, orderDoc) {
-
-    // only update if the child exists
-    var indexOf = orderDoc._items.indexOf(self._id);
-    if (indexOf > -1) {
-      orderDoc._items.splice(indexOf, 1);
-      orderDoc.save(function (err, doc, numAffected) {
-        if (err) {
-          next(err);
-        }
-        next();
-      });
-    } else {
-      next();
-    }
-  });
+  Order.removeOrderItem(this._parent, this._id, next)
 
 });
 
+
 schema.pre('save', function (next) {
 
-  log.debug("Adding child to parent: orderItem to order")
-
-  var self = this;
   var Order = require('../order');
-
-  Order.findById(self._parent, function (err, doc) {
-
-    // only update the parent if the child is new
-    if (doc._items && doc._items.indexOf(self._id) == -1) {  // underscore contains isn't working ??
-      doc._items.push(self);
-      doc.save(function (err, doc, numAffected) {
-        if (err) {
-          next(err);
-        }
-        next();
-      });
-    } else {
-      next();
-
-    }
-  });
+  Order.updateOrderItem(this._parent, this._id, next);
 
 });
 
