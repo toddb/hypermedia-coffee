@@ -28,7 +28,8 @@ exports.item = function (parent, child) {
             // TODO create-form should replaced with an action
             representation.addLink('create-form', url + child)
             representation.addLinks(doc._actions, function (rel) {
-              return res.locals.self + '/' + rel + '/'
+              // TODO: need to decouple state action from noun (eg pay --> payment )
+              return res.locals.self + '/' + rel + '/';
             })
 
             representation.addCollection(url, doc._items, function (id) {
