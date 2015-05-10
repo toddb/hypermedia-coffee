@@ -52,12 +52,14 @@ module.exports = function (app) {
         ':oid': {
           get: order.item('/api/order/', '/item/'),
           options: restrictions.item,
+          '/placeOrder/': {  /* same as `item` for get and post */
+            get: orderItem.createForm('/api/order/', '/item/'),
+            post: orderItem.create
+          },
           '/item/': {
             get: orderItem.createForm('/api/order/'),
             post: orderItem.create,
             ':oiid': {
-              //put: orderItem.update,
-              //delete: orderItem.del,
               get: orderItem.item('/api/order/', '/item/'),
               delete: orderItem.delete
             }
@@ -74,7 +76,7 @@ module.exports = function (app) {
         get: pay.list,
         post: pay.create,
         ':pid': {
-          get: pay.item('/api/pay/'),
+          get: pay.item('/api/order/'),
           put: pay.update,
           delete: pay.delete
         }

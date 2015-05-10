@@ -127,7 +127,7 @@ describe('e2e - authenticated session', function () {
 
       before(function () {
         return agent
-            .post(pathname(link.getUrl(orderResource, /create-form|placeOrder/)))
+            .post(pathname(link.getUrl(orderResource, /placeOrder|create-form/)))
             .accept('json')
             .set(credentials)
             .send({type: 'medium'})

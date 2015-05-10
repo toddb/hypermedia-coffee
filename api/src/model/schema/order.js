@@ -6,7 +6,6 @@
  */
 
 var mongoose = require('mongoose'),
-//itemSchema = require('./orderItem'),
     resourceSchema = require('./plugin/resource'),
     coffeeState = require('./plugin/coffeeState'),
     timestamp = require('./plugin/timestamp'),
@@ -25,6 +24,7 @@ schema.plugin(coffeeState);
 schema.plugin(timestamp);
 //schema.plugin(versioner, {modelName: 'order', mongoose: mongoose});
 
+// TODO: requires a full implementation of the state machine - see docs/customer-state-machine.jpg
 schema.methods.canChangeOrder = function () {
   return this.state == 'orderPlaced' || this.state == 'start';
 }
@@ -109,7 +109,8 @@ schema.statics.addPayment = function (id, paymentId, cb) {
 
       if (err) {
         log.warn(err + ' on id: ' + doc._id + ' - current state is: ' + doc.state);
-      };
+      }
+      ;
 
       doc._payments.push(paymentId);
 
