@@ -8,10 +8,10 @@ exports.delete = function (req, res) {
 
 exports.item = function (parent) {
   return function (req, res) {
-    var url = res.locals.schema + parent;
+    var url = res.locals.self;
     Pay.getItem(req.params.pid, function (err, doc) {
       res.toFeedItemRepresentation(err, doc, url, function (representation) {
-        representation.addLink('up', res.locals.schema + parent);
+        representation.addLink('up', res.locals.schema + parent + req.params.oid);
       });
     });
   };

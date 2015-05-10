@@ -153,6 +153,10 @@ module.exports = exports = function resourcePlugin(schema, options) {
 
   schema.set('toJSON', {
     transform: function (doc, ret, options) {
+      /* KLUDGE */
+      delete ret._parent;
+      delete ret._items;
+      delete ret._payments;
       delete ret.versionId;
       delete ret._id;
       delete ret.__v;

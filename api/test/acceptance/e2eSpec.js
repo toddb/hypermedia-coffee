@@ -92,21 +92,22 @@ describe('e2e - authenticated session', function () {
         .expect(201);
   });
 
-  describe('Creating an order', function () {
+  describe('Start - ceating an order', function () {
 
     var orderResource, orderPaymentResource;
 
-    it('should place an order', function () {
+    before(function () {
       return agent
           .post(pathname(link.getUrl(apiResource, 'orders')))
           .accept('json')
           .set(credentials)
-          .send({type: 'medium'})
+        //.send({type: 'medium'})
           .expect('location', isPresent)
           .expect(201)
           .then(function (res) {
 
-            return agent.get(pathname(res.header['location']))
+            return agent
+                .get(pathname(res.header['location']))
                 .accept('json')
                 .set(credentials)
                 .expect(200)
@@ -116,37 +117,74 @@ describe('e2e - authenticated session', function () {
           });
     });
 
-    xit('should pay on new item', function () {
 
-      return agent
-          .post(pathname(link.getUrl(orderResource, 'pay')))
-          .accept('json')
-          .set(credentials)
-          .send({token: '345d77568gq4GSDG78'})
-          .expect('location', isPresent)
-          .expect(201)
-          .then(function (res) {
+    it('should start an order', function () {
+      expect(link.getUrl(orderResource, 'placeOrder')).to.be.not.empty;
+      expect(orderResource.state).to.eql('start');
+    });
 
-            return agent.get(pathname(res.header['location']))
-                .accept('json')
-                .set(credentials)
-                .expect(200);
+    describe('OrderPlaced - add an item', function () {
 
-          })
-          .then(function (res) {
+      before(function () {
+        return agent
+            .post(pathname(link.getUrl(orderResource, /create-form|placeOrder/)))
+            .accept('json')
+            .set(credentials)
+            .send({type: 'medium'})
+            .expect(201)
+            .then(function(res){
+              return agent
+                  .get(pathname(link.getUrl(orderResource, 'self')))
+                  .accept('json')
+                  .set(credentials)
+                  .expect(200)
+                  .then(function (res) {
+                    orderResource = res.body;
+                  })
+            });
+      });
 
-            orderPaymentResource = res.body;
+      it('should have a pay link relation on order', function () {
+        expect(link.getUrl(orderResource, 'pay')).to.be.not.empty;
+        expect(orderResource.state).to.eql('orderPlaced');
+      });
 
-            agent.get(pathname(link.getUrl(orderResource, 'self')))
-                .accept('json')
-                .set(credentials)
-                .expect(200)
-                .then(function (res) {
-                  orderResource = res.body;
-                })
-          });
+      it('should pay on new item', function () {
+
+        return agent
+            .post(pathname(link.getUrl(orderResource, 'pay')))
+            .accept('json')
+            .set(credentials)
+            .send({token: '345d77568gq4GSDG78'})
+            .expect('location', isPresent)
+            .expect(201)
+            .then(function (res) {
+              return agent.get(pathname(res.header['location']))
+                  .accept('json')
+                  .set(credentials)
+                  .expect(200)
+                  .then(function(res){
+                    orderPaymentResource = res.body;
+                    expect(link.getUrl(orderPaymentResource, 'up')).to.eql(link.getUrl(orderResource, 'self'));
+                  });
+
+            })
+            .then(function (res) {
+              return agent.get(pathname(link.getUrl(orderResource, 'self')))
+                  .accept('json')
+                  .set(credentials)
+                  .expect(200)
+                  .then(function (res) {
+                    orderResource = res.body;
+                    expect(orderResource.state).to.eql('paid');
+                    expect(link.getUrl(orderResource, 'pickup')).to.be.not.empty;
+                  })
+            });
+
+      });
 
     });
+
 
   });
 

@@ -25,9 +25,17 @@ schema.plugin(coffeeState);
 schema.plugin(timestamp);
 //schema.plugin(versioner, {modelName: 'order', mongoose: mongoose});
 
+schema.methods.canChangeOrder = function () {
+  return this.state == 'orderPlaced' || this.state == 'start';
+}
+
 schema.statics.updateOrderItem = function (id, itemId, cb) {
 
   this.findById(id, function (err, doc) {
+
+    if (!doc.canChangeOrder()) {
+      return cb();
+    }
 
     // only update the parent if the child is new
     if (doc._items.indexOf(itemId) == -1) {
@@ -58,12 +66,16 @@ schema.statics.removeOrderItem = function (id, itemId, cb) {
 
   this.findById(id, function (err, doc) {
 
+    if (!doc.canChangeOrder()) {
+      return cb();
+    }
+
     // only update if the child exists
     var indexOf = doc._items.indexOf(itemId);
     if (indexOf > -1) {
       doc._items.splice(indexOf, 1);
       doc.save(function (err, doc, numAffected) {
-         if (err) {
+        if (err) {
           log.warn(err)
         }
         log.debug("Removed item from order: " + itemId);
@@ -72,6 +84,7 @@ schema.statics.removeOrderItem = function (id, itemId, cb) {
     } else {
       cb();
     }
+
 
   });
 };
@@ -86,6 +99,10 @@ schema.statics.addPayment = function (id, paymentId, cb) {
 
     if (!doc) {
       return cb(new Error("Order " + id + " not found"));
+    }
+
+    if (!doc.canChangeOrder()) {
+      return cb();
     }
 
     doc.pay(function (err) {

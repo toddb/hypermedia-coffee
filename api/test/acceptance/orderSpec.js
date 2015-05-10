@@ -104,34 +104,24 @@ describe('Order', function () {
           .expect(201)
           .then(function (res) {
 
-            var orderCollectionUrl = res.header['location'];
-
             return agent
-                .get(pathname(orderCollectionUrl))
+                .get(pathname(res.header['location']))
                 .accept('json')
                 .set(credentials)
                 .expect(200)
                 .then(function (res) {
                   orderCollectionResource = res.body;
-
-                  expect(orderCollectionResource.items).to.be.defined;
-                  expect(orderCollectionResource.items).to.be.empty;
-                  expect(orderCollectionResource._items).to.be.undefined;
-                });
+                 });
           });
     });
 
     it('should create a new order without any items', function () {
 
-      return agent
-          .get(pathname(link.getUrl(orderCollectionResource, 'self')))
-          .accept('json')
-          .set(credentials)
-          .expect(200)
-          .then(function (res) {
-            expect(res.body.items).to.be.undefined;
-          })
+      expect(orderCollectionResource.items).to.be.defined;
+      expect(orderCollectionResource.items).to.be.empty;
 
+      expect(orderCollectionResource._items).to.be.undefined;
+      expect(orderCollectionResource._payments).to.be.undefined;
     });
 
     describe('Order Item', function () {
@@ -218,8 +208,8 @@ describe('Order', function () {
                   .set(credentials)
                   .expect(200)
                   .then(function (res) {
-                    expect(res.body.items).to.be.undefined;
-                    expect(res.body.items || []).to.have.length.lessThan(items.length);
+                    expect(res.body.items).to.be.defined;
+                    expect(res.body.items).to.have.length.lessThan(items.length);
                   });
             })
             .then(function (res) {

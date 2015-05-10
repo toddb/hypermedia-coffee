@@ -4,7 +4,7 @@ var Order = require('../model').Order;
 exports.list = function (parent, child) {
   return function (req, res) {
     var url = res.locals.self;
-    Order.getCollection(function(err, doc){
+    Order.getCollection(function (err, doc) {
       res.toFeedRepresentation(err, doc, url, function (representation) {
         representation.addLink('up', res.locals.schema + parent);
         //representation.addLink('create-form', url);
@@ -21,12 +21,23 @@ exports.item = function (parent, child) {
   return function (req, res) {
     var url = res.locals.schema + parent + req.params.oid;
     Order.getItem(req.params.oid, function (err, doc) {
-      res.toFeedItemRepresentation(err, doc, url, function (representation) {
-        representation.addLink('up', res.locals.schema + parent);
-        representation.addLinks(doc._actions, function (rel) {
-          return res.locals.self + '/' + rel + '/'
-        })
-      });
+      res.toFeedItemRepresentation(err, doc, url,
+
+          function (representation) {
+            representation.addLink('up', res.locals.schema + parent);
+            // TODO create-form should replaced with an action
+            representation.addLink('create-form', url + child)
+            representation.addLinks(doc._actions, function (rel) {
+              return res.locals.self + '/' + rel + '/'
+            })
+
+            representation.addCollection(url, doc._items, function (id) {
+              return {
+                id: url + child + id
+              };
+            })
+          }
+      );
     });
   };
 };
@@ -41,7 +52,7 @@ exports.del = function (req, res) {
 
 exports.pay = function (fn) {
   return function (req, res) {
-    req.body.order = req.params.oid;
+    req.body._parent = req.params.oid;
     fn(req, res);
   };
 };

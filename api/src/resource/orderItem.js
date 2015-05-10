@@ -3,26 +3,27 @@ var OrderItem = require('../model/orderItem'),
     _ = require('underscore');
 
 
-exports.list = function (parent, self) {
-  return function (req, res) {
-    var url = res.locals.self;
-    OrderItem.getCollectionByParent(req.params.oid, function (err, doc) {
-      res.toFeedRepresentation(err, doc, url,
-
-          function (representation) {
-            representation.addLink('up', res.locals.schema + parent);
-            representation.addLink('create-form', url + self);
-          },
-
-          function (doc) {
-            return {
-              id: url + self + doc._id,
-              title: doc.type
-            };
-          });
-    });
-  }
-};
+//exports.list = function (parent, self) {
+//  throw new Error('deprecated - use Order.item')
+//  return function (req, res) {
+//    var url = res.locals.self;
+//    OrderItem.getCollectionByParent(req.params.oid, function (err, doc) {
+//      res.toFeedRepresentation(err, doc, url,
+//
+//          function (representation) {
+//            representation.addLink('up', res.locals.schema + parent);
+//            representation.addLink('create-form', url + self);
+//          },
+//
+//          function (doc) {
+//            return {
+//              id: url + self + doc._id,
+//              title: doc.type
+//            };
+//          });
+//    });
+//  }
+//};
 
 exports.create = function (req, res) {
   var model = _.extend({}, req.body, {_parent: req.params.oid});

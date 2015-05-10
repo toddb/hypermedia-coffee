@@ -171,6 +171,9 @@ Representation.prototype.selfLink = fluent(function (url) {
  * @param {?LinkPredicate} fn Callback that must return an object with {id:string, title:string}
  */
 Representation.prototype.addCollection = fluent(function (url, docs, itemLink) {
+
+  this.items = [];
+
   if (_.isUndefined(url))
     return;
 
@@ -185,7 +188,6 @@ Representation.prototype.addCollection = fluent(function (url, docs, itemLink) {
       };
     }
   }
-  this.items = [];
   _.each(docs, function (doc) {
     this.items.push(itemLink(doc));
   }, this);

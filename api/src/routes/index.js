@@ -50,7 +50,7 @@ module.exports = function (app) {
         post: order.create,
         options: restrictions.collection,
         ':oid': {
-          get: orderItem.list('/api/order/', '/item/'),
+          get: order.item('/api/order/', '/item/'),
           options: restrictions.item,
           '/item/': {
             get: orderItem.createForm('/api/order/'),
@@ -65,7 +65,7 @@ module.exports = function (app) {
           '/pay/': {
             post: order.pay(pay.create),
             ':pid': {
-              get: pay.item('/api/pay/')
+              get: pay.item('/api/order/')
             }
           }
         }
