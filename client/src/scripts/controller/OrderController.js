@@ -89,7 +89,7 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           $scope.deleteAll = function () {
             $log.info("Not implementated")
-          } ;
+          };
 
           $scope.create = function (item) {
 
@@ -105,6 +105,10 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                         })
                             .then(function success(response) {
                               addItem(response.data);
+                              $scope.getOrder()
+                                  .then(function (res) {
+                                    $scope.order = res.data;
+                                  });
                             },
                             $log.error)
                       }, $log.error);
@@ -113,15 +117,22 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
 
           };
 
-          $scope.loadOrder = function(){
+          $scope.getOrder = function () {
             var orderUri = uriMapper.fromSitePath($location.path(), '/orders/order/a/');
             $log.debug($location.path() + ' -> ' + orderUri);
-            $http(
+            return $http(
                 {
                   method: 'GET',
                   url: orderUri,
                   headers: {Accept: 'application/json'}
-                })
+                });
+          }
+
+          $scope.init = function () {
+            $log.info("Loading OrderController");
+            $scope.items = [];
+
+            $scope.getOrder()
                 .then(function success(response) {
 
                   $scope.order = response.data;
@@ -134,7 +145,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                           ],
                           type: item.title || ''
                         });
-
                     // Get the order
                     $http({
                       method: 'GET',
@@ -147,12 +157,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
                   });
 
                 }, $log.error);
-          }
-
-          $scope.init = function () {
-            $log.info("Loading OrderController");
-            $scope.items = [];
-            $scope.loadOrder();
 
           };
 
