@@ -50,6 +50,7 @@ gulp.task('watch', function () {
 gulp.task('clean', function (done) {
   rimraf('dist', function () {
     mkdirp('dist');
+    mkdirp('tmp');
     done();
   });
 });
@@ -173,15 +174,15 @@ gulp.task('requirejs-restore-css', function () {
       .pipe(gulp.dest('./bower_components/bootstrap/dist/css'));
   gulp.src('./tmp/metisMenu/**')
       .pipe(gulp.dest('./bower_components/metisMenu/dist'));
-  gulp.src('./tmp/startbootstrap-sb-admin-2/**')
+  gulp.src('./tmp/startbootstrap-sb-admin-2/*.*')
       .pipe(gulp.dest('./bower_components/startbootstrap-sb-admin-2/dist/css'));
   gulp.src('./tmp/font-awesome/**')
       .pipe(gulp.dest('./bower_components/font-awesome/css'));
   gulp.src('./tmp/Slidebars/**')
       .pipe(gulp.dest('./bower_components/Slidebars/distribution/0.10.2'));
-  //
-  //gulp.src('./tmp/**')
-  //    .pipe(clean());
+
+  rimraf('tmp', function () {
+  });
 
 });
 
