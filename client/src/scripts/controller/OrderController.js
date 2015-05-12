@@ -52,7 +52,6 @@ define(['angular', 'underscore', './controllersModule'], function (angular, _, c
             var href = $state.href($state.current.data.rel[stateRelation], {apiUri: apiUri});
             // see https://github.com/angular/angular.js/issues/1388
             href = href.replace('%252F', '/');
-            console.log(href)
             return href;
           }
 

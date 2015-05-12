@@ -27,7 +27,7 @@ var api = args['api'] || 'http://localhost:8888/api/'; // https://your-api.examp
 
 var inBuildEnvironment = process.env.TEAMCITY_VERSION;
 var browsers = !inBuildEnvironment ? ['Chrome', 'PhantomJS'] : ['PhantomJS'];
-var reporters =  !inBuildEnvironment ? ['progress'] : ['teamcity'];
+var reporters = !inBuildEnvironment ? ['progress'] : ['teamcity'];
 
 /**
  *  Main build targets
@@ -144,7 +144,17 @@ gulp.task('build-requirejs', ['clean', 'requirejs-backup-css'], function (done) 
  */
 gulp.task('requirejs-backup-css', function (done) {
   gulp.src('./bower_components/bootstrap/dist/css/bootstrap.css')
-      .pipe(gulp.dest('./tmp'))
+      .pipe(gulp.dest('./tmp/bootstrap'));
+  gulp.src('./bower_components/metisMenu/dist/metisMenu.css')
+      .pipe(gulp.dest('./tmp/metisMenu'));
+  gulp.src('./bower_components/startbootstrap-sb-admin-2/dist/css/timeline.css')
+      .pipe(gulp.dest('./tmp/startbootstrap-sb-admin-2'));
+  gulp.src('./bower_components/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css')
+      .pipe(gulp.dest('./tmp/startbootstrap-sb-admin-2'));
+  gulp.src('./bower_components/font-awesome/css/font-awesome.min.css')
+      .pipe(gulp.dest('./tmp/font-awesome'));
+  gulp.src('./bower_components/Slidebars/distribution/0.10.2/slidebars.css')
+      .pipe(gulp.dest('./tmp/Slidebars'))
       .on('end', function () {
         // make sure the task runs sequentially
         // see https://github.com/gulpjs/gulp/issues/67
@@ -159,10 +169,29 @@ gulp.task('requirejs-backup-css', function (done) {
  *      --> https://github.com/jrburke/requirejs/issues/755
  */
 gulp.task('requirejs-restore-css', function () {
-  gulp.src('./tmp/**')
-      .pipe(clean())
+  gulp.src('./tmp/bootstrap/**')
       .pipe(gulp.dest('./bower_components/bootstrap/dist/css'));
+  gulp.src('./tmp/metisMenu/**')
+      .pipe(gulp.dest('./bower_components/metisMenu/dist'));
+  gulp.src('./tmp/startbootstrap-sb-admin-2/**')
+      .pipe(gulp.dest('./bower_components/startbootstrap-sb-admin-2/dist/css'));
+  gulp.src('./tmp/font-awesome/**')
+      .pipe(gulp.dest('./bower_components/font-awesome/css'));
+  gulp.src('./tmp/Slidebars/**')
+      .pipe(gulp.dest('./bower_components/Slidebars/distribution/0.10.2'));
+  //
+  //gulp.src('./tmp/**')
+  //    .pipe(clean());
+
 });
+
+/*
+ Cannot inline css import, skipping: ../../bower_components/metisMenu/dist/metisMenu.css
+ Cannot inline css import, skipping: ../../bower_components/startbootstrap-sb-admin-2/dist/css/timeline.css
+ Cannot inline css import, skipping: ../../bower_components/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css
+ Cannot inline css import, skipping: ../../bower_components/font-awesome/css/font-awesome.min.css
+ Cannot inline css import, skipping: ../../bower_components/Slidebars/distribution/0.10.2/slidebars.css
+ */
 
 var karmaCommonConf = __dirname + '/karma.conf.js';
 /**
