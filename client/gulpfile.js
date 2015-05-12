@@ -185,14 +185,6 @@ gulp.task('requirejs-restore-css', function () {
 
 });
 
-/*
- Cannot inline css import, skipping: ../../bower_components/metisMenu/dist/metisMenu.css
- Cannot inline css import, skipping: ../../bower_components/startbootstrap-sb-admin-2/dist/css/timeline.css
- Cannot inline css import, skipping: ../../bower_components/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css
- Cannot inline css import, skipping: ../../bower_components/font-awesome/css/font-awesome.min.css
- Cannot inline css import, skipping: ../../bower_components/Slidebars/distribution/0.10.2/slidebars.css
- */
-
 var karmaCommonConf = __dirname + '/karma.conf.js';
 /**
  * Run test once and exit
