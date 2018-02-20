@@ -30,7 +30,7 @@ The basic system is comprised of the following components:
 - Dependency Management System ([RequireJS](http://requirejs.org))
 - Server-side and Development package management ([npm](https://npmjs.org/))
 - Client-side package management ([bower](http://jamjs.org/))
-- Micro & Integration Testing ([Testacular](http://karma-runner.github.com/0.8/index.html) / [Mocha](http://visionmedia.github.com/mocha) / [Chai](http://chaijs.com/)) / [Sinon](http://sinonjs.org/)
+- Micro & Integration Testing ([Testacular](http://karma-runner.github.com/0.8/index.html) / [Mocha](http://mochajs.org/) / [Chai](http://chaijs.com/)) / [Sinon](http://sinonjs.org/)
 - Acceptance Testing ( [supertest](https://github.com/visionmedia/supertest)
 - DOM Manipulation ([jQuery](http://jquery.com))
 - Utility functions ([Underscore](http://underscorejs.org) / [Underscore:String](http://epeli.github.com/underscore.string))
